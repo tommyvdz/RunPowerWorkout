@@ -1,0 +1,8 @@
+<settings> 
+<setting propertyKey="@Properties.FTP" title="@Strings.FTP" prompt="@Strings.MyNumberPrompt"> 
+<settingConfig type="numeric" errorMessage="@Strings.MyNumberError" /> 
+</setting>  
+<setting propertyKey="@Properties.PERCENTAGE" title="@Strings.PERCENTAGE"> 
+	<settingConfig type="boolean" /> 
+</setting>  
+</settings>

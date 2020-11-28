@@ -1,0 +1,8 @@
+<strings>
+    <string id="AppName">RunPowerWorkout</string>
+	<string id="PERCENTAGE">Use Percentage?</string>
+	<string id="FTP">What is your FTP/CP?</string>
+	<string id="MyNumberPrompt">Enter a number</string>
+	<string id="MyNumberError">Enter a number</string>
+    <string id="label">My Value</string>
+</strings>

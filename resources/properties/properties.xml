@@ -1,0 +1,4 @@
+<properties>
+	<property id="FTP" type="number">325</property>
+    <property id="PERCENTAGE" type="boolean">false</property>
+</properties>

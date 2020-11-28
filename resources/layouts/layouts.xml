@@ -1,0 +1,44 @@
+<layouts>
+    <!-- A generic, centered layout. -->
+    <layout id="MainLayout">
+        <drawable class="Background" />
+        <label id="lapTime" x="32%" y="56%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="lapTimev" x="32%" y="59%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+        <label id="currentPower" x="center" y="5%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="currentPowerv" x="center" y="12%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MEDIUM" />
+        <label id="lapPower" x="center" y="35%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="lapPowerv" x="center" y="38%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+        <label id="powerHigh" x="80%" y="35%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="powerHighv" x="80%" y="38%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+        <label id="powerLow" x="20%" y="35%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="powerLowv" x="20%" y="38%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+        <label id="remainingTime" x="center" y="77%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="remainingTimev" x="center" y="82%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_MEDIUM" />
+        <label id="cadence" x="30%" y="56%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="cadencev" x="30%" y="59%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+        <label id="hr" x="70%" y="56%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
+        <label id="hrv" x="70%" y="59%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
+    </layout>
+
+    <!-- Layouts used for the for the four quadrants. -->
+    <layout id="TopLeftLayout">
+        <drawable class="Background" />
+        <label id="label" x="95" y="75" color="Graphics.COLOR_LT_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="Graphics.FONT_MEDIUM" />
+        <label id="value" x="95" y="42" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="Graphics.FONT_LARGE" />
+    </layout>
+    <layout id="TopRightLayout">
+        <drawable class="Background" />
+        <label id="label" x="14" y="75" color="Graphics.COLOR_LT_GRAY" justification="Graphics.TEXT_JUSTIFY_LEFT" font="Graphics.FONT_MEDIUM" />
+        <label id="value" x="14" y="42" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_LEFT" font="Graphics.FONT_LARGE" />
+    </layout>
+    <layout id="BottomLeftLayout">
+        <drawable class="Background" />
+        <label id="label" x="95" y="10" color="Graphics.COLOR_LT_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="Graphics.FONT_MEDIUM" />
+        <label id="value" x="95" y="27" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="Graphics.FONT_LARGE" />
+    </layout>
+    <layout id="BottomRightLayout">
+        <drawable class="Background" />
+        <label id="label" x="14" y="10" color="Graphics.COLOR_LT_GRAY" justification="Graphics.TEXT_JUSTIFY_LEFT" font="Graphics.FONT_MEDIUM" />
+        <label id="value" x="14" y="27" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_LEFT" font="Graphics.FONT_LARGE" />
+    </layout>
+</layouts>
