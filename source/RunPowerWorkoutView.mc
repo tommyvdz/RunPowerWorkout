@@ -325,7 +325,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 		var power = 0.0;
 		if( currentPower > 0 && targetHigh > 0 && targetLow > 0){
 			var range = targetHigh - targetLow;
-			System.println("Range is: " + range);
 			var lowerlimit = 0;
 
 			if (targetLow-range < 0){
@@ -334,14 +333,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 			else{
 				lowerlimit = targetLow-range;
 			}
-			System.println("Lower Limit: " + lowerlimit);
 
 			var upperlimit = targetHigh+range;
-			System.println("Upper Limit: " + upperlimit);	
 			power = currentPower - lowerlimit;	
-			System.println("Power is: " + power);
-			System.println("Divison is: " + (upperlimit-lowerlimit));
-			System.println("Percent should be: " + (power/(upperlimit-lowerlimit*1.0)));
         	if(power > 0.0 && (upperlimit-lowerlimit) > 0){
         		percent = power/(upperlimit-lowerlimit*1.0);
         	}
@@ -353,7 +347,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         		System.println("percent is lager than 0.85");
         		percent = 0.85;
         	}
-        	System.println("Percent is: " + percent);
         
     	}
     
