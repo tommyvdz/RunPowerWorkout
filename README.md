@@ -1,5 +1,7 @@
 # RunPowerWorkout
 
+[Screenshot](tommyvdz.github.io/runpowerworkout-scrn.png)
+
 RunPowerWorkout is a datafield that allows you to follow structured workouts based on Power on Garmin watches that support power meters and ConnectIQ 3.2.
 
 Garmin doesn't yet support power as target in structured workouts natively, but as of ConnectIQ 3.2 it does enable datafields to read structured workout information, including power targets. This datafield reads those powertargets and dispays a gauge to visualize your current power output in relation to the target. 
