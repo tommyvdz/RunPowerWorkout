@@ -1,6 +1,6 @@
 # RunPowerWorkout
 
-[Screenshot](tommyvdz.github.io/runpowerworkout-scrn.png)
+[Screenshot](https://tommyvdz.github.io/runpowerworkout-scrn.png)
 
 RunPowerWorkout is a datafield that allows you to follow structured workouts based on Power on Garmin watches that support power meters and ConnectIQ 3.2.
 
