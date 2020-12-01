@@ -174,7 +174,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 	        			targetHigh = ((targetHigh / (FTP * 1.0))*100).toNumber();
 	        			targetLow = ((targetLow / (FTP * 1.0))*100).toNumber();
 	        		}
-	        		if (workout.step.durationValue != null && DEBUG == false && remainingTime > 0){
+	        		if (workout.step.durationValue != null && DEBUG == false && remainingTime >= 0){
 	        			remainingTime = (workout.step.durationValue - lapTime).toNumber(); 
 	        		}
 	        		
