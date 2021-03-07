@@ -42,8 +42,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Application.getApp().getProperty("PERCENTAGE"), false);
     var ftpsetting =
         Utils.replaceNull(Application.getApp().getProperty("FTP"), 325);
-    var vibratesetting = Utils.replaceNull(
-        Application.getApp().getProperty("VIBRATE"), false);
+    var vibratesetting =
+        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
     var showalertssetting =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
 
@@ -51,7 +51,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     FTP = ftpsetting;
     showAlerts = showalertssetting;
     vibrate = vibratesetting;
-    
+
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
                     : false;
@@ -188,7 +188,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (activityInfo != null) {
         timer = activityInfo.timerTime / 1000;
         lapTime = timer - lapStartTime;
-        
+
         if (workout != null && DEBUG == false) {
           targetHigh = workout.step.targetValueHigh - 1000;
           targetLow = workout.step.targetValueLow - 1000;
@@ -202,12 +202,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
             targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
           }
-          
-          if (workout.step.targetType != null && workout.step.durationType == 5) {
+
+          if (workout.step.targetType != null &&
+              workout.step.durationType == 5) {
             stepType = 5;
-          } else if (workout.step.targetType != null && workout.step.durationType == 1) {
+          } else if (workout.step.targetType != null &&
+                     workout.step.durationType == 1) {
             stepType = 1;
-			if (workout.step.durationValue != null && DEBUG == false &&
+            if (workout.step.durationValue != null && DEBUG == false &&
                 remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
                                   ((activityInfo.elapsedDistance).toNumber() -
@@ -215,7 +217,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
           } else {
             stepType = 0;
-			if (workout.step.durationValue != null && DEBUG == false &&
+            if (workout.step.durationValue != null && DEBUG == false &&
                 remainingTime >= 0) {
               remainingTime = (workout.step.durationValue - lapTime).toNumber();
             }
@@ -268,11 +270,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             if (currentPower < targetLow || currentPower > targetHigh) {
               if (alertDisplayed == false && alertCount < 3) {
                 alert.setValues(targetHigh, targetLow, currentPower);
-                
-                if (Attention has :vibrate && vibrate) {
-                	Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
-				}
-                
+
+                if (Attention has : vibrate && vibrate) {
+                  Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
+                }
+
                 WatchUi.DataField.showAlert(alert);
                 alertDisplayed = true;
                 alertTimer = timer;
