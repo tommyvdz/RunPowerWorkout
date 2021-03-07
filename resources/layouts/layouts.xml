@@ -19,13 +19,14 @@
         <label id="hr" x="80%" y="56%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
         <label id="hrv" x="80%" y="59%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_MILD" />
         <label id="elapsedTime" x="center" y="56%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_XTINY" />
-        <label id="elapsedTimev" x="center" y="62%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_MEDIUM" />
+        <label id="elapsedTimev" x="center" y="62%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_SMALL" />
     </layout>
 
    <layout id="AlertLayout">
         <drawable class="Background" />
-        <label id="alert" x="center" y="20%" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_MEDIUM" />
+        <label id="alert" x="center" y="15%" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_MEDIUM" />
         <label id="alertv" x="center" y="center" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_NUMBER_HOT" />
+        <label id="alerttargets" x="center" y="70%" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="Graphics.FONT_SMALL" />
     </layout>
 
 

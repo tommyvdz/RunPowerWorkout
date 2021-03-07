@@ -34,9 +34,11 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
     var alertLabel = View.findDrawableById("alert");
     var alertValue = View.findDrawableById("alertv");
+    var alertTargets = View.findDrawableById("alerttargets");
 
     alertLabel.setText("High");
     alertValue.setText("0");
+    alertTargets.setText("0-1000");
 
     return true;
   }
@@ -49,6 +51,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
     var alertLabel = View.findDrawableById("alert");
     var alertValue = View.findDrawableById("alertv");
+    var alertTargets = View.findDrawableById("alerttargets");
     var ringColor = Graphics.COLOR_RED;
 
     if (currentPower < targetLow) {
@@ -61,6 +64,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
     alertLabel.setColor(ringColor);
     alertValue.setText("" + currentPower);
+    alertTargets.setText("TGT " + targetLow + "-" + targetHigh);
 
     //! Call parent's onUpdate(dc) to redraw the layout
     View.onUpdate(dc);
