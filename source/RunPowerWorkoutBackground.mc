@@ -3,24 +3,18 @@ using Toybox.Application;
 using Toybox.Graphics;
 
 class Background extends WatchUi.Drawable {
+  hidden var mColor;
 
-    hidden var mColor;
+  function initialize() {
+    var dictionary = { : identifier = > "Background"};
 
-    function initialize() {
-        var dictionary = {
-            :identifier => "Background"
-        };
+    Drawable.initialize(dictionary);
+  }
 
-        Drawable.initialize(dictionary);
-    }
+  function setColor(color) { mColor = color; }
 
-    function setColor(color) {
-        mColor = color;
-    }
-
-    function draw(dc) {
-        dc.setColor(Graphics.COLOR_TRANSPARENT, mColor);
-        dc.clear();
-    }
-
+  function draw(dc) {
+    dc.setColor(Graphics.COLOR_TRANSPARENT, mColor);
+    dc.clear();
+  }
 }

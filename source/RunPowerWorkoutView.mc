@@ -21,7 +21,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var alertTimer;
   hidden var alertCount;
   hidden var alertDelay;
-  hidden var alert;
   hidden var hr;
   hidden var usePercentage;
   hidden var useMetric;
@@ -74,7 +73,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     alertTimer = 0;
     alertCount = 0;
     alertDelay = 10;
-    alert = new RunPowerWorkoutAlertView();
   }
 
   function onTimerStart() {
@@ -266,16 +264,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
 
           // Show an alert if above of below
-          if (WatchUi.DataField has : showAlert && showAlerts && lapTime > 10) {
-            if (currentPower < targetLow || currentPower > targetHigh) {
+          if (WatchUi.DataField has : showAlert && showAlerts && lapTime > 15) {
+            if (lapPower != null &&
+                (lapPower < targetLow || lapPower > targetHigh)) {
               if (alertDisplayed == false && alertCount < 3) {
-                alert.setValues(targetHigh, targetLow, currentPower);
-
                 if (Attention has : vibrate && vibrate) {
                   Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
                 }
 
-                WatchUi.DataField.showAlert(alert);
+                WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
+                    targetHigh, targetLow, lapPower));
                 alertDisplayed = true;
                 alertTimer = timer;
                 alertCount++;

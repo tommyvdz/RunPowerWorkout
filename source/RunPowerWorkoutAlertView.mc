@@ -9,19 +9,13 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
   hidden var DEBUG = true;
 
-  function initialize() {
+  function initialize(high, low, current) {
     if (DEBUG) {
       System.println(
           "Debug mode: setting default targets for alert, and printing a lot.");
     }
 
     DataFieldAlert.initialize();
-    targetHigh = 0;
-    targetLow = 0;
-    currentPower = 0;
-  }
-
-  function setValues(high, low, current) {
     targetHigh = high;
     targetLow = low;
     currentPower = current;
@@ -63,7 +57,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     }
 
     alertLabel.setColor(ringColor);
-    alertValue.setText("" + currentPower);
+    alertValue.setText("" + currentPower.toNumber());
     alertTargets.setText("TGT " + targetLow + "-" + targetHigh);
 
     //! Call parent's onUpdate(dc) to redraw the layout
