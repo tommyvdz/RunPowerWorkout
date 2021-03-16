@@ -1,4 +1,6 @@
 <properties>
 	<property id="FTP" type="number">325</property>
     <property id="PERCENTAGE" type="boolean">false</property>
+    <property id="VIBRATE" type="boolean">true</property>
+    <property id="ALERT" type="boolean">true</property>
 </properties>

@@ -5,4 +5,10 @@
 <setting propertyKey="@Properties.PERCENTAGE" title="@Strings.PERCENTAGE"> 
 	<settingConfig type="boolean" /> 
 </setting>  
+<setting propertyKey="@Properties.ALERT" title="@Strings.ALERT"> 
+<settingConfig type="boolean" /> 
+</setting>  
+<setting propertyKey="@Properties.VIBRATE" title="@Strings.VIBRATE"> 
+	<settingConfig type="boolean" /> 
+</setting>  
 </settings>
