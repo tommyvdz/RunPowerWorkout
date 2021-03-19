@@ -4,6 +4,8 @@
 	<string id="FTP">What is your FTP/CP?</string>
 	<string id="ALERT">Display alerts?</string>
 	<string id="VIBRATE">Vibrate on alerts?</string>	
+	<string id="SWITCHTIMEDISTANCE">Alternate elapsed time and total distance?</string>
+	<string id="SWITCHPACECADENCE">Alternate pace and cadence?</string>
 	<string id="MyNumberPrompt">Enter a number</string>
 	<string id="MyNumberError">Enter a number</string>
     <string id="label">My Value</string>

@@ -10,5 +10,8 @@
 </setting>  
 <setting propertyKey="@Properties.VIBRATE" title="@Strings.VIBRATE"> 
 	<settingConfig type="boolean" /> 
+</setting> 
+<setting propertyKey="@Properties.SWITCHTIMEDISTANCE" title="@Strings.SWITCHTIMEDISTANCE"> 
+	<settingConfig type="boolean" /> 
 </setting>  
 </settings>

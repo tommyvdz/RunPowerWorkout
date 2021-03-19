@@ -6,10 +6,11 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var targetHigh;
   hidden var targetLow;
   hidden var currentPower;
+  hidden var isLapAlert;
 
-  hidden var DEBUG = true;
+  hidden var DEBUG = false;
 
-  function initialize(high, low, current) {
+  function initialize(high, low, current, lapAlert) {
     if (DEBUG) {
       System.println(
           "Debug mode: setting default targets for alert, and printing a lot.");
@@ -19,6 +20,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     targetHigh = high;
     targetLow = low;
     currentPower = current;
+    isLapAlert = lapAlert;
   }
 
   // Set your layout here. Anytime the size of obscurity of
@@ -41,6 +43,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   // once a second when the data field is visible.
   function onUpdate(dc) {
     // Set the background color
+
     View.findDrawableById("Background").setColor(Graphics.COLOR_BLACK);
 
     var alertLabel = View.findDrawableById("alert");
@@ -49,11 +52,23 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     var ringColor = Graphics.COLOR_RED;
 
     if (currentPower < targetLow) {
-      alertLabel.setText("Low power !");
-      ringColor = Graphics.COLOR_BLUE;
-
+      if (isLapAlert == true) {
+        alertLabel.setText("Lap Low pwr !");
+        View.findDrawableById("Background").setColor(Graphics.COLOR_BLUE);
+        ringColor = Graphics.COLOR_WHITE;
+      } else {
+        alertLabel.setText("Low pwr !");
+        ringColor = Graphics.COLOR_BLUE;
+      }
     } else {
-      alertLabel.setText("High power !");
+      if (isLapAlert == true) {
+        alertLabel.setText("Lap High pwr !");
+        View.findDrawableById("Background").setColor(Graphics.COLOR_RED);
+        ringColor = Graphics.COLOR_WHITE;
+      } else {
+        alertLabel.setText("High pwr !");
+        ringColor = Graphics.COLOR_RED;
+      }
     }
 
     alertLabel.setColor(ringColor);
