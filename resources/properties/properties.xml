@@ -3,6 +3,4 @@
     <property id="PERCENTAGE" type="boolean">false</property>
     <property id="VIBRATE" type="boolean">true</property>
     <property id="ALERT" type="boolean">true</property>
-    <property id="SWITCHTIMEDISTANCE" type="boolean">true</property>
-    <property id="SWITCHPACECADENCE" type="boolean">true</property>
 </properties>

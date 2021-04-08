@@ -57,7 +57,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
         View.findDrawableById("Background").setColor(Graphics.COLOR_BLUE);
         ringColor = Graphics.COLOR_WHITE;
       } else {
-        alertLabel.setText("Low pwr !");
+        alertLabel.setText("Low power");
         ringColor = Graphics.COLOR_BLUE;
       }
     } else {
@@ -66,7 +66,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
         View.findDrawableById("Background").setColor(Graphics.COLOR_RED);
         ringColor = Graphics.COLOR_WHITE;
       } else {
-        alertLabel.setText("High pwr !");
+        alertLabel.setText("High power");
         ringColor = Graphics.COLOR_RED;
       }
     }
@@ -82,6 +82,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     var screenHeight = dc.getHeight();
     var centerX = screenWidth / 2;
     var centerY = screenHeight / 2;
+    dc.setAntiAlias(true);
     dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
     dc.setPenWidth(5);
     dc.drawCircle(centerX, centerY, centerX - 2);
