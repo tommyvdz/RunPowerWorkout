@@ -38,7 +38,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var switchMetric;
   hidden var hrZones;
   hidden var shouldDisplayAlert;
-  hidden var font;
+  hidden var powerAverage;
+  hidden var currentPowerAverage;
+
 
   hidden var DEBUG = false;
 
@@ -57,13 +59,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
     var showalertssetting =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
-
-    font = WatchUi.loadResource(Rez.Fonts.Pragati26);
+    var poweraveragesetting =
+        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);        
 
     usePercentage = percentagesetting;
     FTP = ftpsetting;
     showAlerts = showalertssetting;
     vibrate = vibratesetting;
+    powerAverage = poweraveragesetting;
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -91,6 +94,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     switchCounter = 0;
     switchMetric = 0;
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
+    currentPowerAverage = new [powerAverage]; 
   }
 
   function onTimerStart() {
@@ -351,12 +355,34 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
 
           if (currentPower != null) {
+            
+          	for(var i = powerAverage - 1; i > 0; --i){
+          	  currentPowerAverage[i] = currentPowerAverage[i-1];
+          	}
+          	
+          	currentPowerAverage[0] = currentPower;    
+          	
+          
             if (lapPower == null) {
               lapPower = currentPower;
             } else if (lapTime != 0) {
               lapPower = (((lapPower * (lapTime - 1)) + currentPower) /
                           (lapTime * 1.0));
             }
+            
+            var tempAverage = 0;
+            var entries = powerAverage;
+            
+            for(var i = 0; i < powerAverage; ++i){
+              if(currentPowerAverage[i] != null){
+                tempAverage += currentPowerAverage[i];
+              } else {
+                entries -= 1;
+              }
+            }
+            
+            currentPower = ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
+            
           } else {
             currentPower = 0;  // in order to prevent problems when using
                                // currentpower elsewhere
