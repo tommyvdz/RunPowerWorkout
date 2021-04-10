@@ -20,6 +20,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var nextTargetDuration;
   hidden var remainingTime;
   hidden var remainingDistance;
+  hidden var remainingDistanceSpeed;
   hidden var stepType;
   hidden var currentPower;
   hidden var paused;
@@ -41,35 +42,23 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var powerAverage;
   hidden var currentPowerAverage;
   hidden var showColors;
+  hidden var lapSpeed;
 
-  hidden var DEBUG = false;
+  hidden var DEBUG = true;
 
   function initialize() {
-    if (DEBUG) {
-      System.println(
-          "Debug mode: setting default targets, and printing a lot.");
-    }
-
     // read settings
-    var percentagesetting = Utils.replaceNull(
+    usePercentage = Utils.replaceNull(
         Application.getApp().getProperty("PERCENTAGE"), false);
-    var ftpsetting =
-        Utils.replaceNull(Application.getApp().getProperty("FTP"), 325);
-    var vibratesetting =
-        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
-    var showalertssetting =
+    FTP = Utils.replaceNull(Application.getApp().getProperty("FTP"), 325);
+    showAlerts =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
-    var poweraveragesetting =
+    vibrate =
+        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
+    powerAverage =
         Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);
-    var showcolorssetting =
+    showColors =
         Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
-
-    usePercentage = percentagesetting;
-    FTP = ftpsetting;
-    showAlerts = showalertssetting;
-    vibrate = vibratesetting;
-    powerAverage = poweraveragesetting;
-    showColors = showcolorssetting;
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -79,6 +68,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     timer = 0;
     lapTime = 0;
     lapStartTime = 0;
+    lapSpeed = null;
     lapStartDistance = 0;
     targetHigh = 0;
     targetLow = 0;
@@ -98,64 +88,41 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     switchMetric = 0;
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
+    remainingDistanceSpeed = 9999;
   }
 
-  function onTimerStart() {
-    if (DEBUG) {
-      System.println("Timer Start");
-    }
-    paused = false;
-  }
+  function onTimerStart() { paused = false; }
 
-  function onTimerStop() {
-    if (DEBUG) {
-      System.println("Timer Stop");
-    }
-    paused = true;
-  }
+  function onTimerStop() { paused = true; }
 
-  function onTimerResume() {
-    if (DEBUG) {
-      System.println("Timer Resume");
-    }
-    paused = false;
-  }
+  function onTimerResume() { paused = false; }
 
-  function onTimerPause() {
-    if (DEBUG) {
-      System.println("Timer Pause");
-    }
-    paused = true;
-  }
+  function onTimerPause() { paused = true; }
 
-  function onTimerLap() {
-    if (DEBUG) {
-      System.println("Timer Lap");
-    }
-  }
+  function onTimerLap() {}
 
   function onWorkoutStepComplete() {
     lapStartTime = timer;
     lapTime = 0;
+    lapSpeed = null;
     lapStartDistance = Activity.getActivityInfo().elapsedDistance;
     lapPower = null;
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
+    remainingDistanceSpeed = 9999;
   }
 
   function onTimerReset() {
-    if (DEBUG) {
-      System.println("Timer Reset");
-    }
-
     lapStartTime = timer;
     lapStartDistance = 0;
     lapTime = 0;
     lapPower = null;
+    lapSpeed = null;
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
+    remainingDistanceSpeed = 9999;
   }
 
   // Set your layout here. Anytime the size of obscurity of
@@ -184,6 +151,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var currentPowerBG = View.findDrawableById("currentPowerBG");
     var hrBG = View.findDrawableById("hrBG");
     var lapPowerBG = View.findDrawableById("lapPowerBG");
+    var height = dc.getHeight();
+    var width = dc.getWidth();
 
     currentPowerValue.setText("0");
     lapPowerLabel.setText("Lap Pwr");
@@ -207,9 +176,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     remainingTimeLabel.setText("Rem. Time");
     elapsedTimeLabel.setText("El. Time");
     cadenceLabel.setText("Cadence");
-
-    var width = dc.getWidth();
-    var height = dc.getHeight();
 
     currentPowerBG.setAttributes(0, 0, width, ((height / 3) + (0.02 * height)));
     hrBG.setAttributes(
@@ -336,6 +302,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         if (switchCounter > 2) {
           if (switchMetric == 0) {
             switchMetric = 1;
+          } else if (switchMetric == 1) {
+            switchMetric = 2;
           } else {
             switchMetric = 0;
           }
@@ -369,6 +337,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             } else if (lapTime != 0) {
               lapPower = (((lapPower * (lapTime - 1)) + currentPower) /
                           (lapTime * 1.0));
+            }
+
+            if (lapSpeed == null) {
+              lapSpeed = Activity.getActivityInfo().currentSpeed;
+            } else if (lapTime != 0) {
+              lapSpeed = (((lapSpeed * (lapTime - 1)) +
+                           Activity.getActivityInfo().currentSpeed) /
+                          (lapTime * 1.0));
+            }
+
+            if (stepType == 1 && remainingTime < 60 &&
+                remainingDistanceSpeed == 9999) {
+              remainingDistanceSpeed = 15 * lapSpeed;
             }
 
             var tempAverage = 0;
@@ -577,8 +558,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       lapPowerValue.setText("" + lapPower.toNumber());
     }
 
-    if ((remainingDistance == 0 || remainingDistance > 30) &&
-        (remainingTime == 0 || remainingTime > 12)) {
+    if (switchMetric == 2 || ((remainingDistance == 0 ||
+                               remainingDistance > remainingDistanceSpeed) &&
+                              (remainingTime == 0 || remainingTime > 15))) {
       if (stepType == 5) {
         remainingTimeLabel.setText("Until");
         remainingTimeValue.setText("Lap Press");
@@ -704,11 +686,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         percent = power / (upperlimit - lowerlimit * 1.0);
       }
       if (percent < 0.15) {
-        System.println("percent is smaller than 0.15");
         percent = 0.15;
       }
       if (percent > 0.85) {
-        System.println("percent is lager than 0.85");
         percent = 0.85;
       }
     }

@@ -11,11 +11,6 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var DEBUG = false;
 
   function initialize(high, low, current, lapAlert) {
-    if (DEBUG) {
-      System.println(
-          "Debug mode: setting default targets for alert, and printing a lot.");
-    }
-
     DataFieldAlert.initialize();
     targetHigh = high;
     targetLow = low;
