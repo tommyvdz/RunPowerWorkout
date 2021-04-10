@@ -44,7 +44,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var showColors;
   hidden var lapSpeed;
 
-  hidden var DEBUG = true;
+  hidden var DEBUG = false;
 
   function initialize() {
     // read settings
@@ -54,9 +54,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     showAlerts =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
     vibrate =
-        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
+        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), true);
     powerAverage =
-        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);
+        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 3);
     showColors =
         Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
 
@@ -348,7 +348,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
 
             if (stepType == 1 && remainingTime < 60 &&
-                remainingDistanceSpeed == 9999) {
+                remainingDistanceSpeed == 9999 && lapSpeed != null && lapSpeed != 0) {
               remainingDistanceSpeed = 15 * lapSpeed;
             }
 
