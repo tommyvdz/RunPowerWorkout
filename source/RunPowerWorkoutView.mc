@@ -498,11 +498,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         } else if (hr > hrZones[3]) {
           hrBG.setColor(Graphics.COLOR_ORANGE);
         } else if (hr > hrZones[2]) {
-          hrBG.setColor(Graphics.COLOR_GREEN);
+          hrBG.setColor(Graphics.COLOR_DK_GREEN);
         } else if (hr > hrZones[1]) {
-          hrBG.setColor(Graphics.COLOR_BLUE);
+          hrBG.setColor(Graphics.COLOR_DK_BLUE);
         } else {
-          hrBG.setColor(Graphics.COLOR_LT_GRAY);
+          hrBG.setColor(Graphics.COLOR_DK_GRAY);
         }
       } else if (showColors == 2) {
         if (hr > hrZones[4]) {
@@ -510,11 +510,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         } else if (hr > hrZones[3]) {
           hrValue.setColor(Graphics.COLOR_ORANGE);
         } else if (hr > hrZones[2]) {
-          hrValue.setColor(Graphics.COLOR_GREEN);
+          hrValue.setColor(Graphics.COLOR_DK_GREEN);
         } else if (hr > hrZones[1]) {
-          hrValue.setColor(Graphics.COLOR_BLUE);
+          hrValue.setColor(Graphics.COLOR_DK_BLUE);
         } else {
-          hrValue.setColor(Graphics.COLOR_LT_GRAY);
+          hrValue.setColor(Graphics.COLOR_DK_GRAY);
         }
       }
       hrValue.setText("" + hr);
@@ -558,11 +558,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           lapPowerValue.setColor(Graphics.COLOR_WHITE);
           lapPowerLabel.setColor(Graphics.COLOR_WHITE);
           if (lapPower.toNumber() < targetLow) {
-            lapPowerBG.setColor(Graphics.COLOR_BLUE);
+            lapPowerBG.setColor(Graphics.COLOR_DK_BLUE);
           } else if (lapPower.toNumber() > targetHigh) {
-            lapPowerBG.setColor(Graphics.COLOR_RED);
+            lapPowerBG.setColor(Graphics.COLOR_DK_RED);
           } else {
-            lapPowerBG.setColor(Graphics.COLOR_GREEN);
+            lapPowerBG.setColor(Graphics.COLOR_DK_GREEN);
           }
         } else if (showColors == 2) {
           if (lapPower.toNumber() < targetLow) {
