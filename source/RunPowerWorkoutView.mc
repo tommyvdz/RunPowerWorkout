@@ -88,7 +88,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     switchMetric = 0;
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
-    remainingDistanceSpeed = 9999;
+    remainingDistanceSpeed = -1;
   }
 
   function onTimerStart() { paused = false; }
@@ -110,7 +110,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
-    remainingDistanceSpeed = 9999;
+    remainingDistanceSpeed = -1;
   }
 
   function onTimerReset() {
@@ -122,7 +122,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
-    remainingDistanceSpeed = 9999;
+    remainingDistanceSpeed = -1;
   }
 
   // Set your layout here. Anytime the size of obscurity of
@@ -268,7 +268,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               remainingDistance = workout.step.durationValue -
                                   ((activityInfo.elapsedDistance).toNumber() -
                                    lapStartDistance);
-              if (shouldDisplayAlert && remainingDistance < 40) {
+              if (shouldDisplayAlert && remainingDistance < remainingDistanceSpeed) {
                 shouldDisplayAlert = false;
               }
             }
@@ -277,7 +277,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             if (workout.step.durationValue != null && DEBUG == false &&
                 remainingTime >= 0) {
               remainingTime = (workout.step.durationValue - lapTime).toNumber();
-              if (shouldDisplayAlert && remainingTime < 15) {
+              if (shouldDisplayAlert && remainingTime < 20) {
                 shouldDisplayAlert = false;
               }
             }
@@ -299,7 +299,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
 
         switchCounter++;
-        if (switchCounter > 2) {
+        if (switchCounter > 1) {
           if (switchMetric == 0) {
             switchMetric = 1;
           } else if (switchMetric == 1) {
@@ -341,14 +341,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
             if (lapSpeed == null) {
               lapSpeed = Activity.getActivityInfo().currentSpeed;
-            } else if (lapTime != 0) {
+            } else if (lapTime > 5) {
               lapSpeed = (((lapSpeed * (lapTime - 1)) +
                            Activity.getActivityInfo().currentSpeed) /
                           (lapTime * 1.0));
             }
 
-            if (stepType == 1 && remainingTime < 60 &&
-                remainingDistanceSpeed == 9999 && lapSpeed != null && lapSpeed != 0) {
+            if (stepType == 1 && remainingTime < 30 &&
+                remainingDistanceSpeed == -1 && lapSpeed != null && lapSpeed != 0) {
               remainingDistanceSpeed = 15 * lapSpeed;
             }
 
