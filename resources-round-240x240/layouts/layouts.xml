@@ -1,0 +1,45 @@
+<layouts>
+    <!-- A generic, centered layout. -->
+    <layout id="MainLayout">
+        <drawable class="Background" />
+        <drawable class="Rectangle" id="currentPowerBG">
+            <param name="x">0</param>
+            <param name="y">0</param>
+        </drawable>
+        <drawable class="Rectangle" id="lapPowerBG">
+            <param name="x">0</param>
+            <param name="y">0</param>
+        </drawable>
+        <drawable class="Rectangle" id="hrBG">
+            <param name="x">0</param>
+            <param name="y">0</param>
+        </drawable>
+        <label id="currentPower" x="center" y="5%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati14" />
+        <label id="currentPowerv" x="center" y="4%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati60" />
+        <label id="cadence" x="29%" y="33%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati14" />
+        <label id="cadencev" x="29%" y="35%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati40" />
+        <label id="pace" x="71%" y="33%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_LEFT" font="@Fonts.Pragati14" />
+        <label id="pacev" x="71%" y="35%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_LEFT" font="@Fonts.Pragati40" />
+        <label id="paceunit" x="97%" y="33%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati14" />
+        <label id="distance" x="center" y="33%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati14" />
+        <label id="distanceunit" x="69%" y="30%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati22" />
+        <label id="distancev" x="center" y="35%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati40" />
+        <label id="powerHighv" x="82%" y="18%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati24" />
+        <label id="powerLowv" x="18%" y="18%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_LEFT" font="@Fonts.Pragati24" />
+        <label id="lapPower" x="29%" y="53%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati14" />
+        <label id="lapPowerv" x="29%" y="55%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_RIGHT" font="@Fonts.Pragati40" />
+        <label id="elapsedTime" x="center" y="53%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati14" />
+        <label id="elapsedTimev" x="center" y="55%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati40" />
+        <label id="hr" x="71%" y="53%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_LEFT" font="@Fonts.Pragati14" />
+        <label id="hrv" x="71%" y="55%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_LEFT" font="@Fonts.Pragati40" />
+        <label id="remainingTime" x="center" y="74%" color="Graphics.COLOR_DK_GRAY" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati14" />
+        <label id="remainingTimev" x="center" y="74%" color="Graphics.COLOR_BLACK" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati40" />
+    </layout>
+
+    <layout id="AlertLayout">
+        <drawable class="Background" />
+        <label id="alert" x="center" y="8%" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati24" />
+        <label id="alertv" x="center" y="center" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati_Numbers_100" />
+        <label id="alerttargets" x="center" y="77%" color="Graphics.COLOR_WHITE" justification="Graphics.TEXT_JUSTIFY_CENTER" font="@Fonts.Pragati24" />
+    </layout>
+</layouts>
