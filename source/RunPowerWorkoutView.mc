@@ -40,7 +40,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var shouldDisplayAlert;
   hidden var powerAverage;
   hidden var currentPowerAverage;
-
+  hidden var showColors;
 
   hidden var DEBUG = false;
 
@@ -60,13 +60,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var showalertssetting =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
     var poweraveragesetting =
-        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);        
+        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);
+    var showcolorssetting =
+        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
 
     usePercentage = percentagesetting;
     FTP = ftpsetting;
     showAlerts = showalertssetting;
     vibrate = vibratesetting;
     powerAverage = poweraveragesetting;
+    showColors = showcolorssetting;
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -94,7 +97,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     switchCounter = 0;
     switchMetric = 0;
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
-    currentPowerAverage = new [powerAverage]; 
+    currentPowerAverage = new[powerAverage];
   }
 
   function onTimerStart() {
@@ -355,34 +358,33 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
 
           if (currentPower != null) {
-            
-          	for(var i = powerAverage - 1; i > 0; --i){
-          	  currentPowerAverage[i] = currentPowerAverage[i-1];
-          	}
-          	
-          	currentPowerAverage[0] = currentPower;    
-          	
-          
+            for (var i = powerAverage - 1; i > 0; --i) {
+              currentPowerAverage[i] = currentPowerAverage[i - 1];
+            }
+
+            currentPowerAverage[0] = currentPower;
+
             if (lapPower == null) {
               lapPower = currentPower;
             } else if (lapTime != 0) {
               lapPower = (((lapPower * (lapTime - 1)) + currentPower) /
                           (lapTime * 1.0));
             }
-            
+
             var tempAverage = 0;
             var entries = powerAverage;
-            
-            for(var i = 0; i < powerAverage; ++i){
-              if(currentPowerAverage[i] != null){
+
+            for (var i = 0; i < powerAverage; ++i) {
+              if (currentPowerAverage[i] != null) {
                 tempAverage += currentPowerAverage[i];
               } else {
                 entries -= 1;
               }
             }
-            
-            currentPower = ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
-            
+
+            currentPower =
+                ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
+
           } else {
             currentPower = 0;  // in order to prevent problems when using
                                // currentpower elsewhere
@@ -488,18 +490,32 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       hrValue.setText("0");
       hrBG.setColor(Graphics.COLOR_TRANSPARENT);
     } else {
-      hrLabel.setColor(Graphics.COLOR_WHITE);
-      hrValue.setColor(Graphics.COLOR_WHITE);
-      if (hr > hrZones[4]) {
-        hrBG.setColor(Graphics.COLOR_RED);
-      } else if (hr > hrZones[3]) {
-        hrBG.setColor(Graphics.COLOR_ORANGE);
-      } else if (hr > hrZones[2]) {
-        hrBG.setColor(Graphics.COLOR_GREEN);
-      } else if (hr > hrZones[1]) {
-        hrBG.setColor(Graphics.COLOR_BLUE);
-      } else {
-        hrBG.setColor(Graphics.COLOR_LT_GRAY);
+      if (showColors == 1) {
+        hrLabel.setColor(Graphics.COLOR_WHITE);
+        hrValue.setColor(Graphics.COLOR_WHITE);
+        if (hr > hrZones[4]) {
+          hrBG.setColor(Graphics.COLOR_RED);
+        } else if (hr > hrZones[3]) {
+          hrBG.setColor(Graphics.COLOR_ORANGE);
+        } else if (hr > hrZones[2]) {
+          hrBG.setColor(Graphics.COLOR_GREEN);
+        } else if (hr > hrZones[1]) {
+          hrBG.setColor(Graphics.COLOR_BLUE);
+        } else {
+          hrBG.setColor(Graphics.COLOR_LT_GRAY);
+        }
+      } else if (showColors == 2) {
+        if (hr > hrZones[4]) {
+          hrValue.setColor(Graphics.COLOR_RED);
+        } else if (hr > hrZones[3]) {
+          hrValue.setColor(Graphics.COLOR_ORANGE);
+        } else if (hr > hrZones[2]) {
+          hrValue.setColor(Graphics.COLOR_GREEN);
+        } else if (hr > hrZones[1]) {
+          hrValue.setColor(Graphics.COLOR_BLUE);
+        } else {
+          hrValue.setColor(Graphics.COLOR_LT_GRAY);
+        }
       }
       hrValue.setText("" + hr);
     }
@@ -508,15 +524,25 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       currentPowerValue.setText("0");
     } else {
       if (targetHigh != 0 && targetLow != 0) {
-        currentPowerValue.setColor(Graphics.COLOR_WHITE);
-        powerHighValue.setColor(Graphics.COLOR_WHITE);
-        powerLowValue.setColor(Graphics.COLOR_WHITE);
-        if (currentPower < targetLow) {
-          currentPowerBG.setColor(Graphics.COLOR_BLUE);
-        } else if (currentPower > targetHigh) {
-          currentPowerBG.setColor(Graphics.COLOR_RED);
-        } else {
-          currentPowerBG.setColor(Graphics.COLOR_GREEN);
+        if (showColors == 1) {
+          currentPowerValue.setColor(Graphics.COLOR_WHITE);
+          powerHighValue.setColor(Graphics.COLOR_WHITE);
+          powerLowValue.setColor(Graphics.COLOR_WHITE);
+          if (currentPower < targetLow) {
+            currentPowerBG.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (currentPower > targetHigh) {
+            currentPowerBG.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            currentPowerBG.setColor(Graphics.COLOR_DK_GREEN);
+          }
+        } else if (showColors == 2) {
+          if (currentPower < targetLow) {
+            currentPowerValue.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (currentPower > targetHigh) {
+            currentPowerValue.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            currentPowerValue.setColor(Graphics.COLOR_DK_GREEN);
+          }
         }
       } else {
         currentPowerBG.setColor(Graphics.COLOR_TRANSPARENT);
@@ -528,14 +554,24 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       lapPowerBG.setColor(Graphics.COLOR_TRANSPARENT);
     } else {
       if (targetHigh != 0 && targetLow != 0) {
-        lapPowerValue.setColor(Graphics.COLOR_WHITE);
-        lapPowerLabel.setColor(Graphics.COLOR_WHITE);
-        if (lapPower.toNumber() < targetLow) {
-          lapPowerBG.setColor(Graphics.COLOR_BLUE);
-        } else if (lapPower.toNumber() > targetHigh) {
-          lapPowerBG.setColor(Graphics.COLOR_RED);
-        } else {
-          lapPowerBG.setColor(Graphics.COLOR_GREEN);
+        if (showColors == 1) {
+          lapPowerValue.setColor(Graphics.COLOR_WHITE);
+          lapPowerLabel.setColor(Graphics.COLOR_WHITE);
+          if (lapPower.toNumber() < targetLow) {
+            lapPowerBG.setColor(Graphics.COLOR_BLUE);
+          } else if (lapPower.toNumber() > targetHigh) {
+            lapPowerBG.setColor(Graphics.COLOR_RED);
+          } else {
+            lapPowerBG.setColor(Graphics.COLOR_GREEN);
+          }
+        } else if (showColors == 2) {
+          if (lapPower.toNumber() < targetLow) {
+            lapPowerValue.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (lapPower.toNumber() > targetHigh) {
+            lapPowerValue.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            lapPowerValue.setColor(Graphics.COLOR_DK_GREEN);
+          }
         }
       }
       lapPowerValue.setText("" + lapPower.toNumber());
@@ -632,15 +668,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     dc.setPenWidth(SIZE);
     dc.setAntiAlias(true);
-    dc.setColor(Graphics.COLOR_DK_RED, getBackgroundColor());
+    dc.setColor(Graphics.COLOR_RED, getBackgroundColor());
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 30, 60);
 
-    dc.setColor(Graphics.COLOR_DK_BLUE, getBackgroundColor());
+    dc.setColor(Graphics.COLOR_BLUE, getBackgroundColor());
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 120, 150);
 
-    dc.setColor(Graphics.COLOR_DK_GREEN, getBackgroundColor());
+    dc.setColor(Graphics.COLOR_GREEN, getBackgroundColor());
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 60, 120);
 
