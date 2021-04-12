@@ -6,80 +6,54 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var targetHigh;
   hidden var targetLow;
   hidden var currentPower;
-  hidden var isLapAlert;
+  (:roundzero) hidden var geometry = [ 218, 109, 21, 163 ];
+  (:roundone) hidden var geometry = [ 240, 120, 24, 180 ];
+  (:roundtwo) hidden var geometry = [ 260, 130, 26, 195 ];
+  (:roundthree) hidden var geometry = [ 280, 140, 28, 210 ];
+  (:roundfour) hidden var geometry = [ 390, 195, 39, 292 ];
+  (:highmem) hidden var fonts =
+      [ WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F) ];
+  (:medmem) hidden var fonts =
+      [ WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F) ];
+  (:lowmem) hidden var fonts =
+      [ Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_THAI_HOT ];
 
   hidden var DEBUG = false;
 
-  function initialize(high, low, current, lapAlert) {
+  function initialize(high, low, current) {
     DataFieldAlert.initialize();
     targetHigh = high;
     targetLow = low;
     currentPower = current;
-    isLapAlert = lapAlert;
   }
 
-  // Set your layout here. Anytime the size of obscurity of
-  // the draw context is changed this will be called.
   function onLayout(dc) {
-    View.setLayout(Rez.Layouts.AlertLayout(dc));
-
-    var alertLabel = View.findDrawableById("alert");
-    var alertValue = View.findDrawableById("alertv");
-    var alertTargets = View.findDrawableById("alerttargets");
-
-    alertLabel.setText("High");
-    alertValue.setText("0");
-    alertTargets.setText("0-1000");
-
     return true;
   }
 
-  // Display the value you computed here. This will be called
-  // once a second when the data field is visible.
+
   function onUpdate(dc) {
-    // Set the background color
 
-    View.findDrawableById("Background").setColor(Graphics.COLOR_BLACK);
-
-    var alertLabel = View.findDrawableById("alert");
-    var alertValue = View.findDrawableById("alertv");
-    var alertTargets = View.findDrawableById("alerttargets");
-    var ringColor = Graphics.COLOR_RED;
-
-    if (currentPower < targetLow) {
-      if (isLapAlert == true) {
-        alertLabel.setText("Lap Low pwr !");
-        View.findDrawableById("Background").setColor(Graphics.COLOR_BLUE);
-        ringColor = Graphics.COLOR_WHITE;
-      } else {
-        alertLabel.setText("Low power");
-        ringColor = Graphics.COLOR_BLUE;
-      }
-    } else {
-      if (isLapAlert == true) {
-        alertLabel.setText("Lap High pwr !");
-        View.findDrawableById("Background").setColor(Graphics.COLOR_RED);
-        ringColor = Graphics.COLOR_WHITE;
-      } else {
-        alertLabel.setText("High power");
-        ringColor = Graphics.COLOR_RED;
-      }
-    }
-
-    alertLabel.setColor(ringColor);
-    alertValue.setText("" + currentPower.toNumber());
-    alertTargets.setText("TGT " + targetLow + "-" + targetHigh);
-
-    //! Call parent's onUpdate(dc) to redraw the layout
     View.onUpdate(dc);
 
-    var screenWidth = dc.getWidth();
-    var screenHeight = dc.getHeight();
-    var centerX = screenWidth / 2;
-    var centerY = screenHeight / 2;
+    var ringColor = Graphics.COLOR_RED;
+    var alertText = "High power";
+    var alertValue = "TGT " + targetLow + "-" + targetHigh;
+
+    if (currentPower < targetLow) {
+      ringColor = Graphics.COLOR_BLUE;
+      alertText = "Low power";
+    }
+
     dc.setAntiAlias(true);
     dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
     dc.setPenWidth(5);
-    dc.drawCircle(centerX, centerY, centerX - 2);
+    dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
+    dc.drawText(geometry[1], geometry[1], fonts[1], currentPower.toNumber(),
+                Graphics.TEXT_JUSTIFY_VCENTER | Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(geometry[1], geometry[2], fonts[0], alertText,
+                Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(geometry[1], geometry[3], fonts[0], alertValue,
+                Graphics.TEXT_JUSTIFY_CENTER);
   }
 }

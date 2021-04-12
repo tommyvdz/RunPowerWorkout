@@ -1,1 +1,75 @@
 project.manifest = manifest.xml
+
+base.sourcePath = source
+base.resourcePath = resources
+
+
+fr945.resourcePath = resources;resources-hm-240
+fenix5x.resourcePath = resources;resources-hm-240
+fenix5plus.resourcePath = resources;resources-hm-240
+fenix5xplus.resourcePath = resources;resources-hm-240
+fenix6pro.resourcePath = resources;resources-hm-260
+fenix6spro.resourcePath = resources;resources-hm-240
+fenix6xpro.resourcePath = resources;resources-hm-280
+marqadventurer.resourcePath = resources;resources-hm-240
+marqathlete.resourcePath = resources;resources-hm-240
+marqaviator.resourcePath = resources;resources-hm-240
+marqcaptain.resourcePath = resources;resources-hm-240
+marqcommander.resourcePath = resources;resources-hm-240
+marqdriver.resourcePath = resources;resources-hm-240
+marqexpedition.resourcePath = resources;resources-hm-240
+marqgolfer.resourcePath = resources;resources-hm-240
+fr645m.resourcePath = resources;resources-hm-240
+fr745.resourcePath = resources;resources-hm-240
+fr245m.resourcePath = resources;resources-hm-240
+
+round_218_common_excludes = roundone;roundtwo;roundthree;roundfour
+round_240_common_excludes = roundzero;roundtwo;roundthree;roundfour
+round_260_common_excludes = roundzero;roundone;roundthree;roundfour
+round_280_common_excludes = roundzero;roundone;roundtwo;roundfour
+round_390_common_excludes = roundzero;roundone;roundtwo;roundthree
+
+
+low_mem_excludes = medmem;highmem
+med_mem_excludes = lowmem;highmem
+high_mem_excludes = lowmem;medmem
+
+round-218x218.excludeAnnotations = $(round_218_common_excludes)
+round-240x240.excludeAnnotations = $(round_240_common_excludes)
+round-260x260.excludeAnnotations = $(round_260_common_excludes)
+round-280x280.excludeAnnotations = $(round_280_common_excludes)
+round-390x390.excludeAnnotations = $(round_390_common_excludes)
+
+d2air.excludeAnnotations = $(d2air.excludeAnnotations);$(low_mem_excludes)
+enduro.excludeAnnotations = $(enduro.excludeAnnotations);$(low_mem_excludes)
+fenix5plus.excludeAnnotations = $(fenix5plus.excludeAnnotations);$(high_mem_excludes)
+fenix5splus.excludeAnnotations = $(fenix5splus.excludeAnnotations);$(high_mem_excludes)
+fenix5xplus.excludeAnnotations = $(fenix5xplus.excludeAnnotations);$(high_mem_excludes)
+fenix6.excludeAnnotations = $(fenix6.excludeAnnotations);$(low_mem_excludes)
+fenix6pro.excludeAnnotations = $(fenix6pro.excludeAnnotations);$(high_mem_excludes)
+fenix6s.excludeAnnotations = $(fenix6s.excludeAnnotations);$(low_mem_excludes)
+fenix6spro.excludeAnnotations = $(fenix6spro.excludeAnnotations);$(high_mem_excludes)
+fenix6xpro.excludeAnnotations = $(fenix6xpro.excludeAnnotations);$(high_mem_excludes)
+fr245.excludeAnnotations = $(fr245.excludeAnnotations);$(low_mem_excludes)
+fr245m.excludeAnnotations = $(fr245m.excludeAnnotations);$(med_mem_excludes)
+fr645m.excludeAnnotations = $(fr645m.excludeAnnotations);$(med_mem_excludes)
+fr745.excludeAnnotations = $(fr745.excludeAnnotations);$(med_mem_excludes)
+fr945.excludeAnnotations = $(fr945.excludeAnnotations);$(high_mem_excludes)
+legacyherocaptainmarvel.excludeAnnotations = $(legacyherocaptainmarvel.excludeAnnotations);$(low_mem_excludes)
+legacyherofirstavenger.excludeAnnotations = $(legacyherofirstavenger.excludeAnnotations);$(low_mem_excludes)
+legacysagadarthvader.excludeAnnotations = $(legacysagadarthvader.excludeAnnotations);$(low_mem_excludes)
+legacysagarey.excludeAnnotations = $(legacysagarey.excludeAnnotations);$(low_mem_excludes)
+marqadventurer.excludeAnnotations = $(marqadventurer.excludeAnnotations);$(high_mem_excludes)
+marqathlete.excludeAnnotations = $(marqathlete.excludeAnnotations);$(high_mem_excludes)
+marqaviator.excludeAnnotations = $(marqaviator.excludeAnnotations);$(high_mem_excludes)
+marqcaptain.excludeAnnotations = $(marqcaptain.excludeAnnotations);$(high_mem_excludes)
+marqcommander.excludeAnnotations = $(marqcommander.excludeAnnotations);$(high_mem_excludes)
+marqdriver.excludeAnnotations = $(marqdriver.excludeAnnotations);$(high_mem_excludes)
+marqexpedition.excludeAnnotations = $(marqexpedition.excludeAnnotations);$(high_mem_excludes)
+marqgolfer.excludeAnnotations = $(marqgolfer.excludeAnnotations);$(high_mem_excludes)
+venu.excludeAnnotations = $(venu.excludeAnnotations);$(low_mem_excludes)
+venusq.excludeAnnotations = $(venusq.excludeAnnotations);$(low_mem_excludes)
+venusqm.excludeAnnotations = $(venusqm.excludeAnnotations);$(low_mem_excludes)
+vivoactive3m.excludeAnnotations = $(vivoactive3m.excludeAnnotations);$(low_mem_excludes)
+vivoactive4.excludeAnnotations = $(vivoactive4.excludeAnnotations);$(low_mem_excludes)
+vivoactive4s.excludeAnnotations = $(vivoactive4s.excludeAnnotations);$(low_mem_excludes)
