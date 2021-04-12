@@ -2,15 +2,22 @@ using Toybox.WatchUi;
 using Toybox.Graphics as Gfx;
 using Toybox.Time;
 using Toybox.Attention;
+using Toybox.UserProfile;
 
 class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var timer;
   hidden var lapTime;
+  hidden var lapStopPauseTime;
+  hidden var lapDelta;
   hidden var lapStartTime;
   hidden var lapStartDistance;
   hidden var lapPower;
   hidden var targetHigh;
   hidden var targetLow;
+  hidden var nextTargetHigh;
+  hidden var nextTargetLow;
+  hidden var nextTargetType;
+  hidden var nextTargetDuration;
   hidden var remainingTime;
   hidden var remainingDistance;
   hidden var stepType;
@@ -27,6 +34,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var FTP;
   hidden var vibrate;
   hidden var showAlerts;
+  hidden var switchCounter;
+  hidden var switchMetric;
+  hidden var hrZones;
+  hidden var shouldDisplayAlert;
+  hidden var powerAverage;
+  hidden var currentPowerAverage;
+  hidden var showColors;
 
   hidden var DEBUG = false;
 
@@ -45,11 +59,17 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), false);
     var showalertssetting =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
+    var poweraveragesetting =
+        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 1);
+    var showcolorssetting =
+        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
 
     usePercentage = percentagesetting;
     FTP = ftpsetting;
     showAlerts = showalertssetting;
     vibrate = vibratesetting;
+    powerAverage = poweraveragesetting;
+    showColors = showcolorssetting;
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -70,16 +90,20 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     hr = 0;
     paused = true;
     alertDisplayed = false;
+    shouldDisplayAlert = true;
     alertTimer = 0;
     alertCount = 0;
     alertDelay = 10;
+    switchCounter = 0;
+    switchMetric = 0;
+    hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
+    currentPowerAverage = new[powerAverage];
   }
 
   function onTimerStart() {
     if (DEBUG) {
       System.println("Timer Start");
     }
-
     paused = false;
   }
 
@@ -87,7 +111,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (DEBUG) {
       System.println("Timer Stop");
     }
-
     paused = true;
   }
 
@@ -95,7 +118,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (DEBUG) {
       System.println("Timer Resume");
     }
-
     paused = false;
   }
 
@@ -110,7 +132,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (DEBUG) {
       System.println("Timer Lap");
     }
+  }
 
+  function onWorkoutStepComplete() {
     lapStartTime = timer;
     lapTime = 0;
     lapStartDistance = Activity.getActivityInfo().elapsedDistance;
@@ -119,8 +143,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     alertCount = 0;
     alertDisplayed = false;
   }
-
-  function onWorkoutStepComplete() { onTimerLap(); }
 
   function onTimerReset() {
     if (DEBUG) {
@@ -143,32 +165,59 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     var currentPowerLabel = View.findDrawableById("currentPower");
     var currentPowerValue = View.findDrawableById("currentPowerv");
-    var lapPowerLabel = View.findDrawableById("lapPower");
     var lapPowerValue = View.findDrawableById("lapPowerv");
-    var powerHighLabel = View.findDrawableById("powerHigh");
+    var lapPowerLabel = View.findDrawableById("lapPower");
     var powerHighValue = View.findDrawableById("powerHighv");
-    var powerLowLabel = View.findDrawableById("powerLow");
     var powerLowValue = View.findDrawableById("powerLowv");
     var remainingTimeLabel = View.findDrawableById("remainingTime");
     var remainingTimeValue = View.findDrawableById("remainingTimev");
-    var cadenceLabel = View.findDrawableById("cadence");
-    var cadenceValue = View.findDrawableById("cadencev");
     var hrLabel = View.findDrawableById("hr");
     var hrValue = View.findDrawableById("hrv");
+    var paceLabel = View.findDrawableById("pace");
+    var paceUnit = View.findDrawableById("paceunit");
+    var paceValue = View.findDrawableById("pacev");
+    var distanceLabel = View.findDrawableById("distance");
+    var distanceUnit = View.findDrawableById("distanceunit");
+    var distanceValue = View.findDrawableById("distancev");
     var elapsedTimeLabel = View.findDrawableById("elapsedTime");
-    var elapsedTimeValue = View.findDrawableById("elapsedTimev");
+    var cadenceLabel = View.findDrawableById("cadence");
+    var currentPowerBG = View.findDrawableById("currentPowerBG");
+    var hrBG = View.findDrawableById("hrBG");
+    var lapPowerBG = View.findDrawableById("lapPowerBG");
 
     currentPowerValue.setText("0");
     lapPowerLabel.setText("Lap Pwr");
     lapPowerValue.setText("0");
-    powerHighLabel.setText("Upper");
+    paceLabel.setText("Pace");
+    paceValue.setText(format_duration(0));
     powerHighValue.setText("-");
-    powerLowLabel.setText("Lower");
+    distanceLabel.setText("Distance");
+    elapsedTimeLabel.setText("Distance");
+
+    var distance = format_distance(0);
+    distanceValue.setText(distance[0]);
+    distanceUnit.setText(distance[1]);
+    if (useMetric) {
+      paceUnit.setText("min/km");
+    } else {
+      paceUnit.setText("min/mi");
+    }
     powerLowValue.setText("-");
     hrLabel.setText("HR");
-    cadenceLabel.setText("Cadence");
     remainingTimeLabel.setText("Rem. Time");
     elapsedTimeLabel.setText("El. Time");
+    cadenceLabel.setText("Cadence");
+
+    var width = dc.getWidth();
+    var height = dc.getHeight();
+
+    currentPowerBG.setAttributes(0, 0, width, ((height / 3) + (0.02 * height)));
+    hrBG.setAttributes(
+        0.7 * width, ((height / 2) + (0.06 * height)), width,
+        ((height / 2) + (0.06 * height)) - ((height / 3) + (0.01 * height)));
+    lapPowerBG.setAttributes(
+        0, ((height / 2) + (0.06 * height)), width * 0.3,
+        ((height / 2) + (0.06 * height)) - ((height / 3) + (0.01 * height)));
 
     return true;
   }
@@ -180,12 +229,48 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function compute(info) {
     // See Activity.Info in the documentation for available information.
     var workout = Activity.getCurrentWorkoutStep();
+    var nextWorkout = Activity.getNextWorkoutStep();
     var activityInfo = Activity.getActivityInfo();
 
     if (paused != true) {
       if (activityInfo != null) {
         timer = activityInfo.timerTime / 1000;
         lapTime = timer - lapStartTime;
+
+        shouldDisplayAlert = (lapTime > 15);
+
+        if (nextWorkout != null && DEBUG == false) {
+          nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
+          nextTargetLow = nextWorkout.step.targetValueLow - 1000;
+          if (nextTargetHigh < 0) {
+            nextTargetHigh = 0;
+          }
+          if (nextTargetLow < 0) {
+            nextTargetLow = 0;
+          }
+
+          if (usePercentage && nextTargetHigh != null &&
+              nextTargetHigh != null) {
+            nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
+            nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
+          }
+
+          if (nextWorkout.step.targetType != null &&
+              nextWorkout.step.durationType == 5) {
+            nextTargetType = 5;
+          } else if (nextWorkout.step.targetType != null &&
+                     nextWorkout.step.durationType == 1) {
+            nextTargetType = 1;
+            if (nextWorkout.step.durationValue != null) {
+              nextTargetDuration = nextWorkout.step.durationValue;
+            }
+          } else {
+            nextTargetType = 0;
+            if (nextWorkout.step.durationValue != null) {
+              nextTargetDuration = nextWorkout.step.durationValue;
+            }
+          }
+        }
 
         if (workout != null && DEBUG == false) {
           targetHigh = workout.step.targetValueHigh - 1000;
@@ -196,6 +281,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           if (targetLow < 0) {
             targetLow = 0;
           }
+
+          if (targetLow == 0 and targetHigh == 0) {
+            shouldDisplayAlert = false;
+          }
+
           if (usePercentage && targetHigh != null && targetLow != null) {
             targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
             targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
@@ -212,12 +302,18 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               remainingDistance = workout.step.durationValue -
                                   ((activityInfo.elapsedDistance).toNumber() -
                                    lapStartDistance);
+              if (shouldDisplayAlert && remainingDistance < 40) {
+                shouldDisplayAlert = false;
+              }
             }
           } else {
             stepType = 0;
             if (workout.step.durationValue != null && DEBUG == false &&
                 remainingTime >= 0) {
               remainingTime = (workout.step.durationValue - lapTime).toNumber();
+              if (shouldDisplayAlert && remainingTime < 15) {
+                shouldDisplayAlert = false;
+              }
             }
           }
         }
@@ -227,13 +323,23 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           targetLow = 100;
           stepType = 1;
           if (remainingDistance == 0) {
-            remainingDistance = 2000;
+            remainingDistance = 20000;
           }
           remainingDistance = remainingDistance - 1;
           if (usePercentage && targetHigh != null && targetLow != null) {
             targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
             targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
           }
+        }
+
+        switchCounter++;
+        if (switchCounter > 2) {
+          if (switchMetric == 0) {
+            switchMetric = 1;
+          } else {
+            switchMetric = 0;
+          }
+          switchCounter = 0;
         }
 
         if (activityInfo has : currentCadence) {
@@ -252,31 +358,55 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
 
           if (currentPower != null) {
+            for (var i = powerAverage - 1; i > 0; --i) {
+              currentPowerAverage[i] = currentPowerAverage[i - 1];
+            }
+
+            currentPowerAverage[0] = currentPower;
+
             if (lapPower == null) {
               lapPower = currentPower;
-            } else {
+            } else if (lapTime != 0) {
               lapPower = (((lapPower * (lapTime - 1)) + currentPower) /
                           (lapTime * 1.0));
             }
+
+            var tempAverage = 0;
+            var entries = powerAverage;
+
+            for (var i = 0; i < powerAverage; ++i) {
+              if (currentPowerAverage[i] != null) {
+                tempAverage += currentPowerAverage[i];
+              } else {
+                entries -= 1;
+              }
+            }
+
+            currentPower =
+                ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
+
           } else {
             currentPower = 0;  // in order to prevent problems when using
                                // currentpower elsewhere
           }
 
           // Show an alert if above of below
-          if (WatchUi.DataField has : showAlert && showAlerts && lapTime > 15) {
-            if (lapPower != null &&
-                (lapPower < targetLow || lapPower > targetHigh)) {
-              if (alertDisplayed == false && alertCount < 3) {
-                if (Attention has : vibrate && vibrate) {
-                  Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
-                }
+          if (WatchUi.DataField has
+              : showAlert && showAlerts && shouldDisplayAlert) {
+            if ((currentPower != null && (targetLow != 0 && targetHigh != 0) &&
+                 (currentPower < targetLow || currentPower > targetHigh))) {
+              if (alertDisplayed == false) {
+                if (alertCount < 3) {
+                  if (Attention has : vibrate && vibrate) {
+                    Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
+                  }
 
-                WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
-                    targetHigh, targetLow, lapPower));
-                alertDisplayed = true;
-                alertTimer = timer;
-                alertCount++;
+                  WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
+                      targetHigh, targetLow, currentPower, false));
+                  alertDisplayed = true;
+                  alertTimer = timer;
+                  alertCount++;
+                }
               } else {
                 if ((timer - alertTimer) > alertDelay) {
                   alertDisplayed = false;
@@ -299,59 +429,56 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     // Set the background color
     View.findDrawableById("Background").setColor(getBackgroundColor());
 
-    var lapTimeValue = View.findDrawableById("lapTimev");
     var currentPowerValue = View.findDrawableById("currentPowerv");
     var lapPowerValue = View.findDrawableById("lapPowerv");
+    var lapPowerLabel = View.findDrawableById("lapPower");
     var powerHighValue = View.findDrawableById("powerHighv");
     var powerLowValue = View.findDrawableById("powerLowv");
     var remainingTimeValue = View.findDrawableById("remainingTimev");
     var cadenceValue = View.findDrawableById("cadencev");
+    var cadenceLabel = View.findDrawableById("cadence");
     var hrValue = View.findDrawableById("hrv");
+    var hrLabel = View.findDrawableById("hr");
+    var paceValue = View.findDrawableById("pacev");
+    var paceLabel = View.findDrawableById("pace");
+    var distanceLabel = View.findDrawableById("distance");
+    var distanceValue = View.findDrawableById("distancev");
+    var distanceUnit = View.findDrawableById("distanceunit");
+    var paceUnit = View.findDrawableById("paceunit");
     var elapsedTimeValue = View.findDrawableById("elapsedTimev");
+    var elapsedTimeLabel = View.findDrawableById("elapsedTime");
     var remainingTimeLabel = View.findDrawableById("remainingTime");
+    var currentPowerBG = View.findDrawableById("currentPowerBG");
+    var hrBG = View.findDrawableById("hrBG");
+    var lapPowerBG = View.findDrawableById("lapPowerBG");
 
-    if (cadence == null) {
-      cadenceValue.setText("0");
+    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
+      currentPowerValue.setColor(Graphics.COLOR_WHITE);
+      lapPowerValue.setColor(Graphics.COLOR_WHITE);
+      powerHighValue.setColor(Graphics.COLOR_WHITE);
+      powerLowValue.setColor(Graphics.COLOR_WHITE);
+      remainingTimeValue.setColor(Graphics.COLOR_WHITE);
+      cadenceValue.setColor(Graphics.COLOR_WHITE);
+      elapsedTimeValue.setColor(Graphics.COLOR_WHITE);
+      paceValue.setColor(Graphics.COLOR_WHITE);
+      distanceValue.setColor(Graphics.COLOR_WHITE);
+      distanceUnit.setColor(Graphics.COLOR_WHITE);
+      paceUnit.setColor(Graphics.COLOR_WHITE);
+      hrValue.setColor(Graphics.COLOR_WHITE);
     } else {
-      cadenceValue.setText("" + cadence);
+      currentPowerValue.setColor(Graphics.COLOR_BLACK);
+      lapPowerValue.setColor(Graphics.COLOR_BLACK);
+      powerHighValue.setColor(Graphics.COLOR_BLACK);
+      powerLowValue.setColor(Graphics.COLOR_BLACK);
+      remainingTimeValue.setColor(Graphics.COLOR_BLACK);
+      cadenceValue.setColor(Graphics.COLOR_BLACK);
+      elapsedTimeValue.setColor(Graphics.COLOR_BLACK);
+      paceValue.setColor(Graphics.COLOR_BLACK);
+      distanceValue.setColor(Graphics.COLOR_BLACK);
+      distanceUnit.setColor(Graphics.COLOR_BLACK);
+      paceUnit.setColor(Graphics.COLOR_BLACK);
+      hrValue.setColor(Graphics.COLOR_BLACK);
     }
-    if (hr == null) {
-      hrValue.setText("0");
-    } else {
-      hrValue.setText("" + hr);
-    }
-
-    if (currentPower == null) {
-      currentPowerValue.setText("0");
-    } else {
-      currentPowerValue.setText("" + currentPower);
-    }
-    if (lapPower == null) {
-      lapPowerValue.setText("0");
-    } else {
-      lapPowerValue.setText("" + lapPower.toNumber());
-    }
-
-    if (stepType == 5) {
-      remainingTimeValue.setFont(Graphics.FONT_MEDIUM);
-      remainingTimeLabel.setText("Until");
-      remainingTimeValue.setText("Lap Press");
-    } else if (stepType == 1) {
-      remainingTimeValue.setFont(Graphics.FONT_SMALL);
-      remainingTimeLabel.setText("Rem. Dist");
-      remainingTimeValue.setText("" + format_distance(remainingDistance));
-    } else {
-      remainingTimeValue.setFont(Graphics.FONT_MEDIUM);
-      remainingTimeLabel.setText("Rem. Time");
-      remainingTimeValue.setText("" + format_duration(remainingTime));
-    }
-
-    powerHighValue.setText("" + targetHigh);
-    powerLowValue.setText("" + targetLow);
-    elapsedTimeValue.setText("" + format_duration(timer));
-
-    //! Call parent's onUpdate(dc) to redraw the layout
-    View.onUpdate(dc);
 
     //! Draw the outline
     var width = dc.getWidth();
@@ -359,8 +486,161 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var x = width / 2;
     var y = height / 2;
 
+    if (hr == null) {
+      hrValue.setText("0");
+      hrBG.setColor(Graphics.COLOR_TRANSPARENT);
+    } else {
+      if (showColors == 1) {
+        hrLabel.setColor(Graphics.COLOR_WHITE);
+        hrValue.setColor(Graphics.COLOR_WHITE);
+        if (hr > hrZones[4]) {
+          hrBG.setColor(Graphics.COLOR_RED);
+        } else if (hr > hrZones[3]) {
+          hrBG.setColor(Graphics.COLOR_ORANGE);
+        } else if (hr > hrZones[2]) {
+          hrBG.setColor(Graphics.COLOR_DK_GREEN);
+        } else if (hr > hrZones[1]) {
+          hrBG.setColor(Graphics.COLOR_DK_BLUE);
+        } else {
+          hrBG.setColor(Graphics.COLOR_DK_GRAY);
+        }
+      } else if (showColors == 2) {
+        if (hr > hrZones[4]) {
+          hrValue.setColor(Graphics.COLOR_RED);
+        } else if (hr > hrZones[3]) {
+          hrValue.setColor(Graphics.COLOR_ORANGE);
+        } else if (hr > hrZones[2]) {
+          hrValue.setColor(Graphics.COLOR_DK_GREEN);
+        } else if (hr > hrZones[1]) {
+          hrValue.setColor(Graphics.COLOR_DK_BLUE);
+        } else {
+          hrValue.setColor(Graphics.COLOR_DK_GRAY);
+        }
+      }
+      hrValue.setText("" + hr);
+    }
+
+    if (currentPower == null) {
+      currentPowerValue.setText("0");
+    } else {
+      if (targetHigh != 0 && targetLow != 0) {
+        if (showColors == 1) {
+          currentPowerValue.setColor(Graphics.COLOR_WHITE);
+          powerHighValue.setColor(Graphics.COLOR_WHITE);
+          powerLowValue.setColor(Graphics.COLOR_WHITE);
+          if (currentPower < targetLow) {
+            currentPowerBG.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (currentPower > targetHigh) {
+            currentPowerBG.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            currentPowerBG.setColor(Graphics.COLOR_DK_GREEN);
+          }
+        } else if (showColors == 2) {
+          if (currentPower < targetLow) {
+            currentPowerValue.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (currentPower > targetHigh) {
+            currentPowerValue.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            currentPowerValue.setColor(Graphics.COLOR_DK_GREEN);
+          }
+        }
+      } else {
+        currentPowerBG.setColor(Graphics.COLOR_TRANSPARENT);
+      }
+      currentPowerValue.setText("" + currentPower);
+    }
+    if (lapPower == null) {
+      lapPowerValue.setText("0");
+      lapPowerBG.setColor(Graphics.COLOR_TRANSPARENT);
+    } else {
+      if (targetHigh != 0 && targetLow != 0) {
+        if (showColors == 1) {
+          lapPowerValue.setColor(Graphics.COLOR_WHITE);
+          lapPowerLabel.setColor(Graphics.COLOR_WHITE);
+          if (lapPower.toNumber() < targetLow) {
+            lapPowerBG.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (lapPower.toNumber() > targetHigh) {
+            lapPowerBG.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            lapPowerBG.setColor(Graphics.COLOR_DK_GREEN);
+          }
+        } else if (showColors == 2) {
+          if (lapPower.toNumber() < targetLow) {
+            lapPowerValue.setColor(Graphics.COLOR_DK_BLUE);
+          } else if (lapPower.toNumber() > targetHigh) {
+            lapPowerValue.setColor(Graphics.COLOR_DK_RED);
+          } else {
+            lapPowerValue.setColor(Graphics.COLOR_DK_GREEN);
+          }
+        }
+      }
+      lapPowerValue.setText("" + lapPower.toNumber());
+    }
+
+    if ((remainingDistance == 0 || remainingDistance > 30) &&
+        (remainingTime == 0 || remainingTime > 12)) {
+      if (stepType == 5) {
+        remainingTimeLabel.setText("Until");
+        remainingTimeValue.setText("Lap Press");
+      } else if (stepType == 1) {
+        var distance = format_distance(remainingDistance);
+        remainingTimeLabel.setText("Rem. Dist");
+        remainingTimeValue.setText("" + distance[0] + "" + distance[1]);
+      } else {
+        remainingTimeLabel.setText("Rem. Time");
+        remainingTimeValue.setText("" + format_duration(remainingTime));
+      }
+    } else {
+      remainingTimeLabel.setText("Next step");
+      if (switchMetric == 0) {
+        remainingTimeValue.setText(nextTargetLow + "-" + nextTargetHigh);
+      } else {
+        if (nextTargetType == 5) {
+          remainingTimeValue.setText("Lap Press");
+        } else if (nextTargetType == 1) {
+          var distance = format_distance(nextTargetDuration * 1.0);
+          remainingTimeValue.setText(distance[0] + distance[1]);
+        } else {
+          remainingTimeValue.setText(
+              format_duration(nextTargetDuration.toNumber()));
+        }
+      }
+    }
+
+    powerHighValue.setText("" + targetHigh);
+    powerLowValue.setText("" + targetLow);
+
+    elapsedTimeValue.setText("" + format_duration(timer));
+
+    if (Activity.getActivityInfo().elapsedDistance != null) {
+      var distance =
+          format_distance(Activity.getActivityInfo().elapsedDistance);
+      distanceValue.setText("" + distance[0]);
+      distanceUnit.setText("" + distance[1]);
+    }
+
+    if (cadence == null) {
+      cadenceValue.setText("0");
+    } else {
+      cadenceValue.setText("" + cadence);
+    }
+
+    if (Activity.getActivityInfo().currentSpeed == null) {
+      paceValue.setText(convert_speed_pace(0));
+    } else {
+      paceValue.setText(
+          convert_speed_pace(Activity.getActivityInfo().currentSpeed));
+    }
+
+    //! Call parent's onUpdate(dc) to redraw the layout
+    View.onUpdate(dc);
+
     //! Draw separator lines
-    dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
+      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    } else {
+      dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+    }
     dc.setPenWidth(1);
 
     //! Horizontal seperators
@@ -371,20 +651,20 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.drawLine(0, 0.77 * height, width, 0.77 * height);
 
     //! vertical seperators
-    dc.drawLine(width / 3, ((height / 3) + (0.02 * height)), width / 3,
+    dc.drawLine(width * 0.3, ((height / 3) + (0.02 * height)), width * 0.3,
                 ((height / 2) + (0.06 * height)));
-    dc.drawLine((width / 3) * 2, ((height / 3) + (0.02 * height)),
-                (width / 3) * 2, ((height / 2) + (0.06 * height)));
-    dc.drawLine(width / 3, ((height / 3) + (0.06 * height)), width / 3,
+    dc.drawLine(width * 0.7, ((height / 3) + (0.02 * height)), width * 0.7,
+                ((height / 2) + (0.06 * height)));
+    dc.drawLine(width * 0.3, ((height / 3) + (0.06 * height)), width * 0.3,
                 0.77 * height);
-    dc.drawLine((width / 3) * 2, ((height / 3) + (0.06 * height)),
-                (width / 3) * 2, 0.77 * height);
+    dc.drawLine(width * 0.7, ((height / 3) + (0.06 * height)), width * 0.7,
+                0.77 * height);
 
     //! The following code to draw the gauge is copied and adapted from
     //! Ravenfeld - Speed Gauge
     //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
 
-    var SIZE = 20;
+    var SIZE = 10;
 
     dc.setPenWidth(SIZE);
     dc.setAntiAlias(true);
@@ -392,7 +672,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 30, 60);
 
-    dc.setColor(Graphics.COLOR_RED, getBackgroundColor());
+    dc.setColor(Graphics.COLOR_BLUE, getBackgroundColor());
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 120, 150);
 
@@ -400,7 +680,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.drawArc(x, y, dc.getWidth() / 2 - 10 - SIZE / 2,
                Gfx.ARC_COUNTER_CLOCKWISE, 60, 120);
 
-    dc.setColor(Graphics.COLOR_BLACK, getBackgroundColor());
+    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
+      dc.setColor(Graphics.COLOR_WHITE, getBackgroundColor());
+    } else {
+      dc.setColor(Graphics.COLOR_BLACK, getBackgroundColor());
+    }
 
     var percent = 0.15;
     var power = 0.0;
@@ -459,6 +743,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
   }
 
+  function convert_speed_pace(speed) {
+    if (speed != null && speed > 0) {
+      var factor = useMetric ? 1000.0 : 1609.0;
+      var secondsPerUnit = factor / speed;
+      secondsPerUnit = (secondsPerUnit + 0.5).toNumber();
+      var minutes = (secondsPerUnit / 60);
+      var seconds = (secondsPerUnit % 60);
+      return Lang.format("$1$:$2$", [ minutes, seconds.format("%02u") ]);
+    } else {
+      return "0:00";
+    }
+  }
+
   function format_distance(distance) {
     var factor = 1000;
     var smallunitfactor = 1000;
@@ -473,9 +770,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if ((distance / factor) >= 1) {
-      return ((distance * 1.0) / (factor * 1.0)).format("%.3f") + " " + unit;
+      return [ ((distance * 1.0) / (factor * 1.0)).format("%.2f") + "", unit ];
     } else {
-      return (distance / factor * smallunitfactor).toNumber() + " " + smallunit;
+      return
+          [ (distance / factor * smallunitfactor).toNumber() + "", smallunit ];
     }
   }
 }

@@ -18,6 +18,7 @@
         </iq:products>
         <iq:permissions>
             <iq:uses-permission id="DataFieldAlert"/>
+            <iq:uses-permission id="UserProfile"/>
         </iq:permissions>
         <iq:languages/>
         <iq:barrels/>

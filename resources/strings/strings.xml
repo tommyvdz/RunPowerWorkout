@@ -3,8 +3,13 @@
 	<string id="PERCENTAGE">Use Percentage?</string>
 	<string id="FTP">What is your FTP/CP?</string>
 	<string id="ALERT">Display alerts?</string>
-	<string id="VIBRATE">Vibrate on alerts?</string>	
+	<string id="VIBRATE">Vibrate on alerts?</string>
+	<string id="POWER_AVERAGE">Power averaging in seconds (1-30)</string>
 	<string id="MyNumberPrompt">Enter a number</string>
 	<string id="MyNumberError">Enter a number</string>
     <string id="label">My Value</string>
+	<string id="SHOW_COLORS">Show Colors in Datafield</string>
+	<string id="SHOW_COLORS_1">Foreground + Background</string>
+	<string id="SHOW_COLORS_2">Foreground Only</string>
+	<string id="SHOW_COLORS_3">None</string>
 </strings>
