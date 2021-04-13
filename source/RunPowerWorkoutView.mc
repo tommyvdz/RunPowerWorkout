@@ -249,10 +249,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             nextTargetLow = 0;
           }
 
-          if (usePercentage && nextTargetHigh != null &&
-              nextTargetHigh != null) {
+          if (usePercentage && nextTargetHigh != null && nextTargetLow != null) {
             nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
-            nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
+            nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
+
           }
 
           if (nextWorkout.step.targetType != null &&
