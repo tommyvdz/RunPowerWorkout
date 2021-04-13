@@ -10,7 +10,7 @@ on:
 jobs:
   install-connect-iq:
     name: "Install ConnectIQ"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
@@ -20,7 +20,9 @@ jobs:
       - run: |
           curl -L https://developer.garmin.com/downloads/connect-iq/sdk-manager/connectiq-sdk-manager-linux.zip > connectiq.zip
           unzip connectiq.zip
-          sudo apt-get install --reinstall libgtk2.0-0
+          sudo apt-get install --reinstall libgtk2.0-0 libwebkitgtk-1.0
+          curl -L https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/15108504/+files/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb > libpng.deb
+          sudo dpkg -i libpng.deb
           echo $(pwd)/bin >> $GITHUB_PATH
           echo $PATH
       - run: |
