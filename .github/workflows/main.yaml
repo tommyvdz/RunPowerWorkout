@@ -18,12 +18,16 @@ jobs:
           distribution: "adopt" # See 'Supported distributions' for available options
           java-version: "8"
       - run: |
-          curl -L https://developer.garmin.com/downloads/connect-iq/sdk-manager/connectiq-sdk-manager-linux.zip > connectiq.zip
-          unzip connectiq.zip
-          sudo apt-get install --reinstall libgtk2.0-0 libwebkitgtk-1.0
-          curl -L https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/15108504/+files/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb > libpng.deb
-          sudo dpkg -i libpng.deb
-          echo $(pwd)/bin >> $GITHUB_PATH
-          echo $PATH
+          sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
+          cd /opt;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-3.2.5-2021-02-12-6d31f4357.zip -O ciq.zip;
+          unzip ciq.zip -d ciq;
+          rm -f ciq.zip;
+          echo $(pwd)/ciq/bin >> $GITHUB_PATH
+        name: Install ConnectIQ SDK
       - run: |
-          sdkmanager
+          echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
+          java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/MY_APP.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
+        name: Build IQ file
+        env:
+          CIQ_DEV_KEY: ${{ secrets.CIQ_DEV_KEY }}
