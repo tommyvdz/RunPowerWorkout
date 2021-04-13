@@ -46,14 +46,15 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     }
 
     dc.setAntiAlias(true);
-    dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
-    dc.setPenWidth(5);
-    dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
+    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
     dc.drawText(geometry[1], geometry[1], fonts[1], currentPower.toNumber(),
                 Graphics.TEXT_JUSTIFY_VCENTER | Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[1], geometry[2], fonts[0], alertText,
                 Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[1], geometry[3], fonts[0], alertValue,
                 Graphics.TEXT_JUSTIFY_CENTER);
+    dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
+    dc.setPenWidth(5);
+    dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
   }
 }
