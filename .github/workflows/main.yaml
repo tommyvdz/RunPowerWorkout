@@ -17,6 +17,23 @@ jobs:
         with:
           distribution: "adopt" # See 'Supported distributions' for available options
           java-version: "8"
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - uses: actions/cache@v2
+        id: ciq
+        with:
+          path: /opt/ciq
+          key: ciq-install
+
+      - uses: actions/cache@v2
+        id: devices
+        with:
+          path: ~/.Garmin/ConnectIQ
+          key: devices
+
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
@@ -24,7 +41,17 @@ jobs:
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
           echo $(pwd)/ciq/bin >> $GITHUB_PATH
+        if: steps.ciq.outputs.cache-hit != 'true'
         name: Install ConnectIQ SDK
+
+      - run: |
+          pip install -r cicd/requirements.txt
+          python cicd/get_garmin_devices.py
+        if: steps.devices.outputs.cache-hit != 'true'
+        name: Install ConnectIQ Devices
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
       - run: |
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/MY_APP.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
