@@ -40,7 +40,6 @@ jobs:
           wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-3.2.5-2021-02-12-6d31f4357.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
-          echo $(pwd)/ciq/bin >> $GITHUB_PATH
         if: steps.ciq.outputs.cache-hit != 'true'
         name: Install ConnectIQ SDK
 
@@ -51,8 +50,10 @@ jobs:
         name: Install ConnectIQ Devices
         env:
           TOKEN: ${{ secrets.TOKEN }}
+          PYTHONUNBUFFERED: 1
 
       - run: |
+          echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/MY_APP.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file

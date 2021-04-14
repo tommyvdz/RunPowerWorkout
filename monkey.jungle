@@ -5,7 +5,7 @@ base.resourcePath = resources
 
 
 fr945.resourcePath = resources;resources-hm-240
-fenix5x.resourcePath = resources;resources-hm-240
+fenix5splus.resourcePath = resources;resources-hm-240
 fenix5plus.resourcePath = resources;resources-hm-240
 fenix5xplus.resourcePath = resources;resources-hm-240
 fenix6pro.resourcePath = resources;resources-hm-260
