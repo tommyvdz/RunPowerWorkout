@@ -74,14 +74,14 @@ jobs:
           key: devices
 
       - run: |
-          sed sed -i "s/0.0.0/$GITHUB_REF/g" manifest.xml
+          sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
         if: github.event_name == 'release'
         name: set the release version
 
       - run: |
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
-          for i in fr945 fenix6pro; do
+          for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
             java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s 3.2.0 -f monkey.jungle
           done
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
@@ -102,12 +102,11 @@ jobs:
         if: github.event_name != 'release'
 
       - name: Upload
-        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: /tmp/RunPowerWorkout.iq
-          asset_name: RunPowerWorkout-${{ github.event.release.tag_name }}
-          asset_content_type: binary/octet-stream
         if: github.event_name == 'release'
+        run: |
+          tag_name="${GITHUB_REF##*/}"
+          for file in /tmp/*.prg; do mv "$file" "${file%.prg}-${tag_name}.prg"; done
+          mv /tmp/RunPowerWorkout.iq /tmp/RunPowerWorkout-${tag_name}.iq
+          hub release edit $(find /tmp/ -type f \( -name '*.prg' -o -name '*.iq' \) -printf "-a %p ") -m "" "$tag_name"

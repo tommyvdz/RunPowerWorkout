@@ -46,44 +46,52 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
-  // Top Arc, Bottom Arc, Offset Target X, Background rect height, Offset Target Y
-  // Center mid field
+  // Top Arc, Bottom Arc, Offset Target X, Background rect height, Offset Target
+  // Y Center mid field
 
-  (: roundzero) hidden var geometry =
-      [ 218, 109, 77, 122, 167, 70, 161, 103, 114, 85, 25, 45, 30, 116];
-  (:roundone) hidden var geometry =
+  (
+      : roundzero) hidden var geometry =
+      [ 218, 109, 77, 122, 167, 70, 161, 103, 114, 85, 25, 45, 30, 116 ];
+  (
+      : roundone) hidden var geometry =
       [ 240, 120, 85, 135, 185, 77, 177, 105, 114, 96, 30, 50, 40, 127 ];
-  (:roundtwo) hidden var geometry =
+  (
+      : roundtwo) hidden var geometry =
       [ 260, 130, 91, 146, 201, 83, 192, 115, 124, 106, 35, 55, 45, 138 ];
-  (:roundthree) hidden var geometry =
+  (
+      : roundthree) hidden var geometry =
       [ 280, 140, 98, 157, 216, 90, 207, 125, 134, 116, 40, 59, 50, 149 ];
-  (:roundfour) hidden var geometry =
+  (
+      : roundfour) hidden var geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 40, 80, 45, 207 ];
-  (:highmem) hidden var fonts =
+  (
+      : highmem) hidden var fonts =
       [
         WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
         WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
       ];
-  (:medmem) hidden var fonts =
+  (
+      : medmem) hidden var fonts =
       [
         WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
         WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
       ];
-  (:lowmem) hidden var fonts =
+  (
+      : lowmem) hidden var fonts =
       [
         Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
         Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
         Graphics.FONT_NUMBER_THAI_HOT
       ];
 
-  (:highmem) hidden var fontOffset = -4;
-  (:medmem) hidden var fontOffset = -4;
-  (:lowmem) hidden var fontOffset = 0;
-  (:highmem) hidden var showExtra = true;
-  (:medmem) hidden var showExtra = true;
-  (:lowmem) hidden var showExtra = false;
+  ( : highmem) hidden var fontOffset = -4;
+  ( : medmem) hidden var fontOffset = -4;
+  ( : lowmem) hidden var fontOffset = 0;
+  ( : highmem) hidden var showExtra = true;
+  ( : medmem) hidden var showExtra = true;
+  ( : lowmem) hidden var showExtra = false;
 
   hidden var DEBUG = true;
 
@@ -168,9 +176,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   // Set your layout here. Anytime the size of obscurity of
   // the draw context is changed this will be called.
-  function onLayout(dc) {
-    return true;
-  }
+  function onLayout(dc) { return true; }
 
   // The given info object contains all the current workout information.
   // Calculate a value and save it locally in this method.
@@ -334,14 +340,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                           (lapTime * 1.0));
             }
 
-            if(Activity.getActivityInfo().currentSpeed != null){
-            if (lapSpeed == null) {
-              lapSpeed = Activity.getActivityInfo().currentSpeed;
-            } else if (lapTime > 5) {
-              lapSpeed = (((lapSpeed * (lapTime - 1)) +
-                           Activity.getActivityInfo().currentSpeed) /
-                          (lapTime * 1.0));
-            }
+            if (Activity.getActivityInfo().currentSpeed != null) {
+              if (lapSpeed == null) {
+                lapSpeed = Activity.getActivityInfo().currentSpeed;
+              } else if (lapTime > 5) {
+                lapSpeed = (((lapSpeed * (lapTime - 1)) +
+                             Activity.getActivityInfo().currentSpeed) /
+                            (lapTime * 1.0));
+              }
             }
 
             if (stepType == 1 && remainingDistance < 100 &&
@@ -441,13 +447,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
         }
       }
-
     }
-      dc.drawText(geometry[6] + 3, geometry[3] + fontOffset, fonts[0], "HR",
-                  Graphics.TEXT_JUSTIFY_LEFT);
-      dc.drawText(geometry[6] + 3, geometry[3] + (fontOffset * 5) + 15,
-                  fonts[3], hr == null ? 0 : hr, Graphics.TEXT_JUSTIFY_LEFT);
-
+    dc.drawText(geometry[6] + 3, geometry[3] + fontOffset, fonts[0], "HR",
+                Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(geometry[6] + 3, geometry[3] + (fontOffset * 5) + 15, fonts[3],
+                hr == null ? 0 : hr, Graphics.TEXT_JUSTIFY_LEFT);
 
     if (getBackgroundColor() == Graphics.COLOR_BLACK) {
       dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
@@ -465,7 +469,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           } else {
             dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
           }
-          dc.fillRectangle(geometry[5], geometry[2], geometry[6] - geometry[5], geometry[11]);
+          dc.fillRectangle(geometry[5], geometry[2], geometry[6] - geometry[5],
+                           geometry[11]);
           dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         } else if (showColors == 2) {
           if (lapPower.toNumber() < targetLow) {
@@ -481,7 +486,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0], "Lap Pwr",
                 Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[13], geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                lapPower == null ? 0 : lapPower.toNumber(), Graphics.TEXT_JUSTIFY_CENTER);
+                lapPower == null ? 0 : lapPower.toNumber(),
+                Graphics.TEXT_JUSTIFY_CENTER);
 
     if (getBackgroundColor() == Graphics.COLOR_BLACK) {
       dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
@@ -512,12 +518,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
     }
-    dc.drawText(geometry[1] + 2, 0 + 15 + fontOffset, fonts[4], currentPower == null ? 0 : currentPower,
+    dc.drawText(geometry[1] + 2, 0 + 15 + fontOffset, fonts[4],
+                currentPower == null ? 0 : currentPower,
                 Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[12], geometry[2] - geometry[10], fonts[2], targetLow,
                 Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[0] - geometry[12], geometry[2] - geometry[10], fonts[2], targetHigh,
-                Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(geometry[0] - geometry[12], geometry[2] - geometry[10],
+                fonts[2], targetHigh, Graphics.TEXT_JUSTIFY_RIGHT);
 
     //! Draw separator lines
     if (getBackgroundColor() == Graphics.COLOR_BLACK) {
@@ -533,8 +540,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     dc.drawText(5, geometry[2] + fontOffset, fonts[0], "Pace",
                 Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                 Activity.getActivityInfo().currentSpeed == null ? 0 : convert_speed_pace(Activity.getActivityInfo().currentSpeed), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(
+        geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
+        Activity.getActivityInfo().currentSpeed == null
+            ? 0
+            : convert_speed_pace(Activity.getActivityInfo().currentSpeed),
+        Graphics.TEXT_JUSTIFY_RIGHT);
     if (showExtra) {
       if (useMetric) {
         dc.drawText(geometry[5] - 3, geometry[2] + fontOffset, fonts[0],
@@ -550,7 +561,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.drawText(geometry[13], geometry[3] + (fontOffset * 5) + 15, fonts[3],
                 format_duration(timer), Graphics.TEXT_JUSTIFY_CENTER);
 
-    var lLocalDistance = Activity.getActivityInfo().elapsedDistance == null ? format_distance(0) : format_distance(Activity.getActivityInfo().elapsedDistance);
+    var lLocalDistance =
+        Activity.getActivityInfo().elapsedDistance == null
+            ? format_distance(0)
+            : format_distance(Activity.getActivityInfo().elapsedDistance);
 
     dc.drawText(5, geometry[3] + fontOffset, fonts[0], "Distance",
                 Graphics.TEXT_JUSTIFY_LEFT);
