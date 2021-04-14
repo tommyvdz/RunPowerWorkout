@@ -93,7 +93,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   ( : medmem) hidden var showExtra = true;
   ( : lowmem) hidden var showExtra = false;
 
-  hidden var DEBUG = true;
+  hidden var DEBUG = false;
 
   function initialize() {
     // read settings
