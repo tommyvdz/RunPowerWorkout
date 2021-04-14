@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - "*"
+  release:
+    types: [published]
 
 jobs:
   install-connect-iq:
@@ -72,6 +74,11 @@ jobs:
           key: devices
 
       - run: |
+          sed sed -i "s/0.0.0/$GITHUB_REF/g" manifest.xml
+        if: github.event_name == 'release'
+        name: set the release version
+
+      - run: |
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           for i in fr945 fenix6pro; do
@@ -86,8 +93,21 @@ jobs:
         with:
           name: prg
           path: /tmp/*.prg
+        if: github.event_name != 'release'
 
       - uses: actions/upload-artifact@v2
         with:
           name: iq
           path: /tmp/*.iq
+        if: github.event_name != 'release'
+
+      - name: Upload
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: /tmp/RunPowerWorkout.iq
+          asset_name: RunPowerWorkout-${{ github.event.release.tag_name }}
+          asset_content_type: binary/octet-stream
+        if: github.event_name == 'release'
