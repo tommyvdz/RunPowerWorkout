@@ -46,24 +46,24 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
-  // Top Arc, Bottom Arc, Offset Target X, Background rect height, Offset Target
-  // Y Center mid field
+  // Top Arc, Bottom Arc, Offset Target Y, Background rect height, Offset Target
+  // X, Center mid field ]
 
   (
       : roundzero) hidden var geometry =
-      [ 218, 109, 77, 122, 167, 70, 161, 103, 114, 85, 25, 45, 30, 116 ];
+      [ 218, 109, 77, 122, 167, 70, 161, 103, 114, 85, 27, 45, 30, 116 ];
   (
       : roundone) hidden var geometry =
-      [ 240, 120, 85, 135, 185, 77, 177, 105, 114, 96, 30, 50, 40, 127 ];
+      [ 240, 120, 85, 135, 185, 77, 177, 105, 114, 96, 32, 50, 40, 127 ];
   (
       : roundtwo) hidden var geometry =
-      [ 260, 130, 91, 146, 201, 83, 192, 115, 124, 106, 35, 55, 45, 138 ];
+      [ 260, 130, 91, 146, 201, 83, 192, 115, 124, 106, 37, 55, 45, 138 ];
   (
       : roundthree) hidden var geometry =
-      [ 280, 140, 98, 157, 216, 90, 207, 125, 134, 116, 40, 59, 50, 149 ];
+      [ 280, 140, 98, 157, 216, 90, 207, 125, 134, 116, 42, 59, 50, 149 ];
   (
       : roundfour) hidden var geometry =
-      [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 40, 80, 45, 207 ];
+      [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
   (
       : highmem) hidden var fonts =
       [
@@ -568,8 +568,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     dc.drawText(5, geometry[3] + fontOffset, fonts[0], "Distance",
                 Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15, fonts[3],
+    if(lLocalDistance[2] == null){
+        dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15, fonts[3],
                 lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
+    } else {
+       dc.drawText(geometry[5] - 3, geometry[3] + 20 + (fontOffset*2), fonts[2],
+                lLocalDistance[2], Graphics.TEXT_JUSTIFY_RIGHT);
+       dc.drawText(geometry[5] - geometry[10] + 4 + fontOffset, geometry[3] + (fontOffset * 5) + 15, fonts[3],
+                lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
+    }
     if (showExtra) {
       dc.drawText(geometry[5] - 3, geometry[3] + fontOffset, fonts[0],
                   lLocalDistance[1], Graphics.TEXT_JUSTIFY_RIGHT);
@@ -731,10 +738,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if ((distance / factor) >= 1) {
-      return [ ((distance * 1.0) / (factor * 1.0)).format("%.2f") + "", unit ];
+      var formatted = ((distance * 1.0) / (factor * 1.0)).format("%.2f");
+      var index = formatted.find(".");
+      if(index != null){
+        return [ formatted.substring(0,index), unit, formatted.substring(index,formatted.length()) ];
+      }else {
+        return [ formatted, unit, null ];
+      }
     } else {
       return
-          [ (distance / factor * smallunitfactor).toNumber() + "", smallunit ];
+          [ (distance / factor * smallunitfactor).toNumber() + "", smallunit, null ];
     }
   }
 }
