@@ -47,7 +47,7 @@ jobs:
         if: steps.devices.outputs.cache-hit != 'true'
         name: Install ConnectIQ Devices
         env:
-          TOKEN: ${{ secrets.GARMIN_ACCESS_TOKEN }}
+          GARMIN_ACCESS_TOKEN: ${{ secrets.GARMIN_ACCESS_TOKEN }}
           PYTHONUNBUFFERED: 1
 
   build-ciq:
