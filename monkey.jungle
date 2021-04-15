@@ -30,11 +30,11 @@ low_mem_excludes = medmem;highmem
 med_mem_excludes = lowmem;highmem
 high_mem_excludes = lowmem;medmem
 
-round-218x218.excludeAnnotations = $(round_218_common_excludes)
+#round-218x218.excludeAnnotations = $(round_218_common_excludes)
 round-240x240.excludeAnnotations = $(round_240_common_excludes)
 round-260x260.excludeAnnotations = $(round_260_common_excludes)
 round-280x280.excludeAnnotations = $(round_280_common_excludes)
-round-390x390.excludeAnnotations = $(round_390_common_excludes)
+#round-390x390.excludeAnnotations = $(round_390_common_excludes)
 
 enduro.excludeAnnotations = $(enduro.excludeAnnotations);$(low_mem_excludes)
 fenix5plus.excludeAnnotations = $(fenix5plus.excludeAnnotations);$(high_mem_excludes)
