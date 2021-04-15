@@ -30,7 +30,7 @@ jobs:
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices
+          key: devices-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
@@ -71,7 +71,7 @@ jobs:
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices
+          key: devices-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
