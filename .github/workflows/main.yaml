@@ -47,7 +47,7 @@ jobs:
         if: steps.devices.outputs.cache-hit != 'true'
         name: Install ConnectIQ Devices
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          TOKEN: ${{ secrets.GARMIN_ACCESS_TOKEN }}
           PYTHONUNBUFFERED: 1
 
   build-ciq:
@@ -87,7 +87,7 @@ jobs:
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file
         env:
-          CIQ_DEV_KEY: ${{ secrets.CIQ_DEV_KEY }}
+          CIQ_DEV_KEY: ${{ secrets.CIQ_DEVELOPER_KEY }}
 
       - uses: actions/upload-artifact@v2
         with:
