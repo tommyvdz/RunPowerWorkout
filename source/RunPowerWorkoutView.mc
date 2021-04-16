@@ -6,12 +6,10 @@ using Toybox.UserProfile;
 
 class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var timer;
-  hidden var lapTime;
-  hidden var lapStopPauseTime;
-  hidden var lapDelta;
-  hidden var lapStartTime;
-  hidden var lapStartDistance;
-  hidden var lapPower;
+  hidden var stepTime;
+  hidden var stepStartTime;
+  hidden var stepStartDistance;
+  hidden var stepPower;
   hidden var targetHigh;
   hidden var targetLow;
   hidden var nextTargetHigh;
@@ -42,7 +40,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var powerAverage;
   hidden var currentPowerAverage;
   hidden var showColors;
-  hidden var lapSpeed;
+  hidden var stepSpeed;
+  hidden var fonts;
+  hidden var fontOffset = 0;
+  hidden var useCustomFonts;
+  hidden var showSmallDecimals;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -64,34 +66,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (
       : roundfour) hidden var geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
-  (
-      : highmem) hidden var fonts =
-      [
-        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
-        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
-        WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
-      ];
-  (
-      : medmem) hidden var fonts =
-      [
-        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
-        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
-        WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
-      ];
-  (
-      : lowmem) hidden var fonts =
-      [
-        Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
-        Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
-        Graphics.FONT_NUMBER_THAI_HOT
-      ];
 
-  ( : highmem) hidden var fontOffset = -4;
-  ( : medmem) hidden var fontOffset = -4;
-  ( : lowmem) hidden var fontOffset = 0;
-  ( : highmem) hidden var showExtra = true;
-  ( : medmem) hidden var showExtra = true;
-  ( : lowmem) hidden var showExtra = false;
+  hidden var showExtra = false;
 
   hidden var DEBUG = false;
 
@@ -112,13 +88,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
                     : false;
+    useCustomFonts = Utils.replaceNull(
+        Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
+    showSmallDecimals = Utils.replaceNull(
+        Application.getApp().getProperty("SHOW_SMALL_DECIMALS"), true);
+
+    set_fonts();
 
     DataField.initialize();
     timer = 0;
-    lapTime = 0;
-    lapStartTime = 0;
-    lapSpeed = null;
-    lapStartDistance = 0;
+    stepTime = 0;
+    stepStartTime = 0;
+    stepSpeed = null;
+    stepStartDistance = 0;
     targetHigh = 0;
     targetLow = 0;
     remainingTime = 0;
@@ -151,11 +133,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function onTimerLap() {}
 
   function onWorkoutStepComplete() {
-    lapStartTime = timer;
-    lapTime = 0;
-    lapSpeed = null;
-    lapStartDistance = Activity.getActivityInfo().elapsedDistance;
-    lapPower = null;
+    stepStartTime = timer;
+    stepTime = 0;
+    stepSpeed = null;
+    stepStartDistance = Activity.getActivityInfo().elapsedDistance;
+    stepPower = null;
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
@@ -163,15 +145,59 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   }
 
   function onTimerReset() {
-    lapStartTime = timer;
-    lapStartDistance = 0;
-    lapTime = 0;
-    lapPower = null;
-    lapSpeed = null;
+    stepStartTime = timer;
+    stepStartDistance = 0;
+    stepTime = 0;
+    stepPower = null;
+    stepSpeed = null;
     remainingTime = 0;
     alertCount = 0;
     alertDisplayed = false;
     remainingDistanceSpeed = -1;
+  }
+
+  ( : highmem) function set_fonts() {
+    if (useCustomFonts) {
+      fontOffset = -4;
+      showExtra = true;
+      fonts = [
+        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
+        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
+        WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
+      ];
+    } else {
+      fonts = [
+        Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
+        Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
+        Graphics.FONT_NUMBER_THAI_HOT
+      ];
+    }
+  }
+
+  ( : medmem) function set_fonts() {
+    if (useCustomFonts) {
+      fontOffset = -4;
+      showExtra = true;
+      fonts = [
+        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
+        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
+        WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
+      ];
+    } else {
+      fonts = [
+        Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
+        Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
+        Graphics.FONT_NUMBER_THAI_HOT
+      ];
+    }
+  }
+
+  ( : lowmem) function set_fonts() {
+    fonts = [
+      Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
+      Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
+      Graphics.FONT_NUMBER_THAI_HOT
+    ];
   }
 
   // Set your layout here. Anytime the size of obscurity of
@@ -191,9 +217,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (paused != true) {
       if (activityInfo != null) {
         timer = activityInfo.timerTime / 1000;
-        lapTime = timer - lapStartTime;
+        stepTime = timer - stepStartTime;
 
-        shouldDisplayAlert = (lapTime > 15);
+        shouldDisplayAlert = (stepTime > 15);
 
         if (nextWorkout != null) {
           nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
@@ -262,7 +288,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
                                   ((activityInfo.elapsedDistance).toNumber() -
-                                   lapStartDistance);
+                                   stepStartDistance);
               if (shouldDisplayAlert &&
                   remainingDistance < remainingDistanceSpeed) {
                 shouldDisplayAlert = false;
@@ -272,7 +298,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             stepType = 0;
             if (workout.step.durationValue != null && DEBUG == false &&
                 remainingTime >= 0) {
-              remainingTime = (workout.step.durationValue - lapTime).toNumber();
+              remainingTime =
+                  (workout.step.durationValue - stepTime).toNumber();
               if (shouldDisplayAlert && remainingTime < 20) {
                 shouldDisplayAlert = false;
               }
@@ -333,27 +360,27 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
             currentPowerAverage[0] = currentPower;
 
-            if (lapPower == null) {
-              lapPower = currentPower;
-            } else if (lapTime != 0) {
-              lapPower = (((lapPower * (lapTime - 1)) + currentPower) /
-                          (lapTime * 1.0));
+            if (stepPower == null) {
+              stepPower = currentPower;
+            } else if (stepTime != 0) {
+              stepPower = (((stepPower * (stepTime - 1)) + currentPower) /
+                           (stepTime * 1.0));
             }
 
             if (Activity.getActivityInfo().currentSpeed != null) {
-              if (lapSpeed == null) {
-                lapSpeed = Activity.getActivityInfo().currentSpeed;
-              } else if (lapTime > 5) {
-                lapSpeed = (((lapSpeed * (lapTime - 1)) +
-                             Activity.getActivityInfo().currentSpeed) /
-                            (lapTime * 1.0));
+              if (stepSpeed == null) {
+                stepSpeed = Activity.getActivityInfo().currentSpeed;
+              } else if (stepTime > 5) {
+                stepSpeed = (((stepSpeed * (stepTime - 1)) +
+                              Activity.getActivityInfo().currentSpeed) /
+                             (stepTime * 1.0));
               }
             }
 
             if (stepType == 1 && remainingDistance < 100 &&
-                remainingDistanceSpeed == -1 && lapSpeed != null &&
-                lapSpeed != 0) {
-              remainingDistanceSpeed = (15 * lapSpeed).toNumber();
+                remainingDistanceSpeed == -1 && stepSpeed != null &&
+                stepSpeed != 0) {
+              remainingDistanceSpeed = (15 * stepSpeed).toNumber();
             }
 
             var tempAverage = 0;
@@ -459,12 +486,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
     }
 
-    if (lapPower != null) {
+    if (stepPower != null) {
       if (targetHigh != 0 && targetLow != 0) {
         if (showColors == 1) {
-          if (lapPower.toNumber() < targetLow) {
+          if (stepPower.toNumber() < targetLow) {
             dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-          } else if (lapPower.toNumber() > targetHigh) {
+          } else if (stepPower.toNumber() > targetHigh) {
             dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
           } else {
             dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
@@ -473,9 +500,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                            geometry[11]);
           dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         } else if (showColors == 2) {
-          if (lapPower.toNumber() < targetLow) {
+          if (stepPower.toNumber() < targetLow) {
             dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-          } else if (lapPower.toNumber() > targetHigh) {
+          } else if (stepPower.toNumber() > targetHigh) {
             dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
           } else {
             dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
@@ -483,10 +510,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
     }
-    dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0], "Lap Pwr",
+    dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0], "Step Pwr",
                 Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[13], geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                lapPower == null ? 0 : lapPower.toNumber(),
+                stepPower == null ? 0 : stepPower.toNumber(),
                 Graphics.TEXT_JUSTIFY_CENTER);
 
     if (getBackgroundColor() == Graphics.COLOR_BLACK) {
@@ -568,14 +595,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     dc.drawText(5, geometry[3] + fontOffset, fonts[0], "Distance",
                 Graphics.TEXT_JUSTIFY_LEFT);
-    if(lLocalDistance[2] == null){
-        dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
+    if (lLocalDistance[2] == null) {
+      dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15,
+                  fonts[3], lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
     } else {
-       dc.drawText(geometry[5] - 3, geometry[3] + 20 + (fontOffset*2), fonts[2],
-                lLocalDistance[2], Graphics.TEXT_JUSTIFY_RIGHT);
-       dc.drawText(geometry[5] - geometry[10] + 4 + fontOffset, geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
+      dc.drawText(geometry[5] - 3, geometry[3] + 20 + (fontOffset * 2),
+                  fonts[2], lLocalDistance[2], Graphics.TEXT_JUSTIFY_RIGHT);
+      dc.drawText(geometry[5] - geometry[10] + 4 + fontOffset,
+                  geometry[3] + (fontOffset * 5) + 15, fonts[3],
+                  lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
     }
     if (showExtra) {
       dc.drawText(geometry[5] - 3, geometry[3] + fontOffset, fonts[0],
@@ -687,7 +715,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                        orientation - 5 * Math.PI / 180, geometry[9]);
     var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
     dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
-
     // FILL IN THE FIELDS
   }
 
@@ -740,14 +767,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if ((distance / factor) >= 1) {
       var formatted = ((distance * 1.0) / (factor * 1.0)).format("%.2f");
       var index = formatted.find(".");
-      if(index != null){
-        return [ formatted.substring(0,index), unit, formatted.substring(index,formatted.length()) ];
-      }else {
+      if (index != null && showSmallDecimals) {
+        return [
+          formatted.substring(0, index), unit,
+          formatted.substring(index, formatted.length())
+        ];
+      } else {
         return [ formatted, unit, null ];
       }
     } else {
-      return
-          [ (distance / factor * smallunitfactor).toNumber() + "", smallunit, null ];
+      return [
+        (distance / factor * smallunitfactor).toNumber() + "", smallunit,
+        null
+      ];
     }
   }
 }

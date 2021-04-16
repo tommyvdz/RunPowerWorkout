@@ -21,4 +21,10 @@
 			<listEntry value="3">@Strings.SHOW_COLORS_3</listEntry>
 		</settingConfig>
 	</setting>
+	<setting propertyKey="@Properties.USE_CUSTOM_FONTS" title="@Strings.USE_CUSTOM_FONTS">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.SHOW_SMALL_DECIMALS" title="@Strings.SHOW_SMALL_DECIMALS">
+		<settingConfig type="boolean" />
+	</setting>
 </settings>
