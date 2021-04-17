@@ -14,4 +14,10 @@
 	<string id="SHOW_COLORS_3">None</string>
 	<string id="USE_CUSTOM_FONTS">Use custom fonts ?</string>
 	<string id="SHOW_SMALL_DECIMALS">Show smaller decimals for distance ?</string>
+	<string id="ZONES">Zone calculation</string>
+	<string id="ZONES_1">Stryd</string>
+	<string id="ZONES_2">Jim Vance</string>
+	<string id="ZONES_3">Steve Palladino</string>
+	<string id="ZONES_4">80/20</string>
+	<string id="ZONES_5">Van Dijk and Van Megen</string>
 </strings>

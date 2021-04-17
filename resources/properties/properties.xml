@@ -7,4 +7,5 @@
     <property id="SHOW_COLORS" type="number">1</property>
     <property id="USE_CUSTOM_FONTS" type="boolean">true</property>
     <property id="SHOW_SMALL_DECIMALS" type="boolean">true</property>
+    <property id="ZONES" type="number">1</property> 
 </properties>

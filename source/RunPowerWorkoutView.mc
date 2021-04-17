@@ -10,6 +10,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var stepStartTime;
   hidden var stepStartDistance;
   hidden var stepPower;
+  hidden var lapTime;
+  hidden var lapStartTime;
   hidden var targetHigh;
   hidden var targetLow;
   hidden var nextTargetHigh;
@@ -45,6 +47,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var fontOffset = 0;
   hidden var useCustomFonts;
   hidden var showSmallDecimals;
+  hidden var pwrZones;
+  hidden var pwrZonesLabels;
+  hidden var pwrZonesColors;
+  hidden var currentPwrZone;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -84,6 +90,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 3);
     showColors =
         Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
+    showColors =
+        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
+    var zones = Utils.replaceNull(Application.getApp().getProperty("ZONES"), 1);
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -98,6 +107,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     DataField.initialize();
     timer = 0;
     stepTime = 0;
+    lapTime = 0;
+    lapStartTime = 0;
     stepStartTime = 0;
     stepSpeed = null;
     stepStartDistance = 0;
@@ -120,6 +131,50 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
     remainingDistanceSpeed = -1;
+
+    if (zones == 1) {
+      pwrZones = [ 0, 80, 90, 100, 115, 300 ];
+      pwrZonesLabels = [ null, "1", "2", "3", "4", "5" ];
+      pwrZonesColors = [
+        null, Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLUE, Graphics.COLOR_GREEN,
+        Graphics.COLOR_ORANGE, Graphics.COLOR_RED
+      ];
+    } else if (zones == 2) {
+      pwrZones = [ 0, 81, 88, 95, 105, 115, 128, 3 * FTP ];
+      pwrZonesLabels = [ null, "1", "2", "3", "4", "5", "6", "7" ];
+      pwrZonesColors = [
+        null, Graphics.COLOR_LT_GRAY, Graphics.COLOR_DK_BLUE,
+        Graphics.COLOR_BLUE, Graphics.COLOR_DK_GREEN, Graphics.COLOR_GREEN,
+        Graphics.COLOR_ORANGE, Graphics.COLOR_RED
+      ];
+    } else if (zones == 3) {
+      pwrZones = [ 0, 65, 75, 80, 87, 94, 101, 105, 116, 150, 300 ];
+      pwrZonesLabels =
+          [ null, "1a", "1b", "1c", "2", "3a", "3b", "4", "5", "6", "7" ];
+      pwrZonesColors = [
+        null, Graphics.COLOR_LT_GRAY, Graphics.COLOR_LT_GRAY,
+        Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLUE, Graphics.COLOR_GREEN,
+        Graphics.COLOR_GREEN, Graphics.COLOR_YELLOW, Graphics.COLOR_ORANGE,
+        Graphics.COLOR_RED, Graphics.COLOR_PURPLE
+      ];
+
+    } else if (zones == 4) {
+      pwrZones = [ 0, 76, 88, 94, 100, 103, 120, 300 ];
+      pwrZonesLabels = [ null, "1", "2", "X", "3", "Y", "4", "5" ];
+      pwrZonesColors = [
+        null, Graphics.COLOR_LT_GRAY, Graphics.COLOR_BLUE, Graphics.COLOR_PINK,
+        Graphics.COLOR_GREEN, Graphics.COLOR_PINK, Graphics.COLOR_ORANGE,
+        Graphics.COLOR_RED
+      ];
+    } else if (zones == 5) {
+      pwrZones = [ 0, 70, 80, 90, 100, 110, 130, 300 ];
+      pwrZonesLabels = [ null, "0", "1", "2", "3", "4", "5", "6" ];
+      pwrZonesColors = [
+        null, Graphics.COLOR_BLUE, Graphics.COLOR_GREEN, Graphics.COLOR_YELLOW,
+        Graphics.COLOR_ORANGE, Graphics.COLOR_RED, Graphics.COLOR_PURPLE,
+        Graphics.COLOR_DK_BLUE
+      ];
+    }
   }
 
   function onTimerStart() { paused = false; }
@@ -130,7 +185,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   function onTimerPause() { paused = true; }
 
-  function onTimerLap() {}
+  function onTimerLap() {
+    lapTime = 0;
+    lapStartTime = timer;
+  }
 
   function onWorkoutStepComplete() {
     stepStartTime = timer;
@@ -148,6 +206,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     stepStartTime = timer;
     stepStartDistance = 0;
     stepTime = 0;
+    lapTime = 0;
+    lapStartTime = timer;
     stepPower = null;
     stepSpeed = null;
     remainingTime = 0;
@@ -218,6 +278,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (activityInfo != null) {
         timer = activityInfo.timerTime / 1000;
         stepTime = timer - stepStartTime;
+        lapTime = timer - lapStartTime;
 
         shouldDisplayAlert = (stepTime > 15);
 
@@ -308,7 +369,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         } else {
           targetHigh = 0;
           targetLow = 0;
-          stepType = 5;
+          stepType = 99;
           shouldDisplayAlert = false;
         }
 
@@ -351,6 +412,35 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 ((activityInfo.currentPower / (FTP * 1.0)) * 100).toNumber();
           } else {
             currentPower = activityInfo.currentPower;
+          }
+
+          if (stepType == 99) {
+            var i = 0;
+            var condition = true;
+
+            while (i < pwrZones.size() && condition) {
+              if (usePercentage) {
+                condition = currentPower > pwrZones[i];
+              } else {
+                condition =
+                    currentPower >
+                    (((pwrZones[i] * 1.0 * FTP) / 100) + 0.5).toNumber();
+              }
+              currentPwrZone = i;
+              i++;
+            }
+            if (usePercentage) {
+              targetHigh = pwrZones[currentPwrZone].toNumber() + "%-" +
+                           pwrZones[currentPwrZone + 1].toNumber() + "%";
+            } else {
+              targetHigh =
+                  (((pwrZones[currentPwrZone] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber() +
+                  "-" +
+                  (((pwrZones[currentPwrZone + 1] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber();
+            }
+            targetLow = "Zone " + pwrZonesLabels[currentPwrZone + 1];
           }
 
           if (currentPower != null) {
@@ -487,7 +577,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (stepPower != null) {
-      if (targetHigh != 0 && targetLow != 0) {
+      if (stepType != 99 && targetHigh != 0 && targetLow != 0) {
         if (showColors == 1) {
           if (stepPower.toNumber() < targetLow) {
             dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
@@ -523,7 +613,17 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (currentPower != null) {
-      if (targetHigh != 0 && targetLow != 0) {
+      if (stepType == 99) {
+        if (showColors == 1) {
+          dc.setColor(pwrZonesColors[currentPwrZone + 1],
+                      Graphics.COLOR_TRANSPARENT);
+          dc.fillRectangle(0, 0, geometry[0], geometry[2]);
+          dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        } else if (showColors == 2) {
+          dc.setColor(pwrZonesColors[currentPwrZone + 1],
+                      Graphics.COLOR_TRANSPARENT);
+        }
+      } else if (targetHigh != 0 && targetLow != 0) {
         if (showColors == 1) {
           if (currentPower < targetLow) {
             dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
@@ -545,13 +645,21 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
     }
-    dc.drawText(geometry[1] + 2, 0 + 15 + fontOffset, fonts[4],
-                currentPower == null ? 0 : currentPower,
-                Graphics.TEXT_JUSTIFY_CENTER);
     dc.drawText(geometry[12], geometry[2] - geometry[10], fonts[2], targetLow,
                 Graphics.TEXT_JUSTIFY_LEFT);
     dc.drawText(geometry[0] - geometry[12], geometry[2] - geometry[10],
                 fonts[2], targetHigh, Graphics.TEXT_JUSTIFY_RIGHT);
+    if (stepType == 99) {
+      dc.drawText(geometry[1] + 2, 0 + (fontOffset * 3), fonts[4],
+                  currentPower == null ? 0 : currentPower,
+                  Graphics.TEXT_JUSTIFY_CENTER);
+      targetHigh = 0;
+      targetLow = 0;
+    } else {
+      dc.drawText(geometry[1] + 2, 0 + 15 + fontOffset, fonts[4],
+                  currentPower == null ? 0 : currentPower,
+                  Graphics.TEXT_JUSTIFY_CENTER);
+    }
 
     //! Draw separator lines
     if (getBackgroundColor() == Graphics.COLOR_BLACK) {
@@ -618,6 +726,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (stepType == 5) {
         lMetricLabel = "Until";
         lMetricValue = "Lap Press";
+      } else if (stepType == 99) {
+        lMetricLabel = "Lap Time";
+        lMetricValue = "" + format_duration(lapTime);
       } else if (stepType == 1) {
         var distance = format_distance(remainingDistance);
         lMetricLabel = "Rem. Dist";
@@ -662,59 +773,61 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     //! Ravenfeld - Speed Gauge
     //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
 
-    dc.setPenWidth(10);
-    dc.setColor(Graphics.COLOR_RED, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               30, 60);
+    if (stepType != 99) {
+      dc.setPenWidth(10);
+      dc.setColor(Graphics.COLOR_RED, getBackgroundColor());
+      dc.drawArc(geometry[1], geometry[1], geometry[7],
+                 Gfx.ARC_COUNTER_CLOCKWISE, 30, 60);
 
-    dc.setColor(Graphics.COLOR_BLUE, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               120, 150);
+      dc.setColor(Graphics.COLOR_BLUE, getBackgroundColor());
+      dc.drawArc(geometry[1], geometry[1], geometry[7],
+                 Gfx.ARC_COUNTER_CLOCKWISE, 120, 150);
 
-    dc.setColor(Graphics.COLOR_GREEN, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               60, 120);
+      dc.setColor(Graphics.COLOR_GREEN, getBackgroundColor());
+      dc.drawArc(geometry[1], geometry[1], geometry[7],
+                 Gfx.ARC_COUNTER_CLOCKWISE, 60, 120);
 
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, getBackgroundColor());
-    } else {
-      dc.setColor(Graphics.COLOR_BLACK, getBackgroundColor());
-    }
-
-    var percent = 0.15;
-    var power = 0.0;
-    if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
-      var range = targetHigh - targetLow;
-      var lowerlimit = 0;
-
-      if (targetLow - range < 0) {
-        lowerlimit = 0;
+      if (getBackgroundColor() == Graphics.COLOR_BLACK) {
+        dc.setColor(Graphics.COLOR_WHITE, getBackgroundColor());
       } else {
-        lowerlimit = targetLow - range;
+        dc.setColor(Graphics.COLOR_BLACK, getBackgroundColor());
       }
 
-      var upperlimit = targetHigh + range;
-      power = currentPower - lowerlimit;
-      if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
-        percent = power / (upperlimit - lowerlimit * 1.0);
+      var percent = 0.15;
+      var power = 0.0;
+      if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
+        var range = targetHigh - targetLow;
+        var lowerlimit = 0;
+
+        if (targetLow - range < 0) {
+          lowerlimit = 0;
+        } else {
+          lowerlimit = targetLow - range;
+        }
+
+        var upperlimit = targetHigh + range;
+        power = currentPower - lowerlimit;
+        if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
+          percent = power / (upperlimit - lowerlimit * 1.0);
+        }
+        if (percent < 0.15) {
+          percent = 0.15;
+        }
+        if (percent > 0.85) {
+          percent = 0.85;
+        }
       }
-      if (percent < 0.15) {
-        percent = 0.15;
-      }
-      if (percent > 0.85) {
-        percent = 0.85;
-      }
+
+      var orientation = -Math.PI * percent - 3 * Math.PI / 2;
+      var radius = geometry[9];
+      var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
+      var xy2 = pol2Cart(geometry[1], geometry[1],
+                         orientation - 5 * Math.PI / 180, geometry[8]);
+      var xy3 = pol2Cart(geometry[1], geometry[1],
+                         orientation - 5 * Math.PI / 180, geometry[9]);
+      var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
+      dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
     }
-
-    var orientation = -Math.PI * percent - 3 * Math.PI / 2;
-    var radius = geometry[9];
-    var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
-    var xy2 = pol2Cart(geometry[1], geometry[1],
-                       orientation - 5 * Math.PI / 180, geometry[8]);
-    var xy3 = pol2Cart(geometry[1], geometry[1],
-                       orientation - 5 * Math.PI / 180, geometry[9]);
-    var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
-    dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
     // FILL IN THE FIELDS
   }
 

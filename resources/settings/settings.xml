@@ -27,4 +27,13 @@
 	<setting propertyKey="@Properties.SHOW_SMALL_DECIMALS" title="@Strings.SHOW_SMALL_DECIMALS">
 		<settingConfig type="boolean" />
 	</setting>
+	<setting propertyKey="@Properties.ZONES" title="@Strings.ZONES">
+		<settingConfig type="list">
+			<listEntry value="1">@Strings.ZONES_1</listEntry>
+			<listEntry value="2">@Strings.ZONES_2</listEntry>
+			<listEntry value="3">@Strings.ZONES_3</listEntry>
+			<listEntry value="4">@Strings.ZONES_4</listEntry>
+			<listEntry value="5">@Strings.ZONES_5</listEntry>
+		</settingConfig>
+	</setting>
 </settings>
