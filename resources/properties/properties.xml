@@ -1,5 +1,5 @@
 <properties>
-    <property id="FTP" type="number">318</property>
+    <property id="FTP" type="number">330</property>
     <property id="PERCENTAGE" type="boolean">false</property>
     <property id="VIBRATE" type="boolean">true</property>
     <property id="ALERT" type="boolean">true</property>
@@ -7,5 +7,5 @@
     <property id="SHOW_COLORS" type="number">1</property>
     <property id="USE_CUSTOM_FONTS" type="boolean">true</property>
     <property id="SHOW_SMALL_DECIMALS" type="boolean">true</property>
-    <property id="ZONES" type="number">1</property> 
+    <property id="ZONES" type="number">4</property> 
 </properties>

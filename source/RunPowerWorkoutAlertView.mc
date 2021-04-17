@@ -1,6 +1,4 @@
 using Toybox.WatchUi;
-using Toybox.Graphics as Gfx;
-using Toybox.Time;
 
 class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var targetHigh;
@@ -21,7 +19,8 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     targetHigh = high;
     targetLow = low;
     currentPower = current;
-    useCustomFonts = Utils.replaceNull(Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
+    useCustomFonts = Utils.replaceNull(
+        Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
     set_fonts();
   }
 
@@ -31,7 +30,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F)
       ];
     } else {
-      fonts = [ Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_THAI_HOT ];
+      fonts = [ 3, 8 ];
     }
   }
 
@@ -41,37 +40,33 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F)
       ];
     } else {
-      fonts = [ Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_THAI_HOT ];
+      fonts = [ 3, 8 ];
     }
   }
 
-  ( : lowmem) function set_fonts() {
-    fonts = [ Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_THAI_HOT ];
-  }
+  ( : lowmem) function set_fonts() { fonts = [ 3, 8 ]; }
 
   function onLayout(dc) { return true; }
 
   function onUpdate(dc) {
     View.onUpdate(dc);
 
-    var ringColor = Graphics.COLOR_RED;
+    var ringColor = 0xFF0000;
     var alertText = "High power";
     var alertValue = "TGT " + targetLow + "-" + targetHigh;
 
     if (currentPower < targetLow) {
-      ringColor = Graphics.COLOR_BLUE;
+      ringColor = 0x00AAFF;
       alertText = "Low power";
     }
 
     dc.setAntiAlias(true);
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    dc.setColor(0xFFFFFF, -1);
     dc.drawText(geometry[1], geometry[1], fonts[1], currentPower.toNumber(),
-                Graphics.TEXT_JUSTIFY_VCENTER | Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[1], geometry[2], fonts[0], alertText,
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[1], geometry[3], fonts[0], alertValue,
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
+                4 | 1);
+    dc.drawText(geometry[1], geometry[2], fonts[0], alertText, 1);
+    dc.drawText(geometry[1], geometry[3], fonts[0], alertValue, 1);
+    dc.setColor(ringColor, -1);
     dc.setPenWidth(5);
     dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
   }
