@@ -6,6 +6,8 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var targetHigh;
   hidden var targetLow;
   hidden var currentPower;
+  hidden var useCustomFonts;
+  hidden var fonts;
   ( : roundzero) hidden var geometry = [ 218, 109, 21, 163 ];
   ( : roundone) hidden var geometry = [ 240, 120, 24, 180 ];
   ( : roundtwo) hidden var geometry = [ 260, 130, 26, 195 ];
@@ -19,6 +21,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     targetHigh = high;
     targetLow = low;
     currentPower = current;
+    useCustomFonts = Utils.replaceNull(Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
     set_fonts();
   }
 
