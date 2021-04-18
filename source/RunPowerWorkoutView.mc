@@ -621,7 +621,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       } else if (stepType == 1) {
         var distance = format_distance(remainingDistance);
         lMetricLabel = "Rem. Dist";
-        lMetricValue = "" + distance[0] + "" + distance[1];
+        lMetricValue = "" + distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
       } else {
         lMetricLabel = "Rem. Time";
         lMetricValue = "" + format_duration(remainingTime);
