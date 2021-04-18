@@ -6,6 +6,8 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   hidden var currentPower;
   hidden var useCustomFonts;
   hidden var fonts;
+  hidden var ringColor;
+  hidden var alertText;
   ( : roundzero) hidden var geometry = [ 218, 109, 21, 163 ];
   ( : roundone) hidden var geometry = [ 240, 120, 24, 180 ];
   ( : roundtwo) hidden var geometry = [ 260, 130, 26, 195 ];
@@ -14,50 +16,25 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
   hidden var DEBUG = false;
 
-  function initialize(high, low, current) {
+  function initialize(high, low, current, parFonts) {
     DataFieldAlert.initialize();
     targetHigh = high;
     targetLow = low;
     currentPower = current;
-    useCustomFonts = Utils.replaceNull(
-        Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
-    set_fonts();
+    fonts = parFonts;
   }
-
-  ( : highmem) function set_fonts() {
-    if (useCustomFonts) {
-      fonts = [
-        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F)
-      ];
-    } else {
-      fonts = [ 3, 8 ];
-    }
-  }
-
-  ( : medmem) function set_fonts() {
-    if (useCustomFonts) {
-      fonts = [
-        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.F)
-      ];
-    } else {
-      fonts = [ 3, 8 ];
-    }
-  }
-
-  ( : lowmem) function set_fonts() { fonts = [ 3, 8 ]; }
 
   function onLayout(dc) { return true; }
 
   function onUpdate(dc) {
     View.onUpdate(dc);
 
-    var ringColor = 0xFF0000;
-    var alertText = "High power";
-    var alertValue = "TGT " + targetLow + "-" + targetHigh;
-
     if (currentPower < targetLow) {
       ringColor = 0x00AAFF;
-      alertText = "Low power";
+      alertText = WatchUi.loadResource(Rez.Strings.LOWPOWER);
+    } else {
+      ringColor = 0xFF0000;
+      alertText = WatchUi.loadResource(Rez.Strings.HIGHPOWER);
     }
 
     dc.setAntiAlias(true);
@@ -65,7 +42,10 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     dc.drawText(geometry[1], geometry[1], fonts[1], currentPower.toNumber(),
                 4 | 1);
     dc.drawText(geometry[1], geometry[2], fonts[0], alertText, 1);
-    dc.drawText(geometry[1], geometry[3], fonts[0], alertValue, 1);
+    dc.drawText(geometry[1], geometry[3], fonts[0],
+                WatchUi.loadResource(Rez.Strings.TGT) + " " + targetLow + "-" +
+                    targetHigh,
+                1);
     dc.setColor(ringColor, -1);
     dc.setPenWidth(5);
     dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
