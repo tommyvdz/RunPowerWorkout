@@ -34,7 +34,14 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 The datafield can be downloaded in the ConnectIQ Store:
 https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
 
-![Workout](doc/img/workout_metric.png =250x250)
-![Workout with low mem](doc/img/workout_metric_low_mem.png =250x250)
-![Outside workout](doc/img/outside_workout_statute.png =250x250)
-![Alert](doc/img/alert.png =250x250)
+<img src="doc/img/workout_metric.png" height="250">
+<img src="doc/img/workout_metric_low_mem.png" height="250">
+<img src="doc/img/outside_workout_statute.png" height="250">
+<img src="doc/img/alert.png" height="250">
+
+
+**Pragati Font License**
+
+Copyright (c) 2012-2015, Omnibus-Type (www.omnibus-type.com omnibus.type@gmail.com)
+
+Licensed under the [SIL Open Font License, 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
