@@ -31,10 +31,10 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
 
     if (currentPower < targetLow) {
       ringColor = 0x00AAFF;
-      alertText = WatchUi.loadResource(Rez.Strings.LOWPOWER);
+      alertText = "LOW POWER";
     } else {
       ringColor = 0xFF0000;
-      alertText = WatchUi.loadResource(Rez.Strings.HIGHPOWER);
+      alertText = "HIGH POWER";
     }
 
     dc.setAntiAlias(true);
@@ -43,7 +43,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
                 4 | 1);
     dc.drawText(geometry[1], geometry[2], fonts[0], alertText, 1);
     dc.drawText(geometry[1], geometry[3], fonts[0],
-                WatchUi.loadResource(Rez.Strings.TGT) + " " + targetLow + "-" +
+                "TGT" + " " + targetLow + "-" +
                     targetHigh,
                 1);
     dc.setColor(ringColor, -1);

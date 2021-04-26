@@ -8,5 +8,4 @@
     <property id="USE_CUSTOM_FONTS" type="boolean">true</property>
     <property id="SHOW_SMALL_DECIMALS" type="boolean">true</property>
     <property id="ZONES" type="number">4</property>
-    <property id="INVERT" type="boolean">true</property>
 </properties>
