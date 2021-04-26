@@ -6,6 +6,8 @@ Garmin doesn't yet support power as target in structured workouts natively, but 
 
 It currently supports all watch models that are updated to ConnectIQ 3.2 and have support for power meters. You need to have your Stryd paired as a power meter in order for the datafield to access the power values. 
 
+### Features
+
 The datafield displays:
 * A gauge showing your current power in relation to the workout step targets
 * The target power boundary values
@@ -21,6 +23,8 @@ This datafield will trigger an alert and/or vibrate if you are outside of the ta
 
 Display of units will automatically use your device settings.
 
+### Settings
+
 Through Garmin Connect Mobile or through Garmin Express you can edit the datafield settings. You can set the following settings :
 * Set your current FTP/CP
 * Choose to display power output and targets as percentage of your Functional Treshold Power / Critical Power or as plain watts.
@@ -31,8 +35,12 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Enable/disable smaller decimal for the distance metric field
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
 
+### Download
+
 The datafield can be downloaded in the ConnectIQ Store:
 https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
+
+### Screenshots
 
 <img src="doc/img/workout_metric.png" height="250">
 Regular workout display
@@ -43,7 +51,7 @@ Outside of a workout with statue metric display
 <img src="doc/img/alert.png" height="250">
 Alert display
 
-**Pragati Font License**
+### Pragati Font License
 
 Copyright (c) 2012-2015, Omnibus-Type (www.omnibus-type.com omnibus.type@gmail.com)
 
