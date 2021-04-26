@@ -113,7 +113,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     targetLow = 0;
     remainingTime = 0;
     remainingDistance = 0;
-    stepType = 0;
+    stepType = 99;
     currentPower = 0;
     cadence = 0;
     hr = 0;
@@ -375,7 +375,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           if (stepType == 99) {
             var i = 1;
             var condition = true;
-            while (currentPower != 0 && i < pwrZones.size() && condition) {
+            while (currentPower != null && currentPower != 0 && i < pwrZones.size() && condition) {
               if (usePercentage) {
                 condition = currentPower >= pwrZones[i];
               } else {
@@ -779,11 +779,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         dc.setColor(0xFF0000, getBackgroundColor());
         dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 30, 60);
 
-        dc.setColor(0x00AAFF, getBackgroundColor());
-        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
-
         dc.setColor(0x00FF00, getBackgroundColor());
         dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 60, 120);
+
+        dc.setColor(0x00AAFF, getBackgroundColor());
+        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
 
         if (getBackgroundColor() == 0x000000) {
           dc.setColor(0xFFFFFF, getBackgroundColor());
