@@ -701,7 +701,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               : format_distance(Activity.getActivityInfo().elapsedDistance);
 
       dc.drawText(5, geometry[3] + fontOffset, fonts[0],
-                  "DISTANCE", 2);
+                  "DIST", 2);
       if (lLocalDistance[2] == null) {
         dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15,
                     fonts[3], lLocalDistance[0], 0);
