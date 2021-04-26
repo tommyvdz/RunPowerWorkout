@@ -47,7 +47,7 @@ Regular workout display
 <img src="doc/img/workout_metric_low_mem.png" height="250">
 Low memory device workout display (no custom fonts)
 <img src="doc/img/outside_workout_statute.png" height="250">
-Outside of a workout with statue metric display
+Outside of a workout with statute units display
 <img src="doc/img/alert.png" height="250">
 Alert display
 
