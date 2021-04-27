@@ -27,12 +27,13 @@ Display of units will automatically use your device settings.
 
 Through Garmin Connect Mobile or through Garmin Express you can edit the datafield settings. You can set the following settings :
 * Set your current FTP/CP
-* Choose to display power output and targets as percentage of your Functional Treshold Power / Critical Power or as plain watts.
+* Choose to display power output and targets as percentage of your Functional Treshold Power / Critical Power or as plain watts
 * Enable/disable workout alerts
 * Enable/disable vibrations on workout alerts
 * Choose the coloring behaviour: either no colors, text only, text and background.
 * Enable/disable usage of custom fonts (only applied for devices allowing 64KB of memory for datafields)
 * Enable/disable smaller decimal for the distance metric field
+* Choose power average duration (from 1 to 30s)
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
 
 ### Download
