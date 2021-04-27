@@ -12,4 +12,6 @@
 	<string id="SHOW_COLORS_1">Foreground + Background</string>
 	<string id="SHOW_COLORS_2">Foreground Only</string>
 	<string id="SHOW_COLORS_3">None</string>
+	<string id="USE_CUSTOM_FONTS">Use custom fonts ?</string>
+	<string id="SHOW_SMALL_DECIMALS">Show smaller decimals for distance ?</string>
 </strings>
