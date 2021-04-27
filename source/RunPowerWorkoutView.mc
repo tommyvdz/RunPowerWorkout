@@ -44,7 +44,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var stepSpeed;
   hidden var fonts;
   hidden var fontOffset = 0;
-  hidden var useCustomFonts;
   hidden var showSmallDecimals;
   hidden var pwrZones;
   hidden var pwrZonesLabels;
@@ -72,32 +71,26 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       : roundfour) hidden var geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
 
-  hidden var DEBUG = false;
-
   function initialize() {
     // read settings
     usePercentage = Utils.replaceNull(
-        Application.getApp().getProperty("PERCENTAGE"), false);
-    FTP = Utils.replaceNull(Application.getApp().getProperty("FTP"), 330);
+        Application.getApp().getProperty("A"), false);
+    FTP = Utils.replaceNull(Application.getApp().getProperty("B"), 330);
     showAlerts =
-        Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
+        Utils.replaceNull(Application.getApp().getProperty("C"), true);
     vibrate =
-        Utils.replaceNull(Application.getApp().getProperty("VIBRATE"), true);
+        Utils.replaceNull(Application.getApp().getProperty("D"), true);
     powerAverage =
-        Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 3);
+        Utils.replaceNull(Application.getApp().getProperty("E"), 3);
     showColors =
-        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
-    showColors =
-        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
-    var zones = Utils.replaceNull(Application.getApp().getProperty("ZONES"), 4);
+        Utils.replaceNull(Application.getApp().getProperty("F"), 1);
+    var zones = Utils.replaceNull(Application.getApp().getProperty("G"), 4);
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
                     : false;
-    useCustomFonts = Utils.replaceNull(
-        Application.getApp().getProperty("USE_CUSTOM_FONTS"), true);
     showSmallDecimals = Utils.replaceNull(
-        Application.getApp().getProperty("SHOW_SMALL_DECIMALS"), true);
+        Application.getApp().getProperty("H"), true);
 
     set_fonts();
 
@@ -192,8 +185,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     remainingDistanceSpeed = -1;
   }
 
-  ( : highmem) function set_fonts() {
-    if (useCustomFonts) {
+  (:highmem) function set_fonts() {
+    if (Utils.replaceNull(Application.getApp().getProperty("I"), true)) {
       fontOffset = -4;
       fonts = [
         WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.C),
@@ -205,8 +198,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
   }
 
-  ( : medmem) function set_fonts() {
-    if (useCustomFonts) {
+  (:medmem) function set_fonts() {
+    if (Utils.replaceNull(Application.getApp().getProperty("I"), true)) {
       fontOffset = -4;
       fonts = [
         WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.C),
@@ -218,21 +211,30 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
   }
 
-  ( : lowmem) function set_fonts() { fonts = [ 0, 1, 2, 3, 6, 8 ]; }
+  (:lowmem) function set_fonts() { fonts = [ 0, 1, 2, 3, 6, 8 ]; }
 
-  // Set your layout here. Anytime the size of obscurity of
-  // the draw context is changed this will be called.
   function onLayout(dc) { return true; }
 
-  // The given info object contains all the current workout information.
-  // Calculate a value and save it locally in this method.
-  // Note that compute() and onUpdate() are asynchronous, and there is no
-  // guarantee that compute() will be called before onUpdate().
   function compute(info) {
-    // See Activity.Info in the documentation for available information.
     var workout = Activity.getCurrentWorkoutStep();
     var nextWorkout = Activity.getNextWorkoutStep();
     var activityInfo = Activity.getActivityInfo();
+
+    if (activityInfo has :currentCadence) {
+      cadence = activityInfo.currentCadence;
+    }
+    if (activityInfo has :currentHeartRate) {
+      hr = activityInfo.currentHeartRate;
+    }
+
+    if (activityInfo has : currentPower) {
+      if (usePercentage && activityInfo.currentPower != null) {
+        currentPower =
+            ((activityInfo.currentPower / (FTP * 1.0)) * 100).toNumber();
+      } else {
+        currentPower = activityInfo.currentPower;
+      }
+    }
 
     if (paused != true) {
       if (activityInfo != null) {
@@ -305,8 +307,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           } else if (workout.step.targetType != null &&
                      workout.step.durationType == 1) {
             stepType = 1;
-            if (workout.step.durationValue != null && DEBUG == false &&
-                remainingDistance >= 0) {
+            if (workout.step.durationValue != null && remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
                                   ((activityInfo.elapsedDistance).toNumber() -
                                    stepStartDistance);
@@ -317,7 +318,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
           } else {
             stepType = 0;
-            if (workout.step.durationValue != null && DEBUG == false &&
+            if (workout.step.durationValue != null &&
                 remainingTime >= 0) {
               remainingTime =
                   (workout.step.durationValue - stepTime).toNumber();
@@ -329,20 +330,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         } else {
           stepType = 99;
           shouldDisplayAlert = false;
-        }
-
-        if (DEBUG) {
-          targetHigh = 160;
-          targetLow = 100;
-          stepType = 1;
-          if (remainingDistance == 0) {
-            remainingDistance = 20000;
-          }
-          remainingDistance = remainingDistance - 1;
-          if (usePercentage && targetHigh != null && targetLow != null) {
-            targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
-            targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
-          }
         }
 
         switchCounter++;
@@ -357,21 +344,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           switchCounter = 0;
         }
 
-        if (activityInfo has : currentCadence) {
-          cadence = activityInfo.currentCadence;
-        }
-        if (activityInfo has : currentHeartRate) {
-          hr = activityInfo.currentHeartRate;
-        }
 
-        if (activityInfo has : currentPower) {
-          if (usePercentage && activityInfo.currentPower != null) {
-            currentPower =
-                ((activityInfo.currentPower / (FTP * 1.0)) * 100).toNumber();
-          } else {
-            currentPower = activityInfo.currentPower;
-          }
 
+        if (activityInfo has :currentPower) {
           if (stepType == 99) {
             var i = 1;
             var condition = true;
@@ -451,13 +426,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
           // Show an alert if above of below
           if (WatchUi.DataField has
-              : showAlert && showAlerts && shouldDisplayAlert) {
+              :showAlert && showAlerts && shouldDisplayAlert) {
             if (stepType != 99 &&
                 (currentPower != null && (targetLow != 0 && targetHigh != 0) &&
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
                 if (alertCount < 3) {
-                  if (Attention has : vibrate && vibrate) {
+                  if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
                   }
 
@@ -842,10 +817,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var ss = seconds % 60;
 
     if (hh != 0) {
-      return Lang.format("$1$:$2$:$3$",
-                         [ hh, mm.format("%02d"), ss.format("%02d") ]);
+      return hh + ":" + mm.format("%02d") + ":" + ss.format("%02d");
     } else {
-      return Lang.format("$1$:$2$", [ mm, ss.format("%02d") ]);
+      return mm + ":" + ss.format("%02d");
     }
   }
 
@@ -856,7 +830,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       secondsPerUnit = (secondsPerUnit + 0.5).toNumber();
       var minutes = (secondsPerUnit / 60);
       var seconds = (secondsPerUnit % 60);
-      return Lang.format("$1$:$2$", [ minutes, seconds.format("%02u") ]);
+      return minutes + ":" + seconds.format("%02u");
     } else {
       return "0:00";
     }
