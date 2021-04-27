@@ -55,20 +55,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   // Top Arc, Bottom Arc, Offset Target Y, Background rect height, Offset Target
   // X, Center mid field ]
 
-  (
-      : roundzero) hidden var geometry =
+  (:roundzero) const geometry =
       [ 218, 109, 77, 122, 167, 70, 161, 103, 114, 85, 27, 45, 30, 116 ];
-  (
-      : roundone) hidden var geometry =
+  (:roundone) const geometry =
       [ 240, 120, 85, 135, 185, 77, 177, 105, 114, 96, 32, 50, 40, 127 ];
-  (
-      : roundtwo) hidden var geometry =
+  (:roundtwo) const geometry =
       [ 260, 130, 91, 146, 201, 83, 192, 115, 124, 106, 37, 55, 45, 138 ];
-  (
-      : roundthree) hidden var geometry =
+  (:roundthree) const geometry =
       [ 280, 140, 98, 157, 216, 90, 207, 125, 134, 116, 42, 59, 50, 149 ];
-  (
-      : roundfour) hidden var geometry =
+  (:roundfour) const geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
 
   function initialize() {
