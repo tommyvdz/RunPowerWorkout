@@ -75,6 +75,9 @@ jobs:
 
       - run: |
           sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
+          if [[ "${{ github.event.release.tag_name }}" =~ "beta" ]]; then
+            sed -i "s/4fa3fd29424b46819c4f4d4229cf8051/66a49cdf-46f8-4a50-8e94-6455da238d5f/g" manifest.xml
+          fi
         if: github.event_name == 'release'
         name: set the release version
 

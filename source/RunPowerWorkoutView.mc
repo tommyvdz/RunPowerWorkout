@@ -1,5 +1,4 @@
 using Toybox.WatchUi;
-using Toybox.Graphics as Gfx;
 using Toybox.Time;
 using Toybox.Attention;
 using Toybox.UserProfile;
@@ -10,6 +9,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var stepStartTime;
   hidden var stepStartDistance;
   hidden var stepPower;
+  hidden var lapTime;
+  hidden var lapStartTime;
   hidden var targetHigh;
   hidden var targetLow;
   hidden var nextTargetHigh;
@@ -45,6 +46,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var fontOffset = 0;
   hidden var useCustomFonts;
   hidden var showSmallDecimals;
+  hidden var pwrZones;
+  hidden var pwrZonesLabels;
+  hidden var pwrZonesColors;
+  hidden var currentPwrZone;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -67,15 +72,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       : roundfour) hidden var geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
 
-  hidden var showExtra = false;
-
   hidden var DEBUG = false;
 
   function initialize() {
     // read settings
     usePercentage = Utils.replaceNull(
         Application.getApp().getProperty("PERCENTAGE"), false);
-    FTP = Utils.replaceNull(Application.getApp().getProperty("FTP"), 325);
+    FTP = Utils.replaceNull(Application.getApp().getProperty("FTP"), 330);
     showAlerts =
         Utils.replaceNull(Application.getApp().getProperty("ALERT"), true);
     vibrate =
@@ -84,6 +87,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("POWER_AVERAGE"), 3);
     showColors =
         Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
+    showColors =
+        Utils.replaceNull(Application.getApp().getProperty("SHOW_COLORS"), 1);
+    var zones = Utils.replaceNull(Application.getApp().getProperty("ZONES"), 4);
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
@@ -98,6 +104,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     DataField.initialize();
     timer = 0;
     stepTime = 0;
+    lapTime = 0;
+    lapStartTime = 0;
     stepStartTime = 0;
     stepSpeed = null;
     stepStartDistance = 0;
@@ -105,7 +113,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     targetLow = 0;
     remainingTime = 0;
     remainingDistance = 0;
-    stepType = 0;
+    stepType = 99;
     currentPower = 0;
     cadence = 0;
     hr = 0;
@@ -120,6 +128,29 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
     remainingDistanceSpeed = -1;
+    currentPwrZone = 1;
+
+    if (zones == 2) {
+      pwrZones = WatchUi.loadResource(Rez.JsonData.P2);
+      pwrZonesLabels = WatchUi.loadResource(Rez.JsonData.Z2);
+      pwrZonesColors = WatchUi.loadResource(Rez.JsonData.C2);
+    } else if (zones == 3) {
+      pwrZones = WatchUi.loadResource(Rez.JsonData.P3);
+      pwrZonesLabels = WatchUi.loadResource(Rez.JsonData.Z3);
+      pwrZonesColors = WatchUi.loadResource(Rez.JsonData.C3);
+    } else if (zones == 4) {
+      pwrZones = WatchUi.loadResource(Rez.JsonData.P4);
+      pwrZonesLabels = WatchUi.loadResource(Rez.JsonData.Z4);
+      pwrZonesColors = WatchUi.loadResource(Rez.JsonData.C4);
+    } else if (zones == 5) {
+      pwrZones = WatchUi.loadResource(Rez.JsonData.P5);
+      pwrZonesLabels = WatchUi.loadResource(Rez.JsonData.Z5);
+      pwrZonesColors = WatchUi.loadResource(Rez.JsonData.C5);
+    } else {
+      pwrZones = WatchUi.loadResource(Rez.JsonData.P1);
+      pwrZonesLabels = WatchUi.loadResource(Rez.JsonData.Z1);
+      pwrZonesColors = WatchUi.loadResource(Rez.JsonData.C1);
+    }
   }
 
   function onTimerStart() { paused = false; }
@@ -130,7 +161,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   function onTimerPause() { paused = true; }
 
-  function onTimerLap() {}
+  function onTimerLap() {
+    lapTime = 0;
+    lapStartTime = timer;
+  }
 
   function onWorkoutStepComplete() {
     stepStartTime = timer;
@@ -148,6 +182,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     stepStartTime = timer;
     stepStartDistance = 0;
     stepTime = 0;
+    lapTime = 0;
+    lapStartTime = timer;
     stepPower = null;
     stepSpeed = null;
     remainingTime = 0;
@@ -159,46 +195,30 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   ( : highmem) function set_fonts() {
     if (useCustomFonts) {
       fontOffset = -4;
-      showExtra = true;
       fonts = [
-        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
+        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.C),
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
         WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
       ];
     } else {
-      fonts = [
-        Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
-        Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
-        Graphics.FONT_NUMBER_THAI_HOT
-      ];
+      fonts = [ 0, 1, 2, 3, 6, 8 ];
     }
   }
 
   ( : medmem) function set_fonts() {
     if (useCustomFonts) {
       fontOffset = -4;
-      showExtra = true;
       fonts = [
-        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.B),
+        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.C),
         WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
         WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
       ];
     } else {
-      fonts = [
-        Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
-        Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
-        Graphics.FONT_NUMBER_THAI_HOT
-      ];
+      fonts = [ 0, 1, 2, 3, 6, 8 ];
     }
   }
 
-  ( : lowmem) function set_fonts() {
-    fonts = [
-      Graphics.FONT_XTINY, Graphics.FONT_TINY, Graphics.FONT_SMALL,
-      Graphics.FONT_MEDIUM, Graphics.FONT_NUMBER_MEDIUM,
-      Graphics.FONT_NUMBER_THAI_HOT
-    ];
-  }
+  ( : lowmem) function set_fonts() { fonts = [ 0, 1, 2, 3, 6, 8 ]; }
 
   // Set your layout here. Anytime the size of obscurity of
   // the draw context is changed this will be called.
@@ -218,6 +238,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (activityInfo != null) {
         timer = activityInfo.timerTime / 1000;
         stepTime = timer - stepStartTime;
+        lapTime = timer - lapStartTime;
 
         shouldDisplayAlert = (stepTime > 15);
 
@@ -306,9 +327,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
           }
         } else {
-          targetHigh = 0;
-          targetLow = 0;
-          stepType = 5;
+          stepType = 99;
           shouldDisplayAlert = false;
         }
 
@@ -351,6 +370,34 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 ((activityInfo.currentPower / (FTP * 1.0)) * 100).toNumber();
           } else {
             currentPower = activityInfo.currentPower;
+          }
+
+          if (stepType == 99) {
+            var i = 1;
+            var condition = true;
+            while (currentPower != null && currentPower != 0 && i < pwrZones.size() && condition) {
+              if (usePercentage) {
+                condition = currentPower >= pwrZones[i];
+              } else {
+                condition =
+                    currentPower >=
+                    (((pwrZones[i] * 1.0 * FTP) / 100) + 0.5).toNumber();
+              }
+              currentPwrZone = i;
+              i++;
+            }
+            if (usePercentage) {
+              targetHigh = pwrZones[currentPwrZone - 1].toNumber() + "%-" +
+                           pwrZones[currentPwrZone].toNumber() + "%";
+            } else {
+              targetHigh =
+                  (((pwrZones[currentPwrZone - 1] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber() +
+                  "-" +
+                  (((pwrZones[currentPwrZone] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber();
+            }
+            targetLow = "ZONE " + pwrZonesLabels[currentPwrZone];
           }
 
           if (currentPower != null) {
@@ -405,7 +452,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           // Show an alert if above of below
           if (WatchUi.DataField has
               : showAlert && showAlerts && shouldDisplayAlert) {
-            if ((currentPower != null && (targetLow != 0 && targetHigh != 0) &&
+            if (stepType != 99 &&
+                (currentPower != null && (targetLow != 0 && targetHigh != 0) &&
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
                 if (alertCount < 3) {
@@ -414,7 +462,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                   }
 
                   WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
-                      targetHigh, targetLow, currentPower));
+                      targetHigh, targetLow, currentPower,
+                      [ fonts[2], fonts[5] ]));
                   alertDisplayed = true;
                   alertTimer = timer;
                   alertCount++;
@@ -440,282 +489,344 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function onUpdate(dc) {
     dc.setAntiAlias(true);
 
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    var singleField =
+        dc.getWidth() == geometry[0] && dc.getHeight() == geometry[0];
+
+    if (getBackgroundColor() == 0x000000) {
+      dc.setColor(0xFFFFFF, -1);
     } else {
-      dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-    }
-
-    if (hr != null) {
-      if (showColors == 1) {
-        if (hr > hrZones[4]) {
-          dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[3]) {
-          dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[2]) {
-          dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[1]) {
-          dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-        } else {
-          dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-        }
-        dc.fillRectangle(geometry[6], geometry[3], geometry[5], geometry[11]);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-      } else if (showColors == 2) {
-        if (hr > hrZones[4]) {
-          dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[3]) {
-          dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[2]) {
-          dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
-        } else if (hr > hrZones[1]) {
-          dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-        } else {
-          dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-        }
-      }
-    }
-    dc.drawText(geometry[6] + 3, geometry[3] + fontOffset, fonts[0], "HR",
-                Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[6] + 3, geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                hr == null ? 0 : hr, Graphics.TEXT_JUSTIFY_LEFT);
-
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    } else {
-      dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-    }
-
-    if (stepPower != null) {
-      if (targetHigh != 0 && targetLow != 0) {
-        if (showColors == 1) {
-          if (stepPower.toNumber() < targetLow) {
-            dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-          } else if (stepPower.toNumber() > targetHigh) {
-            dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
-          } else {
-            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
-          }
-          dc.fillRectangle(geometry[5], geometry[2], geometry[6] - geometry[5],
-                           geometry[11]);
-          dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        } else if (showColors == 2) {
-          if (stepPower.toNumber() < targetLow) {
-            dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-          } else if (stepPower.toNumber() > targetHigh) {
-            dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
-          } else {
-            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
-          }
-        }
-      }
-    }
-    dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0], "Step Pwr",
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[13], geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                stepPower == null ? 0 : stepPower.toNumber(),
-                Graphics.TEXT_JUSTIFY_CENTER);
-
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    } else {
-      dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+      dc.setColor(0x000000, -1);
     }
 
     if (currentPower != null) {
-      if (targetHigh != 0 && targetLow != 0) {
+      if (stepType == 99) {
+        if (showColors == 1) {
+          dc.setColor(pwrZonesColors[currentPwrZone], -1);
+          dc.fillRectangle(0, 0, singleField ? geometry[0] : dc.getWidth(),
+                           singleField ? geometry[2] : dc.getHeight());
+          dc.setColor(0xFFFFFF, -1);
+        } else if (showColors == 2) {
+          dc.setColor(pwrZonesColors[currentPwrZone], -1);
+        }
+      } else if (targetHigh != 0 && targetLow != 0) {
         if (showColors == 1) {
           if (currentPower < targetLow) {
-            dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0x0000FF, -1);
           } else if (currentPower > targetHigh) {
-            dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0xAA0000, -1);
           } else {
-            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0x00AA00, -1);
           }
-          dc.fillRectangle(0, 0, geometry[0], geometry[2]);
-          dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+          dc.fillRectangle(0, 0, singleField ? geometry[0] : dc.getWidth(),
+                           singleField ? geometry[2] : dc.getHeight());
+          dc.setColor(0xFFFFFF, -1);
         } else if (showColors == 2) {
           if (currentPower < targetLow) {
-            dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0x0000FF, -1);
           } else if (currentPower > targetHigh) {
-            dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0xAA0000, -1);
           } else {
-            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(0x00AA00, -1);
           }
         }
       }
     }
-    dc.drawText(geometry[1] + 2, 0 + 15 + fontOffset, fonts[4],
-                currentPower == null ? 0 : currentPower,
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[12], geometry[2] - geometry[10], fonts[2], targetLow,
-                Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[0] - geometry[12], geometry[2] - geometry[10],
-                fonts[2], targetHigh, Graphics.TEXT_JUSTIFY_RIGHT);
 
-    //! Draw separator lines
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+    if (singleField) {
+      dc.drawText(stepType == 99 ? 25 : geometry[12],
+                  geometry[2] - geometry[10], fonts[2], targetLow, 2);
+      dc.drawText(
+          stepType == 99 ? geometry[0] - 25 : geometry[0] - geometry[12],
+          geometry[2] - geometry[10], fonts[2], targetHigh, 0);
+      dc.drawText(geometry[1] + 2,
+                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  fonts[4], currentPower == null ? 0 : currentPower, 1);
     } else {
-      dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-    }
+      var ratio = ((dc.getHeight() / (geometry[0] * 1.0)) * 10).toNumber() + 1;
 
-    dc.drawText(geometry[6] + 3, geometry[2] + fontOffset, fonts[0], "Cadence",
-                Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(geometry[6] + 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                cadence == null ? 0 : cadence, Graphics.TEXT_JUSTIFY_LEFT);
+      var labely = (dc.getHeight() / 40) + (fontOffset);
+      var y = (dc.getHeight() / 2) + (dc.getHeight() / 15) - (fontOffset);
+      var x = dc.getWidth() / 2;
+      var align = 1;
 
-    dc.drawText(5, geometry[2] + fontOffset, fonts[0], "Pace",
-                Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(
-        geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
-        Activity.getActivityInfo().currentSpeed == null
-            ? 0
-            : convert_speed_pace(Activity.getActivityInfo().currentSpeed),
-        Graphics.TEXT_JUSTIFY_RIGHT);
-    if (showExtra) {
-      if (useMetric) {
-        dc.drawText(geometry[5] - 3, geometry[2] + fontOffset, fonts[0],
-                    "min/km", Graphics.TEXT_JUSTIFY_RIGHT);
-      } else {
-        dc.drawText(geometry[5] - 5, geometry[2] + fontOffset, fonts[0],
-                    "min/mi", Graphics.TEXT_JUSTIFY_RIGHT);
+      if (DataField.getObscurityFlags() & OBSCURE_TOP) {
+        labely = dc.getHeight() - 10 - (dc.getHeight() / 4) + (fontOffset);
+        y = (dc.getHeight() / 2) - dc.getHeight() / 12 + fontOffset;
       }
-    }
 
-    dc.drawText(geometry[13], geometry[3] + fontOffset, fonts[0], "El. Time",
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[13], geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                format_duration(timer), Graphics.TEXT_JUSTIFY_CENTER);
-
-    var lLocalDistance =
-        Activity.getActivityInfo().elapsedDistance == null
-            ? format_distance(0)
-            : format_distance(Activity.getActivityInfo().elapsedDistance);
-
-    dc.drawText(5, geometry[3] + fontOffset, fonts[0], "Distance",
-                Graphics.TEXT_JUSTIFY_LEFT);
-    if (lLocalDistance[2] == null) {
-      dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15,
-                  fonts[3], lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
-    } else {
-      dc.drawText(geometry[5] - 3, geometry[3] + 20 + (fontOffset * 2),
-                  fonts[2], lLocalDistance[2], Graphics.TEXT_JUSTIFY_RIGHT);
-      dc.drawText(geometry[5] - geometry[10] + 4 + fontOffset,
-                  geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                  lLocalDistance[0], Graphics.TEXT_JUSTIFY_RIGHT);
-    }
-    if (showExtra) {
-      dc.drawText(geometry[5] - 3, geometry[3] + fontOffset, fonts[0],
-                  lLocalDistance[1], Graphics.TEXT_JUSTIFY_RIGHT);
-    }
-
-    var lMetricLabel = "";
-    var lMetricValue = "";
-    if (switchMetric == 2 || ((remainingDistance == 0 ||
-                               remainingDistance > remainingDistanceSpeed) &&
-                              (remainingTime == 0 || remainingTime > 15))) {
-      if (stepType == 5) {
-        lMetricLabel = "Until";
-        lMetricValue = "Lap Press";
-      } else if (stepType == 1) {
-        var distance = format_distance(remainingDistance);
-        lMetricLabel = "Rem. Dist";
-        lMetricValue = "" + distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
-      } else {
-        lMetricLabel = "Rem. Time";
-        lMetricValue = "" + format_duration(remainingTime);
+      if (DataField.getObscurityFlags() == 1 ||
+          DataField.getObscurityFlags() == 3 ||
+          DataField.getObscurityFlags() == 9) {
+        x = dc.getWidth() - 5;
+        align = 0;
+      } else if (DataField.getObscurityFlags() == 4 ||
+                 DataField.getObscurityFlags() == 6 ||
+                 DataField.getObscurityFlags() == 12) {
+        x = 5;
+        align = 2;
       }
-    } else {
-      lMetricLabel = "Next step";
-      if (switchMetric == 0) {
-        lMetricValue = nextTargetLow + "-" + nextTargetHigh;
+
+      if (DataField.getObscurityFlags() == 3 ||
+          DataField.getObscurityFlags() == 6 ||
+          DataField.getObscurityFlags() == 9 ||
+          DataField.getObscurityFlags() == 12) {
+        ratio -= 1;
+        dc.drawText(x, labely - 5, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                    targetLow, align);
+        dc.drawText(x, labely + 15, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                    targetHigh, align);
       } else {
-        if (nextTargetType == 5) {
-          lMetricValue = "Lap Press";
-        } else if (nextTargetType == 1) {
-          var distance = format_distance(nextTargetDuration * 1.0);
-          lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
-        } else {
-          lMetricValue = format_duration(nextTargetDuration.toNumber());
+        dc.drawText(x, labely, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                    targetLow + " - " + targetHigh, align);
+      }
+      dc.drawText(x, y, fonts[ratio < 7 ? ratio : 6],
+                  currentPower == null ? 0 : currentPower, 4 | align);
+      // smaller datafield
+    }
+
+    if (singleField) {
+      if (getBackgroundColor() == 0x000000) {
+        dc.setColor(0xFFFFFF, -1);
+      } else {
+        dc.setColor(0x000000, -1);
+      }
+
+      if (hr != null) {
+        if (showColors == 1) {
+          if (hr > hrZones[4]) {
+            dc.setColor(0xFF0000, -1);
+          } else if (hr > hrZones[3]) {
+            dc.setColor(0xFF5500, -1);
+          } else if (hr > hrZones[2]) {
+            dc.setColor(0x00AA00, -1);
+          } else if (hr > hrZones[1]) {
+            dc.setColor(0x0000FF, -1);
+          } else {
+            dc.setColor(0x555555, -1);
+          }
+          dc.fillRectangle(geometry[6], geometry[3], geometry[5], geometry[11]);
+          dc.setColor(0xFFFFFF, -1);
+        } else if (showColors == 2) {
+          if (hr > hrZones[4]) {
+            dc.setColor(0xFF0000, -1);
+          } else if (hr > hrZones[3]) {
+            dc.setColor(0xFF5500, -1);
+          } else if (hr > hrZones[2]) {
+            dc.setColor(0x00AA00, -1);
+          } else if (hr > hrZones[1]) {
+            dc.setColor(0x0000FF, -1);
+          } else {
+            dc.setColor(0x555555, -1);
+          }
         }
       }
-    }
+      dc.drawText(geometry[6] + 3, geometry[3] + fontOffset, fonts[0],
+                  "HR", 2);
+      dc.drawText(geometry[6] + 3, geometry[3] + (fontOffset * 5) + 15,
+                  fonts[3], hr == null ? 0 : hr, 2);
 
-    dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
-                Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
-                lMetricValue, Graphics.TEXT_JUSTIFY_CENTER);
-
-    dc.setPenWidth(1);
-
-    //! Horizontal seperators
-    dc.drawLine(0, geometry[2], geometry[0], geometry[2]);
-    dc.drawLine(0, geometry[3], geometry[0], geometry[3]);
-    dc.drawLine(0, geometry[4], geometry[0], geometry[4]);
-
-    //! vertical seperators
-    dc.drawLine(geometry[5], geometry[2], geometry[5], geometry[4]);
-    dc.drawLine(geometry[6], geometry[2], geometry[6], geometry[4]);
-
-    //! The following code to draw the gauge is copied and adapted from
-    //! Ravenfeld - Speed Gauge
-    //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
-
-    dc.setPenWidth(10);
-    dc.setColor(Graphics.COLOR_RED, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               30, 60);
-
-    dc.setColor(Graphics.COLOR_BLUE, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               120, 150);
-
-    dc.setColor(Graphics.COLOR_GREEN, getBackgroundColor());
-    dc.drawArc(geometry[1], geometry[1], geometry[7], Gfx.ARC_COUNTER_CLOCKWISE,
-               60, 120);
-
-    if (getBackgroundColor() == Graphics.COLOR_BLACK) {
-      dc.setColor(Graphics.COLOR_WHITE, getBackgroundColor());
-    } else {
-      dc.setColor(Graphics.COLOR_BLACK, getBackgroundColor());
-    }
-
-    var percent = 0.15;
-    var power = 0.0;
-    if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
-      var range = targetHigh - targetLow;
-      var lowerlimit = 0;
-
-      if (targetLow - range < 0) {
-        lowerlimit = 0;
+      if (getBackgroundColor() == 0x000000) {
+        dc.setColor(0xFFFFFF, -1);
       } else {
-        lowerlimit = targetLow - range;
+        dc.setColor(0x000000, -1);
       }
 
-      var upperlimit = targetHigh + range;
-      power = currentPower - lowerlimit;
-      if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
-        percent = power / (upperlimit - lowerlimit * 1.0);
+      if (stepPower != null) {
+        if (stepType != 99 && targetHigh != 0 && targetLow != 0) {
+          if (showColors == 1) {
+            if (stepPower.toNumber() < targetLow) {
+              dc.setColor(0x0000FF, -1);
+            } else if (stepPower.toNumber() > targetHigh) {
+              dc.setColor(0xAA0000, -1);
+            } else {
+              dc.setColor(0x00AA00, -1);
+            }
+            dc.fillRectangle(geometry[5], geometry[2],
+                             geometry[6] - geometry[5], geometry[11]);
+            dc.setColor(0xFFFFFF, -1);
+          } else if (showColors == 2) {
+            if (stepPower.toNumber() < targetLow) {
+              dc.setColor(0x0000FF, -1);
+            } else if (stepPower.toNumber() > targetHigh) {
+              dc.setColor(0xAA0000, -1);
+            } else {
+              dc.setColor(0x00AA00, -1);
+            }
+          }
+        }
       }
-      if (percent < 0.15) {
-        percent = 0.15;
+      dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0],
+                  "STEP PWR", 1);
+      dc.drawText(geometry[13], geometry[2] + (fontOffset * 5) + 15, fonts[3],
+                  stepPower == null ? 0 : stepPower.toNumber(), 1);
+
+      if (getBackgroundColor() == 0x000000) {
+        dc.setColor(0xFFFFFF, -1);
+      } else {
+        dc.setColor(0x000000, -1);
       }
-      if (percent > 0.85) {
-        percent = 0.85;
+
+      if (getBackgroundColor() == 0x000000) {
+        dc.setColor(0xFFFFFF, -1);
+      } else {
+        dc.setColor(0x000000, -1);
+      }
+
+      dc.drawText(geometry[6] + 3, geometry[2] + fontOffset, fonts[0],
+                  "CADENCE", 2);
+      dc.drawText(geometry[6] + 3, geometry[2] + (fontOffset * 5) + 15,
+                  fonts[3], cadence == null ? 0 : cadence, 2);
+
+      dc.drawText(5, geometry[2] + fontOffset, fonts[0],
+                  "PACE", 2);
+      dc.drawText(
+          geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
+          Activity.getActivityInfo().currentSpeed == null
+              ? 0
+              : convert_speed_pace(Activity.getActivityInfo().currentSpeed),
+          0);
+      dc.drawText(geometry[5] - 3, geometry[2] + fontOffset, fonts[0],
+                  useMetric ? "/KM"
+                            : "/MI",
+                  0);
+
+      dc.drawText(geometry[13], geometry[3] + fontOffset, fonts[0],
+                  "EL. TIME", 1);
+      dc.drawText(geometry[13], geometry[3] + (fontOffset * 5) + 15, fonts[3],
+                  format_duration(timer), 1);
+
+      var lLocalDistance =
+          Activity.getActivityInfo().elapsedDistance == null
+              ? format_distance(0)
+              : format_distance(Activity.getActivityInfo().elapsedDistance);
+
+      dc.drawText(5, geometry[3] + fontOffset, fonts[0],
+                  "DIST", 2);
+      if (lLocalDistance[2] == null) {
+        dc.drawText(geometry[5] - 3, geometry[3] + (fontOffset * 5) + 15,
+                    fonts[3], lLocalDistance[0], 0);
+      } else {
+        dc.drawText(geometry[5] - 3, geometry[3] + 20 + (fontOffset * 2),
+                    fonts[2], lLocalDistance[2], 0);
+        dc.drawText(geometry[5] - geometry[10] + 4 + fontOffset,
+                    geometry[3] + (fontOffset * 5) + 15, fonts[3],
+                    lLocalDistance[0], 0);
+      }
+      dc.drawText(geometry[5] - 3, geometry[3] + fontOffset, fonts[0],
+                  lLocalDistance[1], 0);
+
+      var lMetricLabel = "";
+      var lMetricValue = "";
+      if (stepType == 99) {
+        lMetricLabel = "LAP TIME";
+        lMetricValue = "" + format_duration(lapTime);
+      } else if (switchMetric == 2 ||
+                 ((remainingDistance == 0 ||
+                   remainingDistance > remainingDistanceSpeed) &&
+                  (remainingTime == 0 || remainingTime > 15))) {
+        if (stepType == 5) {
+          lMetricLabel = "UNTIL";
+          lMetricValue = "LAP PRESS";
+        } else if (stepType == 1) {
+          var distance = format_distance(remainingDistance);
+          lMetricLabel = "REM. DIST";
+          lMetricValue = "" + distance[0] +
+                         (distance[2] == null ? "" : distance[2]) + distance[1];
+        } else {
+          lMetricLabel = "REM. TIME";
+          lMetricValue = "" + format_duration(remainingTime);
+        }
+      } else {
+        lMetricLabel = "NEXT STEP";
+        if (switchMetric == 0) {
+          lMetricValue = nextTargetLow + "-" + nextTargetHigh;
+        } else {
+          if (nextTargetType == 5) {
+            lMetricValue = "LAP PRESS";
+          } else if (nextTargetType == 1) {
+            var distance = format_distance(nextTargetDuration * 1.0);
+            lMetricValue = distance[0] +
+                           (distance[2] == null ? "" : distance[2]) +
+                           distance[1];
+          } else {
+            lMetricValue = format_duration(nextTargetDuration.toNumber());
+          }
+        }
+      }
+
+      dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                  1);
+      dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                  lMetricValue, 1);
+
+      dc.setPenWidth(1);
+
+      //! Horizontal seperators
+      dc.drawLine(0, geometry[2], geometry[0], geometry[2]);
+      dc.drawLine(0, geometry[3], geometry[0], geometry[3]);
+      dc.drawLine(0, geometry[4], geometry[0], geometry[4]);
+
+      //! vertical seperators
+      dc.drawLine(geometry[5], geometry[2], geometry[5], geometry[4]);
+      dc.drawLine(geometry[6], geometry[2], geometry[6], geometry[4]);
+
+      //! The following code to draw the gauge is copied and adapted from
+      //! Ravenfeld - Speed Gauge
+      //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
+
+      if (stepType != 99) {
+        dc.setPenWidth(10);
+        dc.setColor(0xFF0000, getBackgroundColor());
+        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 30, 60);
+
+        dc.setColor(0x00FF00, getBackgroundColor());
+        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 60, 120);
+
+        dc.setColor(0x00AAFF, getBackgroundColor());
+        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
+
+        if (getBackgroundColor() == 0x000000) {
+          dc.setColor(0xFFFFFF, getBackgroundColor());
+        } else {
+          dc.setColor(0x000000, getBackgroundColor());
+        }
+
+        var percent = 0.15;
+        var power = 0.0;
+        if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
+          var range = targetHigh - targetLow;
+          var lowerlimit = 0;
+
+          if (targetLow - range < 0) {
+            lowerlimit = 0;
+          } else {
+            lowerlimit = targetLow - range;
+          }
+
+          var upperlimit = targetHigh + range;
+          power = currentPower - lowerlimit;
+          if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
+            percent = power / (upperlimit - lowerlimit * 1.0);
+          }
+          if (percent < 0.15) {
+            percent = 0.15;
+          }
+          if (percent > 0.85) {
+            percent = 0.85;
+          }
+        }
+
+        var orientation = -Math.PI * percent - 3 * Math.PI / 2;
+        var radius = geometry[9];
+        var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
+        var xy2 = pol2Cart(geometry[1], geometry[1],
+                           orientation - 5 * Math.PI / 180, geometry[8]);
+        var xy3 = pol2Cart(geometry[1], geometry[1],
+                           orientation - 5 * Math.PI / 180, geometry[9]);
+        var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
+        dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
       }
     }
-
-    var orientation = -Math.PI * percent - 3 * Math.PI / 2;
-    var radius = geometry[9];
-    var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
-    var xy2 = pol2Cart(geometry[1], geometry[1],
-                       orientation - 5 * Math.PI / 180, geometry[8]);
-    var xy3 = pol2Cart(geometry[1], geometry[1],
-                       orientation - 5 * Math.PI / 180, geometry[9]);
-    var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
-    dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
-    // FILL IN THE FIELDS
   }
 
   function pol2Cart(center_x, center_y, radian, radius) {
@@ -754,14 +865,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function format_distance(distance) {
     var factor = 1000;
     var smallunitfactor = 1000;
-    var unit = "km";
-    var smallunit = "m";
+    var unit = "KM";
+    var smallunit = "M";
 
     if (!useMetric) {
       factor = 1609;
       smallunitfactor = 1760;
-      unit = "mi";
-      smallunit = "yd";
+      unit = "MI";
+      smallunit = "YD";
     }
 
     if ((distance / factor) >= 1) {
