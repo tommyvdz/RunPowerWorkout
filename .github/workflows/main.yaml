@@ -30,7 +30,7 @@ jobs:
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices
+          key: devices-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
@@ -47,7 +47,7 @@ jobs:
         if: steps.devices.outputs.cache-hit != 'true'
         name: Install ConnectIQ Devices
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          GARMIN_ACCESS_TOKEN: ${{ secrets.GARMIN_ACCESS_TOKEN }}
           PYTHONUNBUFFERED: 1
 
   build-ciq:
@@ -71,10 +71,13 @@ jobs:
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices
+          key: devices-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
+          if [[ "${{ github.event.release.tag_name }}" =~ "beta" ]]; then
+            sed -i "s/4fa3fd29424b46819c4f4d4229cf8051/66a49cdf-46f8-4a50-8e94-6455da238d5f/g" manifest.xml
+          fi
         if: github.event_name == 'release'
         name: set the release version
 
@@ -87,7 +90,7 @@ jobs:
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file
         env:
-          CIQ_DEV_KEY: ${{ secrets.CIQ_DEV_KEY }}
+          CIQ_DEV_KEY: ${{ secrets.CIQ_DEVELOPER_KEY }}
 
       - uses: actions/upload-artifact@v2
         with:

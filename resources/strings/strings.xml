@@ -1,5 +1,5 @@
 <strings>
-    <string id="AppName">RunPowerWorkout</string>
+	<string id="AppName">RunPowerWorkout</string>
 	<string id="PERCENTAGE">Use Percentage?</string>
 	<string id="FTP">What is your FTP/CP?</string>
 	<string id="ALERT">Display alerts?</string>
@@ -7,9 +7,17 @@
 	<string id="POWER_AVERAGE">Power averaging in seconds (1-30)</string>
 	<string id="MyNumberPrompt">Enter a number</string>
 	<string id="MyNumberError">Enter a number</string>
-    <string id="label">My Value</string>
+	<string id="label">My Value</string>
 	<string id="SHOW_COLORS">Show Colors in Datafield</string>
-	<string id="SHOW_COLORS_1">Foreground + Background</string>
-	<string id="SHOW_COLORS_2">Foreground Only</string>
+	<string id="SHOW_COLORS_1">Text + Background</string>
+	<string id="SHOW_COLORS_2">Text Only</string>
 	<string id="SHOW_COLORS_3">None</string>
+	<string id="USE_CUSTOM_FONTS">Use custom fonts ? (only for watches with minimum 64KB memory for datafields)</string>
+	<string id="SHOW_SMALL_DECIMALS">Show smaller decimals for distance ?</string>
+	<string id="ZONES">Power zone calculation</string>
+	<string id="ZONES_1">Stryd</string>
+	<string id="ZONES_2">Jim Vance</string>
+	<string id="ZONES_3">Steve Palladino</string>
+	<string id="ZONES_4">80/20</string>
+	<string id="ZONES_5">Van Dijk and Van Megen</string>
 </strings>

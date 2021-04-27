@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("GARMIN_ACCESS_TOKEN")
 CIQ_PATH = f"{str(Path.home())}/.Garmin/ConnectIQ"
 
 os.makedirs(f"{CIQ_PATH}/Fonts", exist_ok=True)

@@ -1,24 +1,39 @@
-<settings> 
-<setting propertyKey="@Properties.FTP" title="@Strings.FTP" prompt="@Strings.MyNumberPrompt"> 
-<settingConfig type="numeric" errorMessage="@Strings.MyNumberError" /> 
-</setting>  
-<setting propertyKey="@Properties.PERCENTAGE" title="@Strings.PERCENTAGE"> 
-	<settingConfig type="boolean" /> 
-</setting>  
-<setting propertyKey="@Properties.ALERT" title="@Strings.ALERT"> 
-<settingConfig type="boolean" /> 
-</setting>  
-<setting propertyKey="@Properties.VIBRATE" title="@Strings.VIBRATE"> 
-	<settingConfig type="boolean" /> 
-</setting> 
-<setting propertyKey="@Properties.POWER_AVERAGE" title="@Strings.POWER_AVERAGE"> 
-	<settingConfig type="numeric" min="1" max="30"/> 
-</setting> 
-<setting propertyKey="@Properties.SHOW_COLORS" title="@Strings.SHOW_COLORS"> 
-<settingConfig type="list">
-<listEntry value="1">@Strings.SHOW_COLORS_1</listEntry>
-<listEntry value="2">@Strings.SHOW_COLORS_2</listEntry>
-<listEntry value="3">@Strings.SHOW_COLORS_3</listEntry>
-</settingConfig>
-</setting> 
+<settings>
+	<setting propertyKey="@Properties.FTP" title="@Strings.FTP" prompt="@Strings.MyNumberPrompt">
+		<settingConfig type="numeric" errorMessage="@Strings.MyNumberError" />
+	</setting>
+	<setting propertyKey="@Properties.PERCENTAGE" title="@Strings.PERCENTAGE">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.ALERT" title="@Strings.ALERT">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.VIBRATE" title="@Strings.VIBRATE">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.POWER_AVERAGE" title="@Strings.POWER_AVERAGE">
+		<settingConfig type="numeric" min="1" max="30" />
+	</setting>
+	<setting propertyKey="@Properties.SHOW_COLORS" title="@Strings.SHOW_COLORS">
+		<settingConfig type="list">
+			<listEntry value="1">@Strings.SHOW_COLORS_1</listEntry>
+			<listEntry value="2">@Strings.SHOW_COLORS_2</listEntry>
+			<listEntry value="3">@Strings.SHOW_COLORS_3</listEntry>
+		</settingConfig>
+	</setting>
+	<setting propertyKey="@Properties.USE_CUSTOM_FONTS" title="@Strings.USE_CUSTOM_FONTS">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.SHOW_SMALL_DECIMALS" title="@Strings.SHOW_SMALL_DECIMALS">
+		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.ZONES" title="@Strings.ZONES">
+		<settingConfig type="list">
+			<listEntry value="1">@Strings.ZONES_1</listEntry>
+			<listEntry value="2">@Strings.ZONES_2</listEntry>
+			<listEntry value="3">@Strings.ZONES_3</listEntry>
+			<listEntry value="4">@Strings.ZONES_4</listEntry>
+			<listEntry value="5">@Strings.ZONES_5</listEntry>
+		</settingConfig>
+	</setting>
 </settings>
