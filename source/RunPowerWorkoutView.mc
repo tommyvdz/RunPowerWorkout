@@ -2,6 +2,7 @@ using Toybox.WatchUi;
 using Toybox.Time;
 using Toybox.Attention;
 using Toybox.UserProfile;
+using Toybox.AntPlus;
 
 class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var timer;
@@ -33,6 +34,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var useMetric;
   hidden var FTP;
   hidden var vibrate;
+  hidden var tone;
+  hidden var countdown;
   hidden var showAlerts;
   hidden var switchCounter;
   hidden var switchMetric;
@@ -49,6 +52,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var pwrZonesLabels;
   hidden var pwrZonesColors;
   hidden var currentPwrZone;
+  hidden var sensor;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -66,7 +70,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:roundfour) const geometry =
       [ 390, 195, 140, 220, 300, 125, 289, 180, 189, 171, 42, 80, 45, 207 ];
 
-  function initialize() {
+  function initialize(strydsensor) {
     // read settings
     usePercentage = Utils.replaceNull(
         Application.getApp().getProperty("A"), false);
@@ -79,6 +83,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("E"), 3);
     showColors =
         Utils.replaceNull(Application.getApp().getProperty("F"), 1);
+    tone =
+        Utils.replaceNull(Application.getApp().getProperty("J"), true);
+    countdown =
+        Utils.replaceNull(Application.getApp().getProperty("K"), true);
     var zones = Utils.replaceNull(Application.getApp().getProperty("G"), 4);
 
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
@@ -117,6 +125,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     currentPowerAverage = new[powerAverage];
     remainingDistanceSpeed = -1;
     currentPwrZone = 1;
+    sensor = strydsensor;
 
     if (zones == 2) {
       pwrZones = WatchUi.loadResource(Rez.JsonData.P2);
@@ -222,13 +231,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       hr = activityInfo.currentHeartRate;
     }
 
-    if (activityInfo has : currentPower) {
-      if (usePercentage && activityInfo.currentPower != null) {
-        currentPower =
-            ((activityInfo.currentPower / (FTP * 1.0)) * 100).toNumber();
-      } else {
-        currentPower = activityInfo.currentPower;
-      }
+    if (activityInfo has :currentPower) {
+      currentPower = activityInfo.currentPower;
+    } else if(sensor != null){
+      currentPower = sensor.currentPower;
+    }
+
+    if (usePercentage && activityInfo.currentPower != null) {
+      currentPower =
+          ((currentPower / (FTP * 1.0)) * 100).toNumber();
     }
 
     if (paused != true) {
@@ -329,19 +340,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
         switchCounter++;
         if (switchCounter > 1) {
-          if (switchMetric == 0) {
-            switchMetric = 1;
-          } else if (switchMetric == 1) {
-            switchMetric = 2;
-          } else {
-            switchMetric = 0;
-          }
+          switchMetric = (switchMetric + 1 ) % 3;
           switchCounter = 0;
         }
 
-
-
-        if (activityInfo has :currentPower) {
+        if (activityInfo has :currentPower || sensor != null) {
           if (stepType == 99) {
             var i = 1;
             var condition = true;
@@ -378,18 +381,18 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             currentPowerAverage[0] = currentPower;
 
             if (stepPower == null) {
-              stepPower = currentPower;
+              stepPower = currentPower.toNumber();
             } else if (stepTime != 0) {
-              stepPower = (((stepPower * (stepTime - 1)) + currentPower) /
-                           (stepTime * 1.0));
+              stepPower = ((((stepPower * (stepTime - 1)) + currentPower) /
+                           (stepTime * 1.0))).toNumber();
             }
 
-            if (Activity.getActivityInfo().currentSpeed != null) {
+            if (activityInfo.currentSpeed != null) {
               if (stepSpeed == null) {
-                stepSpeed = Activity.getActivityInfo().currentSpeed;
+                stepSpeed = activityInfo.currentSpeed;
               } else if (stepTime > 5) {
                 stepSpeed = (((stepSpeed * (stepTime - 1)) +
-                              Activity.getActivityInfo().currentSpeed) /
+                              activityInfo.currentSpeed) /
                              (stepTime * 1.0));
               }
             }
@@ -404,19 +407,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             var entries = powerAverage;
 
             for (var i = 0; i < powerAverage; ++i) {
-              if (currentPowerAverage[i] != null) {
+              if (currentPowerAverage[i] != null){
                 tempAverage += currentPowerAverage[i];
               } else {
                 entries -= 1;
               }
             }
 
-            currentPower =
-                ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
-
+            currentPower = ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
           } else {
-            currentPower = 0;  // in order to prevent problems when using
-                               // currentpower elsewhere
+            currentPower = 0;
           }
 
           // Show an alert if above of below
@@ -428,7 +428,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               if (alertDisplayed == false) {
                 if (alertCount < 3) {
                   if (Attention has :vibrate && vibrate) {
-                    Attention.vibrate([new Attention.VibeProfile(50, 1000)]);
+                    Attention.vibrate([
+                      new Attention.VibeProfile(100, 250),
+                      new Attention.VibeProfile(0, 100),
+                      new Attention.VibeProfile(100, 250)
+                    ]);
                   }
 
                   WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
@@ -458,11 +462,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   // once a second when the data field is visible.
   function onUpdate(dc) {
     dc.setAntiAlias(true);
+    var bgColor = getBackgroundColor();
+    var width = dc.getWidth();
+    var height = dc.getHeight();
+    var activityInfo = Activity.getActivityInfo();
 
-    var singleField =
-        dc.getWidth() == geometry[0] && dc.getHeight() == geometry[0];
+    var singleField = width == geometry[0] && height == geometry[0];
 
-    if (getBackgroundColor() == 0x000000) {
+    if (bgColor == 0x000000) {
       dc.setColor(0xFFFFFF, -1);
     } else {
       dc.setColor(0x000000, -1);
@@ -472,8 +479,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (stepType == 99) {
         if (showColors == 1) {
           dc.setColor(pwrZonesColors[currentPwrZone], -1);
-          dc.fillRectangle(0, 0, singleField ? geometry[0] : dc.getWidth(),
-                           singleField ? geometry[2] : dc.getHeight());
+          dc.fillRectangle(0, 0, singleField ? geometry[0] : width,
+                           singleField ? geometry[2] : height);
           dc.setColor(0xFFFFFF, -1);
         } else if (showColors == 2) {
           dc.setColor(pwrZonesColors[currentPwrZone], -1);
@@ -487,8 +494,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           } else {
             dc.setColor(0x00AA00, -1);
           }
-          dc.fillRectangle(0, 0, singleField ? geometry[0] : dc.getWidth(),
-                           singleField ? geometry[2] : dc.getHeight());
+          dc.fillRectangle(0, 0, singleField ? geometry[0] : width,
+                           singleField ? geometry[2] : height);
           dc.setColor(0xFFFFFF, -1);
         } else if (showColors == 2) {
           if (currentPower < targetLow) {
@@ -512,22 +519,21 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                   stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], currentPower == null ? 0 : currentPower, 1);
     } else {
-      var ratio = ((dc.getHeight() / (geometry[0] * 1.0)) * 10).toNumber() + 1;
-
-      var labely = (dc.getHeight() / 40) + (fontOffset);
-      var y = (dc.getHeight() / 2) + (dc.getHeight() / 15) - (fontOffset);
-      var x = dc.getWidth() / 2;
+      var ratio = ((height / (geometry[0] * 1.0)) * 10) + 1;
+      var labely = (height / 40) + (fontOffset);
+      var y = (height / 2) + (height / 15) - (fontOffset);
+      var x = width / 2;
       var align = 1;
 
       if (DataField.getObscurityFlags() & OBSCURE_TOP) {
-        labely = dc.getHeight() - 10 - (dc.getHeight() / 4) + (fontOffset);
-        y = (dc.getHeight() / 2) - dc.getHeight() / 12 + fontOffset;
+        labely = height - 10 - (height / 4) + (fontOffset);
+        y = (height / 2) - height / 12 + fontOffset;
       }
 
       if (DataField.getObscurityFlags() == 1 ||
           DataField.getObscurityFlags() == 3 ||
           DataField.getObscurityFlags() == 9) {
-        x = dc.getWidth() - 5;
+        x = width - 5;
         align = 0;
       } else if (DataField.getObscurityFlags() == 4 ||
                  DataField.getObscurityFlags() == 6 ||
@@ -551,11 +557,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       }
       dc.drawText(x, y, fonts[ratio < 7 ? ratio : 6],
                   currentPower == null ? 0 : currentPower, 4 | align);
-      // smaller datafield
     }
 
     if (singleField) {
-      if (getBackgroundColor() == 0x000000) {
+      if (bgColor == 0x000000) {
         dc.setColor(0xFFFFFF, -1);
       } else {
         dc.setColor(0x000000, -1);
@@ -595,7 +600,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(geometry[6] + 3, geometry[3] + (fontOffset * 5) + 15,
                   fonts[3], hr == null ? 0 : hr, 2);
 
-      if (getBackgroundColor() == 0x000000) {
+      if (bgColor == 0x000000) {
         dc.setColor(0xFFFFFF, -1);
       } else {
         dc.setColor(0x000000, -1);
@@ -604,9 +609,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if (stepPower != null) {
         if (stepType != 99 && targetHigh != 0 && targetLow != 0) {
           if (showColors == 1) {
-            if (stepPower.toNumber() < targetLow) {
+            if (stepPower < targetLow) {
               dc.setColor(0x0000FF, -1);
-            } else if (stepPower.toNumber() > targetHigh) {
+            } else if (stepPower > targetHigh) {
               dc.setColor(0xAA0000, -1);
             } else {
               dc.setColor(0x00AA00, -1);
@@ -615,9 +620,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                              geometry[6] - geometry[5], geometry[11]);
             dc.setColor(0xFFFFFF, -1);
           } else if (showColors == 2) {
-            if (stepPower.toNumber() < targetLow) {
+            if (stepPower < targetLow) {
               dc.setColor(0x0000FF, -1);
-            } else if (stepPower.toNumber() > targetHigh) {
+            } else if (stepPower > targetHigh) {
               dc.setColor(0xAA0000, -1);
             } else {
               dc.setColor(0x00AA00, -1);
@@ -628,15 +633,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(geometry[13], geometry[2] + fontOffset, fonts[0],
                   "STEP PWR", 1);
       dc.drawText(geometry[13], geometry[2] + (fontOffset * 5) + 15, fonts[3],
-                  stepPower == null ? 0 : stepPower.toNumber(), 1);
+                  stepPower == null ? 0 : stepPower, 1);
 
-      if (getBackgroundColor() == 0x000000) {
+      if (bgColor == 0x000000) {
         dc.setColor(0xFFFFFF, -1);
       } else {
         dc.setColor(0x000000, -1);
       }
 
-      if (getBackgroundColor() == 0x000000) {
+      if (bgColor == 0x000000) {
         dc.setColor(0xFFFFFF, -1);
       } else {
         dc.setColor(0x000000, -1);
@@ -651,14 +656,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                   "PACE", 2);
       dc.drawText(
           geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
-          Activity.getActivityInfo().currentSpeed == null
-              ? 0
-              : convert_speed_pace(Activity.getActivityInfo().currentSpeed),
+          activityInfo.currentSpeed == null ? 0 : convert_speed_pace(activityInfo.currentSpeed),
           0);
       dc.drawText(geometry[5] - 3, geometry[2] + fontOffset, fonts[0],
-                  useMetric ? "/KM"
-                            : "/MI",
-                  0);
+                  useMetric ? "/KM" : "/MI", 0);
 
       dc.drawText(geometry[13], geometry[3] + fontOffset, fonts[0],
                   "EL. TIME", 1);
@@ -666,9 +667,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                   format_duration(timer), 1);
 
       var lLocalDistance =
-          Activity.getActivityInfo().elapsedDistance == null
-              ? format_distance(0)
-              : format_distance(Activity.getActivityInfo().elapsedDistance);
+          activityInfo.elapsedDistance == null ? format_distance(0) : format_distance(activityInfo.elapsedDistance);
 
       dc.drawText(5, geometry[3] + fontOffset, fonts[0],
                   "DIST", 2);
@@ -689,7 +688,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       var lMetricValue = "";
       if (stepType == 99) {
         lMetricLabel = "LAP TIME";
-        lMetricValue = "" + format_duration(lapTime);
+        lMetricValue = format_duration(lapTime);
       } else if (switchMetric == 2 ||
                  ((remainingDistance == 0 ||
                    remainingDistance > remainingDistanceSpeed) &&
@@ -700,16 +699,31 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         } else if (stepType == 1) {
           var distance = format_distance(remainingDistance);
           lMetricLabel = "REM. DIST";
-          lMetricValue = "" + distance[0] +
-                         (distance[2] == null ? "" : distance[2]) + distance[1];
+          lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
         } else {
           lMetricLabel = "REM. TIME";
-          lMetricValue = "" + format_duration(remainingTime);
+          lMetricValue = format_duration(remainingTime);
         }
       } else {
         lMetricLabel = "NEXT STEP";
+
+
+
         if (switchMetric == 0) {
           lMetricValue = nextTargetLow + "-" + nextTargetHigh;
+          if(countdown && switchCounter == 0){
+            if (Attention has :vibrate && vibrate) {
+              Attention.vibrate([
+                new Attention.VibeProfile(100, 250)
+              ]);
+            }
+            if (Attention has :ToneProfile && tone) {
+              var toneProfile = [
+                new Attention.ToneProfile( 220, 100)
+              ];
+              Attention.playTone({:toneProfile=>toneProfile});
+            }
+          }
         } else {
           if (nextTargetType == 5) {
             lMetricValue = "LAP PRESS";
@@ -746,32 +760,26 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
       if (stepType != 99) {
         dc.setPenWidth(10);
-        dc.setColor(0xFF0000, getBackgroundColor());
+        dc.setColor(0xFF0000, bgColor);
         dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 30, 60);
 
-        dc.setColor(0x00FF00, getBackgroundColor());
+        dc.setColor(0x00FF00, bgColor);
         dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 60, 120);
 
-        dc.setColor(0x00AAFF, getBackgroundColor());
+        dc.setColor(0x00AAFF, bgColor);
         dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
 
-        if (getBackgroundColor() == 0x000000) {
-          dc.setColor(0xFFFFFF, getBackgroundColor());
+        if (bgColor== 0x000000) {
+          dc.setColor(0xFFFFFF, bgColor);
         } else {
-          dc.setColor(0x000000, getBackgroundColor());
+          dc.setColor(0x000000, bgColor);
         }
 
         var percent = 0.15;
         var power = 0.0;
         if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
           var range = targetHigh - targetLow;
-          var lowerlimit = 0;
-
-          if (targetLow - range < 0) {
-            lowerlimit = 0;
-          } else {
-            lowerlimit = targetLow - range;
-          }
+          var lowerlimit = targetLow - range < 0 ? 0 : targetLow - range;
 
           var upperlimit = targetHigh + range;
           power = currentPower - lowerlimit;
@@ -788,11 +796,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
         var orientation = -Math.PI * percent - 3 * Math.PI / 2;
         var radius = geometry[9];
+        var xy23 = orientation - 5 * Math.PI / 180;
         var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
-        var xy2 = pol2Cart(geometry[1], geometry[1],
-                           orientation - 5 * Math.PI / 180, geometry[8]);
-        var xy3 = pol2Cart(geometry[1], geometry[1],
-                           orientation - 5 * Math.PI / 180, geometry[9]);
+        var xy2 = pol2Cart(geometry[1], geometry[1], xy23, geometry[8]);
+        var xy3 = pol2Cart(geometry[1], geometry[1], xy23, geometry[9]);
         var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
         dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
       }

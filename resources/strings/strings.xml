@@ -4,6 +4,9 @@
 	<string id="FTP">What is your FTP/CP?</string>
 	<string id="ALERT">Display alerts?</string>
 	<string id="VIBRATE">Vibrate on alerts?</string>
+	<string id="TONE">Play tone on alerts?</string>
+	<string id="COUNTDOWN">Play tone and/or vibrate during countdown ?</string>
+	<string id="ANTID">ANT ID for Stryd footpod (for non multisport watches)</string>
 	<string id="POWER_AVERAGE">Power averaging in seconds (1-30)</string>
 	<string id="MyNumberPrompt">Enter a number</string>
 	<string id="MyNumberError">Enter a number</string>
