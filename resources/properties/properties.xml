@@ -1,14 +1,13 @@
 <properties>
     <property id="A" type="boolean">false</property>
-    <property id="B" type="number">330</property>
+    <property id="B" type="number">309</property>
     <property id="C" type="boolean">true</property>
     <property id="D" type="boolean">true</property>
     <property id="E" type="number">3</property>
     <property id="F" type="number">1</property>
-    <property id="G" type="number">4</property>
+    <property id="G" type="number">1</property>
     <property id="H" type="boolean">true</property>
     <property id="I" type="boolean">true</property>
     <property id="J" type="boolean">true</property>
     <property id="K" type="boolean">true</property>
-    <property id="L" type="number">46446</property>
 </properties>

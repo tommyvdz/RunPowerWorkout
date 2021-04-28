@@ -42,7 +42,4 @@
 	<setting propertyKey="@Properties.K" title="@Strings.COUNTDOWN">
 		<settingConfig type="boolean" />
 	</setting>
-	<setting propertyKey="@Properties.L" title="@Strings.ANTID">
-		<settingConfig type="numeric" />
-	</setting>
 </settings>

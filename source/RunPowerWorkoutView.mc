@@ -202,19 +202,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
   }
 
-  (:medmem) function set_fonts() {
-    if (Utils.replaceNull(Application.getApp().getProperty("I"), true)) {
-      fontOffset = -4;
-      fonts = [
-        WatchUi.loadResource(Rez.Fonts.A), WatchUi.loadResource(Rez.Fonts.C),
-        WatchUi.loadResource(Rez.Fonts.C), WatchUi.loadResource(Rez.Fonts.D),
-        WatchUi.loadResource(Rez.Fonts.E), WatchUi.loadResource(Rez.Fonts.F)
-      ];
-    } else {
-      fonts = [ 0, 1, 2, 3, 6, 8 ];
-    }
-  }
-
   (:lowmem) function set_fonts() { fonts = [ 0, 1, 2, 3, 6, 8 ]; }
 
   function onLayout(dc) { return true; }
@@ -510,14 +497,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (singleField) {
-      dc.drawText(stepType == 99 ? 25 : geometry[12],
-                  geometry[2] - geometry[10], fonts[2], targetLow, 2);
-      dc.drawText(
-          stepType == 99 ? geometry[0] - 25 : geometry[0] - geometry[12],
-          geometry[2] - geometry[10], fonts[2], targetHigh, 0);
-      dc.drawText(geometry[1] + 2,
-                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
-                  fonts[4], currentPower == null ? 0 : currentPower, 1);
+      drawTop(dc);
     } else {
       var ratio = ((height / (geometry[0] * 1.0)) * 10) + 1;
       var labely = (height / 40) + (fontOffset);
@@ -656,7 +636,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                   "PACE", 2);
       dc.drawText(
           geometry[5] - 3, geometry[2] + (fontOffset * 5) + 15, fonts[3],
-          activityInfo.currentSpeed == null ? 0 : convert_speed_pace(activityInfo.currentSpeed),
+          activityInfo.currentSpeed == null ? 0 : Utils.convert_speed_pace(activityInfo.currentSpeed, useMetric),
           0);
       dc.drawText(geometry[5] - 3, geometry[2] + fontOffset, fonts[0],
                   useMetric ? "/KM" : "/MI", 0);
@@ -664,10 +644,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(geometry[13], geometry[3] + fontOffset, fonts[0],
                   "EL. TIME", 1);
       dc.drawText(geometry[13], geometry[3] + (fontOffset * 5) + 15, fonts[3],
-                  format_duration(timer), 1);
+                  Utils.format_duration(timer), 1);
 
       var lLocalDistance =
-          activityInfo.elapsedDistance == null ? format_distance(0) : format_distance(activityInfo.elapsedDistance);
+          activityInfo.elapsedDistance == null ? Utils.format_distance(0,useMetric) : Utils.format_distance(activityInfo.elapsedDistance,useMetric);
 
       dc.drawText(5, geometry[3] + fontOffset, fonts[0],
                   "DIST", 2);
@@ -688,7 +668,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       var lMetricValue = "";
       if (stepType == 99) {
         lMetricLabel = "LAP TIME";
-        lMetricValue = format_duration(lapTime);
+        lMetricValue = Utils.format_duration(lapTime);
       } else if (switchMetric == 2 ||
                  ((remainingDistance == 0 ||
                    remainingDistance > remainingDistanceSpeed) &&
@@ -697,17 +677,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           lMetricLabel = "UNTIL";
           lMetricValue = "LAP PRESS";
         } else if (stepType == 1) {
-          var distance = format_distance(remainingDistance);
+          var distance = Utils.format_distance(remainingDistance,useMetric);
           lMetricLabel = "REM. DIST";
           lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
         } else {
           lMetricLabel = "REM. TIME";
-          lMetricValue = format_duration(remainingTime);
+          lMetricValue = Utils.format_duration(remainingTime);
         }
       } else {
         lMetricLabel = "NEXT STEP";
-
-
 
         if (switchMetric == 0) {
           lMetricValue = nextTargetLow + "-" + nextTargetHigh;
@@ -728,12 +706,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           if (nextTargetType == 5) {
             lMetricValue = "LAP PRESS";
           } else if (nextTargetType == 1) {
-            var distance = format_distance(nextTargetDuration * 1.0);
+            var distance = Utils.format_distance(nextTargetDuration * 1.0, useMetric);
             lMetricValue = distance[0] +
                            (distance[2] == null ? "" : distance[2]) +
                            distance[1];
           } else {
-            lMetricValue = format_duration(nextTargetDuration.toNumber());
+            lMetricValue = Utils.format_duration(nextTargetDuration.toNumber(), useMetric);
           }
         }
       }
@@ -758,115 +736,88 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       //! Ravenfeld - Speed Gauge
       //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
 
-      if (stepType != 99) {
-        dc.setPenWidth(10);
-        dc.setColor(0xFF0000, bgColor);
-        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 30, 60);
-
-        dc.setColor(0x00FF00, bgColor);
-        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 60, 120);
-
-        dc.setColor(0x00AAFF, bgColor);
-        dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
-
-        if (bgColor== 0x000000) {
-          dc.setColor(0xFFFFFF, bgColor);
-        } else {
-          dc.setColor(0x000000, bgColor);
-        }
-
-        var percent = 0.15;
-        var power = 0.0;
-        if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
-          var range = targetHigh - targetLow;
-          var lowerlimit = targetLow - range < 0 ? 0 : targetLow - range;
-
-          var upperlimit = targetHigh + range;
-          power = currentPower - lowerlimit;
-          if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
-            percent = power / (upperlimit - lowerlimit * 1.0);
-          }
-          if (percent < 0.15) {
-            percent = 0.15;
-          }
-          if (percent > 0.85) {
-            percent = 0.85;
-          }
-        }
-
-        var orientation = -Math.PI * percent - 3 * Math.PI / 2;
-        var radius = geometry[9];
-        var xy23 = orientation - 5 * Math.PI / 180;
-        var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
-        var xy2 = pol2Cart(geometry[1], geometry[1], xy23, geometry[8]);
-        var xy3 = pol2Cart(geometry[1], geometry[1], xy23, geometry[9]);
-        var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
-        dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
+      if(stepType != 99){
+        drawGauge(dc, bgColor);
       }
     }
   }
 
+  (:lowmem)
+  function drawTop(dc){
+      dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
+      dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
+      dc.drawText(geometry[1] + 2,
+                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  fonts[4], currentPower == null ? 0 : currentPower, 1);
+  }
+
+  (:highmem)
+  function drawTop(dc){
+      dc.drawText(stepType == 99 ? 25 : geometry[12],
+                  geometry[2] - geometry[10], fonts[2], targetLow, 2);
+      dc.drawText(
+          stepType == 99 ? geometry[0] - 25 : geometry[0] - geometry[12],
+          geometry[2] - geometry[10], fonts[2], targetHigh, 0);
+      dc.drawText(geometry[1] + 2,
+                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  fonts[4], currentPower == null ? 0 : currentPower, 1);
+  }
+
+  (:lowmem)
+  function drawGauge(dc, bgColor){
+  }
+
+  (:highmem)
+  function drawGauge(dc, bgColor){
+    dc.setPenWidth(10);
+    dc.setColor(0xFF0000, bgColor);
+    dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 30, 60);
+
+    dc.setColor(0x00FF00, bgColor);
+    dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 60, 120);
+
+    dc.setColor(0x00AAFF, bgColor);
+    dc.drawArc(geometry[1], geometry[1], geometry[7], 0, 120, 150);
+
+    if (bgColor== 0x000000) {
+      dc.setColor(0xFFFFFF, bgColor);
+    } else {
+      dc.setColor(0x000000, bgColor);
+    }
+
+    var percent = 0.15;
+    var power = 0.0;
+    if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
+      var range = targetHigh - targetLow;
+      var lowerlimit = targetLow - range < 0 ? 0 : targetLow - range;
+
+      var upperlimit = targetHigh + range;
+      power = currentPower - lowerlimit;
+      if (power > 0.0 && (upperlimit - lowerlimit) > 0) {
+        percent = power / (upperlimit - lowerlimit * 1.0);
+      }
+      if (percent < 0.15) {
+        percent = 0.15;
+      }
+      if (percent > 0.85) {
+        percent = 0.85;
+      }
+    }
+
+    var orientation = -Math.PI * percent - 3 * Math.PI / 2;
+    var radius = geometry[9];
+    var xy23 = orientation - 5 * Math.PI / 180;
+    var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
+    var xy2 = pol2Cart(geometry[1], geometry[1], xy23, geometry[8]);
+    var xy3 = pol2Cart(geometry[1], geometry[1], xy23, geometry[9]);
+    var xy4 = pol2Cart(geometry[1], geometry[1], orientation, geometry[9]);
+    dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
+  }
+
+  (:highmem)
   function pol2Cart(center_x, center_y, radian, radius) {
     var x = center_x - radius * Math.sin(radian);
     var y = center_y - radius * Math.cos(radian);
-
     return [ Math.ceil(x), Math.ceil(y) ];
-  }
-
-  function format_duration(seconds) {
-    var hh = seconds / 3600;
-    var mm = seconds / 60 % 60;
-    var ss = seconds % 60;
-
-    if (hh != 0) {
-      return hh + ":" + mm.format("%02d") + ":" + ss.format("%02d");
-    } else {
-      return mm + ":" + ss.format("%02d");
-    }
-  }
-
-  function convert_speed_pace(speed) {
-    if (speed != null && speed > 0) {
-      var factor = useMetric ? 1000.0 : 1609.0;
-      var secondsPerUnit = factor / speed;
-      secondsPerUnit = (secondsPerUnit + 0.5).toNumber();
-      var minutes = (secondsPerUnit / 60);
-      var seconds = (secondsPerUnit % 60);
-      return minutes + ":" + seconds.format("%02u");
-    } else {
-      return "0:00";
-    }
-  }
-
-  function format_distance(distance) {
-    var factor = 1000;
-    var smallunitfactor = 1000;
-    var unit = "KM";
-    var smallunit = "M";
-
-    if (!useMetric) {
-      factor = 1609;
-      smallunitfactor = 1760;
-      unit = "MI";
-      smallunit = "YD";
-    }
-
-    if ((distance / factor) >= 1) {
-      var formatted = ((distance * 1.0) / (factor * 1.0)).format("%.2f");
-      var index = formatted.find(".");
-      if (index != null && showSmallDecimals) {
-        return [
-          formatted.substring(0, index), unit,
-          formatted.substring(index, formatted.length())
-        ];
-      } else {
-        return [ formatted, unit, null ];
-      }
-    } else {
-      return [
-        (distance / factor * smallunitfactor).toNumber() + "", smallunit,
-        null
-      ];
-    }
   }
 }

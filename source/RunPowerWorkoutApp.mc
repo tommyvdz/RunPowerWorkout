@@ -2,11 +2,18 @@ using Toybox.Application;
 
 class RunPowerWorkoutApp extends Application.AppBase {
 
-  hidden var sensor;
+  (:ant) hidden var sensor;
 
   function initialize() { AppBase.initialize(); }
 
   // onStart() is called on application start up
+  (:noant)
+  function onStart(state) {}
+
+  (:noant)
+  function onStop(state) {}
+
+  (:ant)
   function onStart(state) {
     //Create the sensor object and open it
     var sensorsetting = Utils.replaceNull(Application.getApp().getProperty("L"), -1);
@@ -19,6 +26,7 @@ class RunPowerWorkoutApp extends Application.AppBase {
   }
 
   // onStop() is called when your application is exiting
+  (:ant)
   function onStop(state) {
     if(sensor != null){
       sensor.close();
@@ -26,5 +34,9 @@ class RunPowerWorkoutApp extends Application.AppBase {
   }
 
   //! Return the initial view of your application here
+  (:ant)
   function getInitialView() { return [new RunPowerWorkoutView(sensor)]; }
+
+  (:noant)
+  function getInitialView() { return [new RunPowerWorkoutView(null)]; }
 }
