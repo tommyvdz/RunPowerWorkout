@@ -34,7 +34,7 @@ Datafield layout is the following
 | --- | --- | --- |
 | 3   | 4   | 6   |
 
-If you have a device with low memory (level 1 or 2), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368021` will display 
+If you have a device with low memory (level 1 or 2), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
 
 | Pace     | Step Power   | Cadence    |
 | -------- | ------------ | ---------- |
