@@ -671,7 +671,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                            (distance[2] == null ? "" : distance[2]) +
                            distance[1];
           } else {
-            lMetricValue = Utils.format_duration(nextTargetDuration.toNumber(), useMetric);
+            lMetricValue = Utils.format_duration(nextTargetDuration.toNumber());
           }
         }
       }
