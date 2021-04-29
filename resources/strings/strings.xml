@@ -11,7 +11,7 @@
 	<string id="SHOW_COLORS_1">Text + Background</string>
 	<string id="SHOW_COLORS_2">Text Only</string>
 	<string id="SHOW_COLORS_3">None</string>
-	<string id="USE_CUSTOM_FONTS">Use custom fonts ? (only for watches with minimum 64KB memory for datafields)</string>
+	<string id="USE_CUSTOM_FONTS">Use custom fonts ? (only for capability level 2 or 4)</string>
 	<string id="SHOW_SMALL_DECIMALS">Show smaller decimals for distance ?</string>
 	<string id="ZONES">Power zone calculation</string>
 	<string id="ZONES_1">Stryd</string>

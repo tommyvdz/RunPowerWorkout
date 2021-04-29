@@ -85,7 +85,12 @@ jobs:
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
-            java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s 3.2.0 -f monkey.jungle
+            if [[ "$i" =~ ^(venu|venu2s)$ ]]; then
+              export SDK=4.0.0
+            else
+              export SDK=3.2.0
+            fi
+            java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s $SDK -f monkey.jungle
           done
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file

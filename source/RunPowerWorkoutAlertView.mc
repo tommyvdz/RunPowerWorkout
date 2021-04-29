@@ -11,6 +11,8 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   (:roundtwo) hidden var geometry = [ 260, 130, 26, 195 ];
   (:roundthree) hidden var geometry = [ 280, 140, 28, 210 ];
   (:roundfour) hidden var geometry = [ 390, 195, 39, 292 ];
+  (:roundfive) hidden var geometry = [ 360, 180, 36, 266 ];
+  (:roundsix) hidden var geometry = [ 416, 208, 41, 308 ];
 
   function initialize(high, low, current, parFonts) {
     DataFieldAlert.initialize();
