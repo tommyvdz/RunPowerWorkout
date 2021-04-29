@@ -1,0 +1,86 @@
+<settings>
+    <setting propertyKey="@Properties.N1" title="@Strings.FD1">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.N2" title="@Strings.FD2">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.N3" title="@Strings.FD3">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.N4" title="@Strings.FD4">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.N5" title="@Strings.FD5">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.N6" title="@Strings.FD6">
+        <settingConfig type="list">
+            <listEntry value="48">@Strings.F1</listEntry>
+            <listEntry value="49">@Strings.F2</listEntry>
+            <listEntry value="50">@Strings.F3</listEntry>
+            <listEntry value="51">@Strings.F4</listEntry>
+            <listEntry value="52">@Strings.F5</listEntry>
+            <listEntry value="53">@Strings.F6</listEntry>
+            <listEntry value="54">@Strings.F7</listEntry>
+            <listEntry value="55">@Strings.F8</listEntry>
+            <listEntry value="56">@Strings.F9</listEntry>
+            <listEntry value="57">@Strings.F10</listEntry>
+        </settingConfig>
+    </setting>
+</settings>

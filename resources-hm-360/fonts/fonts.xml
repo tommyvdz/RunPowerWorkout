@@ -1,0 +1,8 @@
+<fonts>
+    <font id="A" filename="Pragati-20.fnt" antialias="true" />
+    <font id="B" filename="Pragati-32.fnt" antialias="true" />
+    <font id="C" filename="Pragati-36.fnt" antialias="true" />
+    <font id="D" filename="Pragati-58.fnt" antialias="true" />
+    <font id="E" filename="Pragati-90.fnt" antialias="true" />
+    <font id="F" filename="Pragati-148.fnt" antialias="true" />
+</fonts>

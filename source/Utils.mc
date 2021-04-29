@@ -8,7 +8,7 @@ class Utils {
         }
     }
 
-    static function format_distance(distance, useMetric) {
+    static function format_distance(distance, useMetric, showSmallDecimals) {
         var factor = 1000;
         var smallunitfactor = 1000;
         var unit = "KM";

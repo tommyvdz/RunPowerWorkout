@@ -2,8 +2,8 @@
 	<setting propertyKey="@Properties.A" title="@Strings.PERCENTAGE">
 		<settingConfig type="boolean" />
 	</setting>
-	<setting propertyKey="@Properties.B" title="@Strings.FTP" prompt="@Strings.MyNumberPrompt">
-		<settingConfig type="numeric" errorMessage="@Strings.MyNumberError" />
+	<setting propertyKey="@Properties.B" title="@Strings.FTP">
+		<settingConfig type="numeric" />
 	</setting>
 	<setting propertyKey="@Properties.C" title="@Strings.ALERT">
 		<settingConfig type="boolean" />
@@ -41,5 +41,12 @@
 	</setting>
 	<setting propertyKey="@Properties.K" title="@Strings.COUNTDOWN">
 		<settingConfig type="boolean" />
+	</setting>
+	<setting propertyKey="@Properties.M" title="@Strings.LAYOUT">
+		<settingConfig type="list">
+			<listEntry value="1">@Strings.L1</listEntry>
+			<listEntry value="2">@Strings.L2</listEntry>
+			<listEntry value="3">@Strings.L3</listEntry>
+		</settingConfig>
 	</setting>
 </settings>

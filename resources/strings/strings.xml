@@ -7,9 +7,6 @@
 	<string id="TONE">Play tone on alerts?</string>
 	<string id="COUNTDOWN">Play tone and/or vibrate during countdown ?</string>
 	<string id="POWER_AVERAGE">Power averaging in seconds (1-30)</string>
-	<string id="MyNumberPrompt">Enter a number</string>
-	<string id="MyNumberError">Enter a number</string>
-	<string id="label">My Value</string>
 	<string id="SHOW_COLORS">Show Colors in Datafield</string>
 	<string id="SHOW_COLORS_1">Text + Background</string>
 	<string id="SHOW_COLORS_2">Text Only</string>
@@ -22,4 +19,8 @@
 	<string id="ZONES_3">Steve Palladino</string>
 	<string id="ZONES_4">80/20</string>
 	<string id="ZONES_5">Van Dijk and Van Megen</string>
+	<string id="LAYOUT">Layout</string>
+	<string id="L1">1 field</string>
+	<string id="L2">4 fields</string>
+	<string id="L3">6 fields</string>
 </strings>

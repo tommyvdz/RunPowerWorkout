@@ -1,0 +1,5 @@
+<settings>
+    <setting propertyKey="@Properties.N" title="@Strings.FD">
+        <settingConfig type="alphanumeric" />
+    </setting>
+</settings>

@@ -1,0 +1,18 @@
+<strings>
+    <string id="FD1">Field 1</string>
+    <string id="FD2">Field 2</string>
+    <string id="FD3">Field 3</string>
+    <string id="FD4">Field 4</string>
+    <string id="FD5">Field 5</string>
+    <string id="FD6">Field 6</string>
+    <string id="F1">Cadence</string>
+    <string id="F2">Heart Rate</string>
+    <string id="F3">Elapsed Time</string>
+    <string id="F4">Instant Pace</string>
+    <string id="F5">Workout Step Pace</string>
+    <string id="F6">Lap Pace</string>
+    <string id="F7">Workout Step Power</string>
+    <string id="F8">Lap Power</string>
+    <string id="F9">Elapsed Distance</string>
+    <string id="F10">Time</string>
+</strings>
