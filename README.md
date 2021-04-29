@@ -76,7 +76,7 @@ https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
 ##### 4 fields display on low memory devices (capability 1 or 3), inside a workout
 ![](doc/img/LM4fieldsBGColorWorkout.png)
 ##### Alert
-![](doc/img/Alert.png)
+![](doc/img/FullAlert.png)
 
 ### Watch capability matrix
 
@@ -109,7 +109,6 @@ https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
 | Vivoactive 3M   | No           | 32KB             | 1             |
 | Vivoactive 4    | No           | 32KB             | 1             |
 | Vivoactive 4s   | No           | 32KB             | 1             |
-| --------------- | ------------ | ---------------- | ------------- |
 
 ### Pragati Font License
 
