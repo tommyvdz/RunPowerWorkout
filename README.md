@@ -78,6 +78,15 @@ https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
 ##### Alert
 ![](doc/img/FullAlert.png)
 
+### Capabilities level
+
+| Level | Power support ? | Custom Fonts | Nice settings for data field layout ? |
+| ----- | --------------- | ------------ | ------------------------------------- |
+| 1     | No (ANT+)       | No           | No                                    |
+| 2     | No (ANT+)       | Yes          | Yes                                   |
+| 3     | Yes             | No           | No                                    |
+| 4     | Yes             | Yes          | Yes                                   |
+
 ### Watch capability matrix
 
 | Watch           | Multisport ? | Datafield Memory | Feature Level |
