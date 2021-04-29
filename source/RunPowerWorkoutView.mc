@@ -411,14 +411,14 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             currentPowerAverage[0] = currentPower;
 
             if (stepPower == null) {
-              stepPower = currentPower.toNumber();
+              stepPower = currentPower;
             } else if (stepTime != 0) {
               stepPower = ((((stepPower * (stepTime - 1)) + currentPower) /
                            (stepTime * 1.0))).toNumber();
             }
 
             if (lapPower == null) {
-              lapPower = currentPower.toNumber();
+              lapPower = currentPower;
             } else if (lapTime != 0) {
               lapPower = ((((lapPower * (lapTime - 1)) + currentPower) /
                            (lapTime * 1.0))).toNumber();
