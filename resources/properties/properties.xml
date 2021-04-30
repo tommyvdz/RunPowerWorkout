@@ -8,7 +8,5 @@
     <property id="G" type="number">1</property>
     <property id="H" type="boolean">true</property>
     <property id="I" type="boolean">true</property>
-    <property id="J" type="boolean">true</property>
-    <property id="K" type="boolean">true</property>
     <property id="M" type="number">3</property>
 </properties>

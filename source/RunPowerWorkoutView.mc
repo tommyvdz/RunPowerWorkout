@@ -35,8 +35,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var useMetric;
   hidden var FTP;
   hidden var vibrate;
-  hidden var tone;
-  hidden var countdown;
   hidden var showAlerts;
   hidden var switchCounter;
   hidden var switchMetric;
@@ -93,10 +91,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("E"), 3);
     showColors =
         Utils.replaceNull(Application.getApp().getProperty("F"), 1);
-    tone =
-        Utils.replaceNull(Application.getApp().getProperty("J"), true);
-    countdown =
-        Utils.replaceNull(Application.getApp().getProperty("K"), true);
     layout =
         Utils.replaceNull(Application.getApp().getProperty("M"), 3);
     var zones = Utils.replaceNull(Application.getApp().getProperty("G"), 4);
@@ -471,9 +465,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 if (alertCount < 3) {
                   if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([
-                      new Attention.VibeProfile(100, 250),
-                      new Attention.VibeProfile(0, 100),
-                      new Attention.VibeProfile(100, 250)
+                      new Attention.VibeProfile(100, 300),
+                      new Attention.VibeProfile(0, 50),
+                      new Attention.VibeProfile(100, 300),
+                      new Attention.VibeProfile(0, 50),
+                      new Attention.VibeProfile(100, 300)
                     ]);
                   }
 
@@ -643,19 +639,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
         if (switchMetric == 0) {
           lMetricValue = nextTargetLow + "-" + nextTargetHigh;
-          if(countdown && switchCounter == 0){
-            if (Attention has :vibrate && vibrate) {
-              Attention.vibrate([
-                new Attention.VibeProfile(100, 250)
-              ]);
-            }
-            if (Attention has :ToneProfile && tone) {
-              var toneProfile = [
-                new Attention.ToneProfile( 220, 100)
-              ];
-              Attention.playTone({:toneProfile=>toneProfile});
-            }
-          }
         } else {
           if (nextTargetType == 5) {
             lMetricValue = "LAP PRESS";

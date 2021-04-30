@@ -4,8 +4,6 @@
 	<string id="FTP">What is your FTP/CP?</string>
 	<string id="ALERT">Display alerts?</string>
 	<string id="VIBRATE">Vibrate on alerts?</string>
-	<string id="TONE">Play tone on alerts?</string>
-	<string id="COUNTDOWN">Play tone and/or vibrate during countdown ?</string>
 	<string id="POWER_AVERAGE">Power averaging in seconds (1-30)</string>
 	<string id="SHOW_COLORS">Show Colors in Datafield</string>
 	<string id="SHOW_COLORS_1">Text + Background</string>
