@@ -403,6 +403,23 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             targetLow = "ZONE " + pwrZonesLabels[currentPwrZone];
           }
 
+          if (activityInfo.currentSpeed != null) {
+            currentSpeed = activityInfo.currentSpeed;
+            if (stepSpeed == null) {
+              stepSpeed = activityInfo.currentSpeed;
+            } else if (stepTime > 5) {
+              stepSpeed = ((stepSpeed * (stepTime - 1)) + activityInfo.currentSpeed) / (stepTime * 1.0);
+            }
+          }
+
+          if (activityInfo.currentSpeed != null) {
+            if (lapSpeed == null) {
+              lapSpeed = activityInfo.currentSpeed;
+            } else if (lapTime > 5) {
+              lapSpeed = ((lapSpeed * (lapTime - 1)) + activityInfo.currentSpeed) / (lapTime * 1.0);
+            }
+          }
+
           if (currentPower != null) {
             for (var i = powerAverage - 1; i > 0; --i) {
               currentPowerAverage[i] = currentPowerAverage[i - 1];
@@ -413,36 +430,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             if (stepPower == null) {
               stepPower = currentPower;
             } else if (stepTime != 0) {
-              stepPower = ((((stepPower * (stepTime - 1)) + currentPower) /
-                           (stepTime * 1.0))).toNumber();
+              stepPower = ((((stepPower * (stepTime - 1)) + currentPower) * 1.0) / (stepTime * 1.0));
             }
 
             if (lapPower == null) {
               lapPower = currentPower;
             } else if (lapTime != 0) {
-              lapPower = ((((lapPower * (lapTime - 1)) + currentPower) /
-                           (lapTime * 1.0))).toNumber();
-            }
-
-            if (activityInfo.currentSpeed != null) {
-              currentSpeed = activityInfo.currentSpeed;
-              if (stepSpeed == null) {
-                stepSpeed = activityInfo.currentSpeed;
-              } else if (stepTime > 5) {
-                stepSpeed = (((stepSpeed * (stepTime - 1)) +
-                              activityInfo.currentSpeed) /
-                             (stepTime * 1.0));
-              }
-            }
-
-            if (activityInfo.currentSpeed != null) {
-              if (lapSpeed == null) {
-                lapSpeed = activityInfo.currentSpeed;
-              } else if (lapTime > 5) {
-                lapSpeed = (((lapSpeed * (lapTime - 1)) +
-                              activityInfo.currentSpeed) /
-                             (lapTime * 1.0));
-              }
+              lapPower = (((lapPower * (lapTime - 1)) + currentPower) / (lapTime * 1.0));
             }
 
             if (stepType == 1 && remainingDistance < 100 &&
@@ -763,7 +757,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     var percent = 0.15;
     var power = 0.0;
-    if (currentPower > 0 && targetHigh > 0 && targetLow > 0) {
+    if (currentPower != null && currentPower > 0 && targetHigh > 0 && targetLow > 0) {
       var range = targetHigh - targetLow;
       var lowerlimit = targetLow - range < 0 ? 0 : targetLow - range;
 
@@ -888,24 +882,32 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
       label = "STP PWR";
-      value = stepPower == null ? 0 : stepPower;
+      value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
     } else if(type == '7') { 
       label = "LAP PWR";
-      value = lapPower == null ? 0 : lapPower;
+      value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
     } else if(type == '8'){
       var lLocalDistance = elapsedDistance == null ? Utils.format_distance(0,useMetric,showSmallDecimals) : Utils.format_distance(elapsedDistance,useMetric,showSmallDecimals);
       label = "DIST "+lLocalDistance[1];
       value = lLocalDistance[0];
       if(lLocalDistance[2] != null){
-        dc.drawText(textx,y + (fontOffset * 2) + 20, fonts[2],
+        var decimalx = textx;
+        if(align == 2) {
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
+        } else if (align == 1) {
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 16 : decimalx + 8;
+          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 16 - fontOffset;
+        } else if (align == 0){
+          textx = textx - 32 - fontOffset;
+        }
+        dc.drawText(decimalx,y + (fontOffset * 2) + 20, fonts[2],
                 lLocalDistance[2], align);
-        textx = textx - 30 - fontOffset;
       }
     } else if(type == '9') { 
       label = "TIME";
       var time = Sys.getClockTime();
       value = time.hour.format("%02d") + ":" + time.min.format("%02d");
-    } 
+    }
 
     dc.drawText(labelx, y + fontOffset, fonts[0], label, align);
     dc.drawText(textx, y + (fontOffset * 5) + 15, fonts[3], value, align);
