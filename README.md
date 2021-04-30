@@ -65,6 +65,11 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 The datafield can be downloaded in the ConnectIQ Store:
 https://apps.garmin.com/en-US/apps/8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f
 
+
+### Contribution
+
+If you find an issue or want to improve this datafield, feel free to open Issues or PRs ! A slack channel exists if you want to get in touch more informally : https://join.slack.com/t/runpowerworkout/shared_invite/zt-ppmb361w-~tx7C56JvQ130c2b8ii_rQ
+
 ### Screenshots
 
 ##### 6 fields layout with custom fonts (capability level 2 or 4)
