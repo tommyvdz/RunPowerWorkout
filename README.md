@@ -15,7 +15,7 @@ The datafield displays:
 
 If in 4 or 6 fields layout, it will also display the remaining time or distance for the current workout step, or lap time if outside of a workout.
 
-For the 4 and 6 field layouts, you can choose the following metrics (in parenthesis, the number identifier for the string setting for low memory devices):
+For the 4 and 6 field layouts, you can choose the following metrics (in parenthesis, the character identifier for the string setting for low memory devices):
 
 * Cadence (0)
 * Current heart rate (1)
@@ -27,6 +27,9 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Lap power (7)
 * Elapsed distance (8)
 * Current time (9)
+* Altitude (A)
+* Total Ascent (B)
+* Total Descent (C)
 
 Datafield layout is the following
 
@@ -52,8 +55,6 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Choose datafield layout (1, 4 or 6 fields) and which metrics to display.
 * Enable/disable workout alerts
 * Enable/disable vibrations on workout alerts
-* Enable/disable tones on workout alerts
-* Enable/disable vibrations and/or tones on workout countdown (15 seconds before a new workout step)
 * Choose the coloring behaviour: either no colors, text only, text and background.
 * Enable/disable usage of custom fonts (for capability level 2 or 4)
 * Enable/disable smaller decimal for the distance metric field

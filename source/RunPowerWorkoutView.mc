@@ -57,6 +57,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var lapSpeed;
   hidden var elapsedDistance;
   hidden var fields;
+  hidden var altitude;
+  hidden var totalAscent;
+  hidden var totalDescent;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -136,6 +139,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     sensor = strydsensor;
     elapsedDistance = 0;
     currentSpeed = 0;
+    altitude = 0;
+    totalAscent = 0;
+    totalDescent = 0;
 
     if (zones == 2) {
       pwrZones = WatchUi.loadResource(Rez.JsonData.P2);
@@ -259,6 +265,18 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     if (info has :currentSpeed) {
       currentSpeed = info.currentSpeed;
+    }
+
+    if (info has :totalAscent) {
+      totalAscent = info.totalAscent == null ? 0 : info.totalAscent;
+    }
+
+    if (info has :totalDescent) {
+      totalDescent = info.totalDescent == null ? 0 : info.totalDescent;
+    }
+
+    if (info has :altitude) {
+      altitude = info.altitude == null ? 0 : info.altitude;
     }
     
     if (usePercentage && info.currentPower != null) {
@@ -892,6 +910,15 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = "TIME";
       var time = Sys.getClockTime();
       value = time.hour.format("%02d") + ":" + time.min.format("%02d");
+    } else if(type == 'A') { 
+      label = useMetric ? "ALT M" : "ALT FT";
+      value = useMetric ? altitude.toNumber() : (altitude * 3.2808399).toNumber();
+    } else if(type == 'B') { 
+      label = useMetric ? "ASC M" : "ASC FT";
+      value = useMetric ? totalAscent.toNumber() : (totalAscent * 3.2808399).toNumber();
+    } else if(type == 'C') { 
+      label = useMetric ? "DESC M" : "DESC FT";
+      value = useMetric ? totalDescent.toNumber() : (totalDescent * 3.2808399).toNumber();
     }
 
     dc.drawText(labelx, y + fontOffset, fonts[0], label, align);
