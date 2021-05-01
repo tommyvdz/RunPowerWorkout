@@ -36,7 +36,7 @@
 	<setting propertyKey="@Properties.I" title="@Strings.USE_CUSTOM_FONTS">
 		<settingConfig type="boolean" />
 	</setting>
-	<setting propertyKey="@Properties.M" title="@Strings.LAYOUT">
+	<setting propertyKey="@Properties.M" title="@Strings.LAYOUT" helpUrl="https://github.com/tommyvdz/RunPowerWorkout#features">
 		<settingConfig type="list">
 			<listEntry value="1">@Strings.L1</listEntry>
 			<listEntry value="2">@Strings.L2</listEntry>
