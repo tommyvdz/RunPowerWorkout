@@ -3,6 +3,7 @@
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
     <iq:application entry="RunPowerWorkoutApp" id="4fa3fd29424b46819c4f4d4229cf8051" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="3.2.0" name="@Strings.AppName" type="datafield" version="0.0.0">
         <iq:products>
+            <iq:product id="d2air" />
             <iq:product id="enduro" />
             <iq:product id="fenix5plus" />
             <iq:product id="fenix6" />
@@ -15,6 +16,10 @@
             <iq:product id="fr645m" />
             <iq:product id="fr745" />
             <iq:product id="fr945" />
+            <iq:product id="legacyherocaptainmarvel" />
+            <iq:product id="legacyherofirstavenger" />
+            <iq:product id="legacysagadarthvader" />
+            <iq:product id="legacysagarey" />
             <iq:product id="marqadventurer" />
             <iq:product id="marqathlete" />
             <iq:product id="marqaviator" />

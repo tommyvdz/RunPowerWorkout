@@ -135,6 +135,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     currentPwrZone = 1;
     sensor = strydsensor;
     elapsedDistance = 0;
+    currentSpeed = 0;
 
     if (zones == 2) {
       pwrZones = WatchUi.loadResource(Rez.JsonData.P2);
@@ -243,76 +244,82 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function onLayout(dc) { return true; }
 
   function compute(info) {
-    var workout = Activity.getCurrentWorkoutStep();
-    var nextWorkout = Activity.getNextWorkoutStep();
-    var activityInfo = Activity.getActivityInfo();
-
-    if (activityInfo has :currentCadence) {
-      cadence = activityInfo.currentCadence;
+    if (info has :currentCadence) {
+      cadence = info.currentCadence;
     }
-    if (activityInfo has :currentHeartRate) {
-      hr = activityInfo.currentHeartRate;
+    if (info has :currentHeartRate) {
+      hr = info.currentHeartRate;
     }
 
-    if (activityInfo has :currentPower) {
-      currentPower = activityInfo.currentPower;
+    if (info has :currentPower) {
+      currentPower = info.currentPower;
     } else if(sensor != null){
       currentPower = sensor.currentPower;
     }
 
-    if (usePercentage && activityInfo.currentPower != null) {
+    if (info has :currentSpeed) {
+      currentSpeed = info.currentSpeed;
+    }
+    
+    if (usePercentage && info.currentPower != null) {
       currentPower =
           ((currentPower / (FTP * 1.0)) * 100).toNumber();
     }
 
     if (paused != true) {
-      if (activityInfo != null) {
-        timer = activityInfo.timerTime / 1000;
+      if (info != null) {
+
+        var workout = Activity.getCurrentWorkoutStep();
+
+        timer = info.timerTime / 1000;
         stepTime = timer - stepStartTime;
         lapTime = timer - lapStartTime;
-        elapsedDistance = activityInfo.elapsedDistance;
+        elapsedDistance = info.elapsedDistance;
 
         shouldDisplayAlert = (stepTime > 15);
 
-        if (nextWorkout != null) {
-          nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
-          nextTargetLow = nextWorkout.step.targetValueLow - 1000;
-          if (nextTargetHigh < 0) {
-            nextTargetHigh = 0;
-          }
-          if (nextTargetLow < 0) {
-            nextTargetLow = 0;
-          }
+        if (workout != null) {
 
-          if (usePercentage && nextTargetHigh != null &&
-              nextTargetLow != null) {
-            nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
-            nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
-          }
+          var nextWorkout = Activity.getNextWorkoutStep();
 
-          if (nextWorkout.step.targetType != null &&
-              nextWorkout.step.durationType == 5) {
-            nextTargetType = 5;
-          } else if (nextWorkout.step.targetType != null &&
-                     nextWorkout.step.durationType == 1) {
-            nextTargetType = 1;
-            if (nextWorkout.step.durationValue != null) {
-              nextTargetDuration = nextWorkout.step.durationValue;
+          if (nextWorkout != null) {
+            nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
+            nextTargetLow = nextWorkout.step.targetValueLow - 1000;
+            if (nextTargetHigh < 0) {
+              nextTargetHigh = 0;
+            }
+            if (nextTargetLow < 0) {
+              nextTargetLow = 0;
+            }
+
+            if (usePercentage && nextTargetHigh != null &&
+                nextTargetLow != null) {
+              nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
+              nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
+            }
+
+            if (nextWorkout.step.targetType != null &&
+                nextWorkout.step.durationType == 5) {
+              nextTargetType = 5;
+            } else if (nextWorkout.step.targetType != null &&
+                      nextWorkout.step.durationType == 1) {
+              nextTargetType = 1;
+              if (nextWorkout.step.durationValue != null) {
+                nextTargetDuration = nextWorkout.step.durationValue;
+              }
+            } else {
+              nextTargetType = 0;
+              if (nextWorkout.step.durationValue != null) {
+                nextTargetDuration = nextWorkout.step.durationValue;
+              }
             }
           } else {
-            nextTargetType = 0;
-            if (nextWorkout.step.durationValue != null) {
-              nextTargetDuration = nextWorkout.step.durationValue;
-            }
+            nextTargetHigh = 0;
+            nextTargetLow = 0;
+            nextTargetType = 5;
+            nextTargetDuration = 0;
           }
-        } else {
-          nextTargetHigh = 0;
-          nextTargetLow = 0;
-          nextTargetType = 5;
-          nextTargetDuration = 0;
-        }
 
-        if (workout != null) {
           targetHigh = workout.step.targetValueHigh - 1000;
           targetLow = workout.step.targetValueLow - 1000;
           if (targetHigh < 0) {
@@ -339,7 +346,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             stepType = 1;
             if (workout.step.durationValue != null && remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
-                                  ((activityInfo.elapsedDistance).toNumber() -
+                                  (elapsedDistance.toNumber() -
                                    stepStartDistance);
               if (shouldDisplayAlert &&
                   remainingDistance < remainingDistanceSpeed) {
@@ -368,7 +375,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           switchCounter = 0;
         }
 
-        if (activityInfo has :currentPower || sensor != null) {
+        if (currentPower != null || sensor != null) {
           if (stepType == 99) {
             var i = 1;
             var condition = true;
@@ -397,20 +404,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             targetLow = "ZONE " + pwrZonesLabels[currentPwrZone];
           }
 
-          if (activityInfo.currentSpeed != null) {
-            currentSpeed = activityInfo.currentSpeed;
+          if (currentSpeed != null) {
             if (stepSpeed == null) {
-              stepSpeed = activityInfo.currentSpeed;
+              stepSpeed = currentSpeed;
             } else if (stepTime > 5) {
-              stepSpeed = ((stepSpeed * (stepTime - 1)) + activityInfo.currentSpeed) / (stepTime * 1.0);
+              stepSpeed = ((stepSpeed * (stepTime - 1)) + currentSpeed) / (stepTime * 1.0);
             }
-          }
-
-          if (activityInfo.currentSpeed != null) {
             if (lapSpeed == null) {
-              lapSpeed = activityInfo.currentSpeed;
+              lapSpeed = currentSpeed;
             } else if (lapTime > 5) {
-              lapSpeed = ((lapSpeed * (lapTime - 1)) + activityInfo.currentSpeed) / (lapTime * 1.0);
+              lapSpeed = ((lapSpeed * (lapTime - 1)) + currentSpeed) / (lapTime * 1.0);
             }
           }
 
@@ -506,7 +509,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     var width = dc.getWidth();
     var height = dc.getHeight();
-    var activityInfo = Activity.getActivityInfo();
 
     var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
 
