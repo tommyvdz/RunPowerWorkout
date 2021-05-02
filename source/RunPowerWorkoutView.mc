@@ -1002,8 +1002,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         if(align == 2) {
           decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
         } else if (align == 1) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 16 : decimalx + 8;
-          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 16 - fontOffset;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 18 : decimalx + 8;
+          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 18 - fontOffset;
         } else if (align == 0){
           textx = textx - 32 - fontOffset;
         }
