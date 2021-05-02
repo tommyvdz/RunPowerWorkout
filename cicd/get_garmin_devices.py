@@ -5,6 +5,8 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
+# https://developer.garmin.com/downloads/connect-iq/sdks/sdks.json
+
 TOKEN = os.getenv("GARMIN_ACCESS_TOKEN")
 CIQ_PATH = f"{str(Path.home())}/.Garmin/ConnectIQ"
 
