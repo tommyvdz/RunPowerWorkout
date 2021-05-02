@@ -505,7 +505,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           // Show an alert if above of below
           if (WatchUi.DataField has
               :showAlert && showAlerts && shouldDisplayAlert) {
-            if (stepType >= 98 &&
+            if (stepType < 98 &&
                 (currentPower != null && (targetLow != 0 && targetHigh != 0) &&
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
@@ -860,7 +860,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var useFields = useAlternativeLayout ? fieldsAlt : fields;
     var useLayout = useAlternativeLayout ? alternativeLayout : layout;
 
-    if(autoAlternate){
+    if(autoAlternate && !paused){
       useFields = switchAlternativeLayout == 0 ? fields : fieldsAlt;
       useLayout = switchAlternativeLayout == 0 ? layout : alternativeLayout;
       alternativeLayoutCounter++;
