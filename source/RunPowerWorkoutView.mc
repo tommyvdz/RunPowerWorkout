@@ -64,7 +64,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem) hidden var alternativeLayoutCounter = 0;
   (:highmem) hidden var switchAlternativeLayout = 0;
   (:highmem) hidden var arrayAltPointer = 0;
-  (:highmem) hidden var arrayAltPrecision = 15;
+  (:highmem) hidden var arrayAltPrecision = 60;
   (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
   (:highmem) hidden var verticalSpeed = 0;
   hidden var altitude;
@@ -857,17 +857,20 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem)
   function drawLayout(dc,fgColor,bgColor){
 
-    var useFields = useAlternativeLayout ? fieldsAlt : fields;
-    var useLayout = useAlternativeLayout ? alternativeLayout : layout;
+    var useFields;
+    var useLayout;
 
     if(autoAlternate && !paused){
-      useFields = switchAlternativeLayout == 0 ? fields : fieldsAlt;
-      useLayout = switchAlternativeLayout == 0 ? layout : alternativeLayout;
       alternativeLayoutCounter++;
-      if (alternativeLayoutCounter >= 5) {
+      if (alternativeLayoutCounter > 4) {
         switchAlternativeLayout = switchAlternativeLayout == 0 ? 1 : 0;
         alternativeLayoutCounter = 0;
       }
+      useFields = switchAlternativeLayout == 0 ? fields : fieldsAlt;
+      useLayout = switchAlternativeLayout == 0 ? layout : alternativeLayout;
+    } else {
+      useFields = useAlternativeLayout ? fieldsAlt : fields;
+      useLayout = useAlternativeLayout ? alternativeLayout : layout;
     }
 
     drawMetric(dc,useFields[0],0,geometry[2],useLayout == 3 ? geometry[5] : geometry[1],geometry[11],useLayout == 3 ? 0 : 1,bgColor,fgColor);
