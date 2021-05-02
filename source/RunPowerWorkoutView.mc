@@ -57,6 +57,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var lapSpeed;
   hidden var elapsedDistance;
   hidden var fields;
+  (:higmem) hidden var fieldsAlt;
+  (:higmem) hidden var useAlternativeLayout;
+  (:highmem) hidden var autoAlternate;
+  (:highmem) hidden var alternativeLayout;
+  (:highmem) hidden var alternativeLayoutCounter = 0;
+  (:highmem) hidden var switchAlternativeLayout = 0;
+  (:highmem) hidden var arrayAltPointer = 0;
+  (:highmem) hidden var arrayAltPrecision = 15;
+  (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
+  (:highmem) hidden var verticalSpeed = 0;
   hidden var altitude;
   hidden var totalAscent;
   hidden var totalDescent;
@@ -237,6 +247,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       Utils.replaceNull(Application.getApp().getProperty("N5"), 48).toChar(),
       Utils.replaceNull(Application.getApp().getProperty("N6"), 49).toChar()
     ];
+
+    fieldsAlt = [
+      Utils.replaceNull(Application.getApp().getProperty("O1"), 51).toChar(),
+      Utils.replaceNull(Application.getApp().getProperty("O2"), 54).toChar(),
+      Utils.replaceNull(Application.getApp().getProperty("O3"), 56).toChar(),
+      Utils.replaceNull(Application.getApp().getProperty("O4"), 50).toChar(),
+      Utils.replaceNull(Application.getApp().getProperty("O5"), 48).toChar(),
+      Utils.replaceNull(Application.getApp().getProperty("O6"), 49).toChar()
+    ];
+
+    useAlternativeLayout = Utils.replaceNull(Application.getApp().getProperty("P"), false);
+    autoAlternate = Utils.replaceNull(Application.getApp().getProperty("Q"), false);
+    alternativeLayout = Utils.replaceNull(Application.getApp().getProperty("R"), 3);
   }
 
   (:lowmem) function set_layout() {
@@ -278,6 +301,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (info has :altitude) {
       altitude = info.altitude == null ? 0 : info.altitude;
     }
+
+    processExtraData(info);
     
     if (usePercentage && info.currentPower != null) {
       currentPower =
@@ -358,10 +383,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
           if (workout.step.targetType != null &&
               workout.step.durationType == 5) {
-            stepType = 5;
+            stepType = (targetHigh > 0 && targetLow > 0) ? 5 : 98;
           } else if (workout.step.targetType != null &&
                      workout.step.durationType == 1) {
-            stepType = 1;
+            
+            stepType = (targetHigh > 0 && targetLow > 0) ? 1 : 98;
             if (workout.step.durationValue != null && remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
                                   (elapsedDistance.toNumber() -
@@ -372,7 +398,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               }
             }
           } else {
-            stepType = 0;
+            stepType = (targetHigh > 0 && targetLow > 0) ? 0 : 98;
             if (workout.step.durationValue != null &&
                 remainingTime >= 0) {
               remainingTime =
@@ -394,7 +420,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
 
         if (currentPower != null || sensor != null) {
-          if (stepType == 99) {
+          if (stepType >= 98) {
             var i = 1;
             var condition = true;
             while (currentPower != null && currentPower != 0 && i < pwrZones.size() && condition) {
@@ -479,7 +505,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           // Show an alert if above of below
           if (WatchUi.DataField has
               :showAlert && showAlerts && shouldDisplayAlert) {
-            if (stepType != 99 &&
+            if (stepType >= 98 &&
                 (currentPower != null && (targetLow != 0 && targetHigh != 0) &&
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
@@ -533,7 +559,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.setColor(fgColor,-1);
 
     if (currentPower != null) {
-      if (stepType == 99) {
+      if (stepType >= 98) {
         if (showColors == 1) {
           dc.setColor(pwrZonesColors[currentPwrZone], -1);
           dc.fillRectangle(0, 0, singleField ? geometry[0] : width,
@@ -624,15 +650,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (singleField) {
-      drawMetric(dc,fields[0],0,geometry[2],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
-      drawMetric(dc,fields[1],layout == 3 ? geometry[5] : geometry[1],geometry[2],layout == 3 ? geometry[6] - geometry[5] : geometry[1],geometry[11], 1,bgColor,fgColor);
-      drawMetric(dc,fields[2],0,geometry[3],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
-      drawMetric(dc,fields[3],layout == 3 ? geometry[5] : geometry[1],geometry[3],layout == 3 ? geometry[6] - geometry[5]: geometry[1],geometry[11], 1,bgColor,fgColor);
-    
-      if(layout == 3){
-        drawMetric(dc,fields[4],geometry[6],geometry[2],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
-        drawMetric(dc,fields[5],geometry[6],geometry[3],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
-      }
+
+      drawLayout(dc,fgColor,bgColor);
 
       var lMetricLabel = "";
       var lMetricValue = "";
@@ -680,23 +699,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
                   lMetricValue, 1);
 
-      dc.setPenWidth(1);
-
-      //! Horizontal seperators
-      dc.drawLine(0, geometry[2], geometry[0], geometry[2]);
-      dc.drawLine(0, geometry[3], geometry[0], geometry[3]);
-      dc.drawLine(0, geometry[4], geometry[0], geometry[4]);
-
-      //! vertical seperators
-      dc.drawLine(layout == 3 ? geometry[5] : geometry[1], geometry[2], layout == 3 ? geometry[5] : geometry[1], geometry[4]);
-      if(layout == 3){
-        dc.drawLine(geometry[6], geometry[2], geometry[6], geometry[4]);
-      }
       //! The following code to draw the gauge is copied and adapted from
       //! Ravenfeld - Speed Gauge
       //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
 
-      if(stepType != 99){
+      if(stepType < 98){
         drawGauge(dc, bgColor);
       }
     }
@@ -707,7 +714,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
       dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
       dc.drawText(geometry[1] + 2,
-                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], currentPower == null ? 0 : currentPower, 1);
   }
 
@@ -716,19 +723,19 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
       dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
       dc.drawText(geometry[1] + 2,
-                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], currentPower == null ? 0 : currentPower, 1);
   }
 
   (:highmem)
   function drawTop(dc){
-      dc.drawText(stepType == 99 ? 25 : geometry[12],
+      dc.drawText(stepType >= 98 ? 25 : geometry[12],
                   geometry[2] - geometry[10], fonts[2], targetLow, 2);
       dc.drawText(
-          stepType == 99 ? geometry[0] - 25 : geometry[0] - geometry[12],
+          stepType >= 98 ? geometry[0] - 25 : geometry[0] - geometry[12],
           geometry[2] - geometry[10], fonts[2], targetHigh, 0);
       dc.drawText(geometry[1] + 2,
-                  stepType == 99 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], currentPower == null ? 0 : currentPower, 1);
   }
 
@@ -787,11 +794,105 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     dc.fillPolygon([ xy1, xy2, xy3, xy4 ]);
   }
 
+  (:lowmem)
+  function processExtraData(info){
+  }
+
+
+  // FROM https://forums.garmin.com/developer/connect-iq/f/discussion/206579/vertical-speed
+  (:highmem)
+  function processExtraData(info){
+    if(altitudeArray[0] == null){
+      for (var i = 0; i < arrayAltPrecision; i++){
+        altitudeArray[i] = altitude;
+      }
+    }
+
+    if (altitude != null)
+    {
+      var index = arrayAltPointer % arrayAltPrecision;
+      var calculatedAltitude = altitude - altitudeArray[index];
+      altitudeArray[index] = altitude;
+      
+      arrayAltPointer++;
+      var indexLastArrayElement = arrayAltPointer < arrayAltPrecision ? arrayAltPointer : arrayAltPrecision;
+      verticalSpeed = calculatedAltitude / indexLastArrayElement * 60;
+    }
+  }
+
   (:highmem)
   function pol2Cart(center_x, center_y, radian, radius) {
     var x = center_x - radius * Math.sin(radian);
     var y = center_y - radius * Math.cos(radian);
     return [ Math.ceil(x), Math.ceil(y) ];
+  }
+
+  (:lowmem)
+  function drawLayout(dc,fgColor,bgColor){
+    drawMetric(dc,fields[0],0,geometry[2],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
+    drawMetric(dc,fields[1],layout == 3 ? geometry[5] : geometry[1],geometry[2],layout == 3 ? geometry[6] - geometry[5] : geometry[1],geometry[11], 1,bgColor,fgColor);
+    drawMetric(dc,fields[2],0,geometry[3],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
+    drawMetric(dc,fields[3],layout == 3 ? geometry[5] : geometry[1],geometry[3],layout == 3 ? geometry[6] - geometry[5]: geometry[1],geometry[11], 1,bgColor,fgColor);
+  
+    if(layout == 3){
+      drawMetric(dc,fields[4],geometry[6],geometry[2],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
+      drawMetric(dc,fields[5],geometry[6],geometry[3],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
+    }
+
+    dc.setColor(fgColor,-1);
+    dc.setPenWidth(1);
+
+    //! Horizontal seperators
+    dc.drawLine(0, geometry[2], geometry[0], geometry[2]);
+    dc.drawLine(0, geometry[3], geometry[0], geometry[3]);
+    dc.drawLine(0, geometry[4], geometry[0], geometry[4]);
+
+    //! vertical seperators
+    dc.drawLine(layout == 3 ? geometry[5] : geometry[1], geometry[2], layout == 3 ? geometry[5] : geometry[1], geometry[4]);
+    if(layout == 3){
+      dc.drawLine(geometry[6], geometry[2], geometry[6], geometry[4]);
+    }
+  }
+
+  (:highmem)
+  function drawLayout(dc,fgColor,bgColor){
+
+    var useFields = useAlternativeLayout ? fieldsAlt : fields;
+    var useLayout = useAlternativeLayout ? alternativeLayout : layout;
+
+    if(autoAlternate){
+      useFields = switchAlternativeLayout == 0 ? fields : fieldsAlt;
+      useLayout = switchAlternativeLayout == 0 ? layout : alternativeLayout;
+      alternativeLayoutCounter++;
+      if (alternativeLayoutCounter >= 5) {
+        switchAlternativeLayout = switchAlternativeLayout == 0 ? 1 : 0;
+        alternativeLayoutCounter = 0;
+      }
+    }
+
+    drawMetric(dc,useFields[0],0,geometry[2],useLayout == 3 ? geometry[5] : geometry[1],geometry[11],useLayout == 3 ? 0 : 1,bgColor,fgColor);
+    drawMetric(dc,useFields[1],useLayout == 3 ? geometry[5] : geometry[1],geometry[2],useLayout == 3 ? geometry[6] - geometry[5] : geometry[1],geometry[11], 1,bgColor,fgColor);
+    drawMetric(dc,useFields[2],0,geometry[3],useLayout == 3 ? geometry[5] : geometry[1],geometry[11],useLayout == 3 ? 0 : 1,bgColor,fgColor);
+    drawMetric(dc,useFields[3],useLayout == 3 ? geometry[5] : geometry[1],geometry[3],useLayout == 3 ? geometry[6] - geometry[5]: geometry[1],geometry[11], 1,bgColor,fgColor);
+  
+    if(useLayout == 3){
+      drawMetric(dc,useFields[4],geometry[6],geometry[2],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
+      drawMetric(dc,useFields[5],geometry[6],geometry[3],geometry[0] - geometry[6],geometry[11],2,bgColor,fgColor);
+    }
+
+    dc.setColor(fgColor,-1);
+    dc.setPenWidth(1);
+
+    //! Horizontal seperators
+    dc.drawLine(0, geometry[2], geometry[0], geometry[2]);
+    dc.drawLine(0, geometry[3], geometry[0], geometry[3]);
+    dc.drawLine(0, geometry[4], geometry[0], geometry[4]);
+
+    //! vertical seperators
+    dc.drawLine(useLayout == 3 ? geometry[5] : geometry[1], geometry[2], useLayout == 3 ? geometry[5] : geometry[1], geometry[4]);
+    if(useLayout == 3){
+      dc.drawLine(geometry[6], geometry[2], geometry[6], geometry[4]);
+    }
   }
 
   function drawMetric(dc,type,x,y,width,height,align,bgColor,fgColor) {
@@ -862,7 +963,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric);
     } else if (type == '6') {
       if (stepPower != null) {
-        if (stepType != 99 && targetHigh != 0 && targetLow != 0) {
+        if (stepType < 98 && targetHigh != 0 && targetLow != 0) {
           if (showColors == 1 && !single) {
             if (stepPower < targetLow) {
               dc.setColor(0x0000FF, -1);
@@ -919,6 +1020,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     } else if(type == 'C') { 
       label = useMetric ? "DESC M" : "DESC FT";
       value = useMetric ? totalDescent.toNumber() : (totalDescent * 3.2808399).toNumber();
+    } else if(type == 'D') { 
+      label = "VAM";
+      value = (verticalSpeed + 0.5).toNumber();
     }
 
     dc.drawText(labelx, y + fontOffset, fonts[0], label, align);

@@ -5,6 +5,12 @@
     <string id="FD4">Field 4</string>
     <string id="FD5">Field 5</string>
     <string id="FD6">Field 6</string>
+    <string id="FD12">Field 1 (alternate)</string>
+    <string id="FD22">Field 2 (alternate)</string>
+    <string id="FD32">Field 3 (alternate)</string>
+    <string id="FD42">Field 4 (alternate)</string>
+    <string id="FD52">Field 5 (alternate)</string>
+    <string id="FD62">Field 6 (alternate)</string>
     <string id="F1">Cadence</string>
     <string id="F2">Heart Rate</string>
     <string id="F3">Elapsed Time</string>
@@ -18,4 +24,8 @@
     <string id="F11">Altitude</string>
     <string id="F12">Total Ascent</string>
     <string id="F13">Total Descent</string>
+    <string id="F14">Vertical speed</string>
+    <string id="USE_ALTERNATIVE_LAYOUT">Use the alternative layout ?</string>
+    <string id="AUTOMATICALLY_ATLERNATE">Frequently switch between layouts ?</string>
+    <string id="ALTERNATE_LAYOUT">Alternative layout</string>
 </strings>
