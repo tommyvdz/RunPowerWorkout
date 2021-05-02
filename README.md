@@ -30,6 +30,7 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Altitude (A)
 * Total Ascent (B)
 * Total Descent (C)
+* Vertical Speed (D) (Only on high memory devices, level 2 or 4)
 
 Datafield layout is the following
 
@@ -37,7 +38,7 @@ Datafield layout is the following
 | --- | --- | --- |
 | 3   | 4   | 6   |
 
-If you have a device with low memory (level 1 or 2), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
+If you have a device with low memory (level 1 or 3), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
 
 | Pace     | Step Power   | Cadence    |
 | -------- | ------------ | ---------- |
@@ -60,6 +61,8 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Enable/disable smaller decimal for the distance metric field
 * Choose power average duration (from 1 to 30s)
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
+* Set up and alternative layout (for capability level 2 or 4)
+* Automatically switch every 5 seconds between two layouts (for capability level 2 or 4)
 
 ### Download
 
@@ -86,12 +89,12 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 
 ### Capabilities level
 
-| Level | Power support ? | Custom Fonts | Nice settings for data field layout ? |
-| ----- | --------------- | ------------ | ------------------------------------- |
-| 1     | No (ANT+)       | No           | No                                    |
-| 2     | No (ANT+)       | Yes          | Yes                                   |
-| 3     | Yes             | No           | No                                    |
-| 4     | Yes             | Yes          | Yes                                   |
+| Level | Power support ? | Custom Fonts | Nice settings for data field layout ? | Alternative layout | Extra metrics ? |
+| ----- | --------------- | ------------ | ------------------------------------- | ------------------ | --------------- |
+| 1     | No (ANT+)       | No           | No                                    | No                 | No              |
+| 2     | No (ANT+)       | Yes          | Yes                                   | Yes                | Yes             |
+| 3     | Yes             | No           | No                                    | No                 | No              |
+| 4     | Yes             | Yes          | Yes                                   | Yes                | Yes             |
 
 ### Watch capability matrix
 
