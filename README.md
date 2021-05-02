@@ -61,7 +61,7 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Enable/disable smaller decimal for the distance metric field
 * Choose power average duration (from 1 to 30s)
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
-* Set up and alternative layout (for capability level 2 or 4)
+* Set up an alternative layout (for capability level 2 or 4)
 * Automatically switch every 5 seconds between two layouts (for capability level 2 or 4)
 
 ### Download
