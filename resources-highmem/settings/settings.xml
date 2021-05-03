@@ -15,6 +15,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.N2" title="@Strings.FD2">
@@ -33,6 +35,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.N3" title="@Strings.FD3">
@@ -51,6 +55,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.N4" title="@Strings.FD4">
@@ -69,6 +75,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.N5" title="@Strings.FD5">
@@ -87,6 +95,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.N6" title="@Strings.FD6">
@@ -105,6 +115,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O1" title="@Strings.FD12">
@@ -123,6 +135,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O2" title="@Strings.FD22">
@@ -141,6 +155,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O3" title="@Strings.FD32">
@@ -159,6 +175,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O4" title="@Strings.FD42">
@@ -177,6 +195,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O5" title="@Strings.FD52">
@@ -195,6 +215,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.O6" title="@Strings.FD62">
@@ -213,6 +235,8 @@
             <listEntry value="66">@Strings.F12</listEntry>
             <listEntry value="67">@Strings.F13</listEntry>
             <listEntry value="68">@Strings.F14</listEntry>
+            <listEntry value="69">@Strings.F15</listEntry>
+            <listEntry value="70">@Strings.F16</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.P" title="@Strings.USE_ALTERNATIVE_LAYOUT">
