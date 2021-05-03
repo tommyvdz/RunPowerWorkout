@@ -64,7 +64,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem) hidden var alternativeLayoutCounter = 0;
   (:highmem) hidden var switchAlternativeLayout = 0;
   (:highmem) hidden var arrayAltPointer = 0;
-  (:highmem) hidden var arrayAltPrecision = 15;
+  (:highmem) hidden var arrayAltPrecision = 30;
   (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
   (:highmem) hidden var verticalSpeed = 0;
   hidden var altitude;
@@ -804,18 +804,18 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   function processExtraData(info){
     if(altitudeArray[0] == null){
       for (var i = 0; i < arrayAltPrecision; i++){
-        altitudeArray[i] = altitude;
+        altitudeArray[i] = altitude.toNumber();
       }
     }
 
     if (altitude != null)
     {
       var index = arrayAltPointer % arrayAltPrecision;
-      var calculatedAltitude = altitude - altitudeArray[index];
-      altitudeArray[index] = altitude;
+      var calculatedAltitude = altitude.toNumber() - altitudeArray[index];
+      altitudeArray[index] = altitude.toNumber();
       
       arrayAltPointer++;
-      verticalSpeed = (calculatedAltitude / arrayAltPrecision) * 3600;
+      verticalSpeed = (calculatedAltitude * 1.0 / arrayAltPrecision * 1.0) * 3600;
     }
   }
 
