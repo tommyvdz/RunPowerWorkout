@@ -30,7 +30,7 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Altitude (A)
 * Total Ascent (B)
 * Total Descent (C)
-* Vertical Speed (D) (Only on high memory devices, level 2 or 4)
+* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (D) (Only on high memory devices, level 2 or 4)
 
 Datafield layout is the following
 
