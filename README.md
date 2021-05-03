@@ -27,10 +27,12 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Lap power (7)
 * Elapsed distance (8)
 * Current time (9)
-* Altitude (A)
-* Total Ascent (B)
-* Total Descent (C)
-* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (D) (Only on high memory devices, level 2 or 4)
+* Average Pace (A)
+* Average Power (B)
+* Altitude (C)
+* Total Ascent (D)
+* Total Descent (E)
+* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (F) (Only on high memory devices, level 2 or 4)
 
 Datafield layout is the following
 

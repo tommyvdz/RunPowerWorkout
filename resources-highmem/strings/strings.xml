@@ -21,10 +21,12 @@
     <string id="F8">Lap Power</string>
     <string id="F9">Elapsed Distance</string>
     <string id="F10">Time</string>
-    <string id="F11">Altitude</string>
-    <string id="F12">Total Ascent</string>
-    <string id="F13">Total Descent</string>
-    <string id="F14">Vertical speed</string>
+    <string id="F11">Average Pace</string>
+    <string id="F12">Average Power</string>
+    <string id="F13">Altitude</string>
+    <string id="F14">Total Ascent</string>
+    <string id="F15">Total Descent</string>
+    <string id="F16">Vertical speed</string>
     <string id="USE_ALTERNATIVE_LAYOUT">Use the alternative layout ?</string>
     <string id="AUTOMATICALLY_ATLERNATE">Frequently switch between layouts ?</string>
     <string id="ALTERNATE_LAYOUT">Alternative layout</string>

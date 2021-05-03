@@ -13,6 +13,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var lapTime;
   hidden var lapStartTime;
   hidden var lapPower;
+  hidden var avgPower;
   hidden var targetHigh;
   hidden var targetLow;
   hidden var nextTargetHigh;
@@ -55,6 +56,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var layout;
   hidden var currentSpeed;
   hidden var lapSpeed;
+  hidden var avgSpeed;
   hidden var elapsedDistance;
   hidden var fields;
   (:higmem) hidden var fieldsAlt;
@@ -67,6 +69,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem) hidden var arrayAltPrecision = 5;
   (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
   (:highmem) hidden var verticalSpeed = 0;
+  (:highmem) hidden var etaDistance = 0;
+  (:highmem) hidden var etaTarget = 0;
+  (:highmem) hidden var etaTarget = 0;
   hidden var altitude;
   hidden var totalAscent;
   hidden var totalDescent;
@@ -459,6 +464,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             } else if (lapTime > 5) {
               lapSpeed = ((lapSpeed * (lapTime - 1)) + currentSpeed) / (lapTime * 1.0);
             }
+            if (avgSpeed == null) {
+              avgSpeed = currentSpeed;
+            } else if (lapTime > 5) {
+              avgSpeed = ((avgSpeed * (timer - 1)) + currentSpeed) / (timer * 1.0);
+            }
           }
 
           if (currentPower != null) {
@@ -478,6 +488,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               lapPower = currentPower;
             } else if (lapTime != 0) {
               lapPower = (((lapPower * (lapTime - 1)) + currentPower) / (lapTime * 1.0));
+            }
+
+           if (avgPower == null) {
+              avgPower = currentPower;
+            } else if (lapTime != 0) {
+              avgPower = (((avgPower * (timer - 1)) + currentPower) / (timer * 1.0));
             }
 
             if (stepType == 1 && remainingDistance < 100 &&
@@ -1014,15 +1030,21 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       var time = Sys.getClockTime();
       value = time.hour.format("%02d") + ":" + time.min.format("%02d");
     } else if(type == 'A') { 
-      label = useMetric ? "ALT M" : "ALT FT";
-      value = useMetric ? altitude.toNumber() : (altitude * 3.2808399).toNumber();
+      label = useMetric ? "AV PC /KM" : "AV PC /MI";
+      value = avgSpeed == null ? 0 : Utils.convert_speed_pace(avgSpeed, useMetric);
     } else if(type == 'B') { 
-      label = useMetric ? "ASC M" : "ASC FT";
-      value = useMetric ? totalAscent.toNumber() : (totalAscent * 3.2808399).toNumber();
+      label = "AV PWR";
+      value = avgPower == null ? 0 : (avgPower + 0.5).toNumber();
     } else if(type == 'C') { 
       label = useMetric ? "DESC M" : "DESC FT";
       value = useMetric ? totalDescent.toNumber() : (totalDescent * 3.2808399).toNumber();
     } else if(type == 'D') { 
+      label = "VAM M/H";
+      value = (verticalSpeed + 0.5).toNumber();
+    } else if(type == 'E') { 
+      label = useMetric ? "DESC M" : "DESC FT";
+      value = useMetric ? totalDescent.toNumber() : (totalDescent * 3.2808399).toNumber();
+    } else if(type == 'F') { 
       label = "VAM M/H";
       value = (verticalSpeed + 0.5).toNumber();
     }
