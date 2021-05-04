@@ -52,16 +52,20 @@ class Utils {
         }
     }
 
-  function convert_speed_pace(speed, useMetric) {
+  function convert_speed_pace(speed, useMetric, useSpeed) {
     if (speed != null && speed > 0) {
-      var factor = useMetric ? 1000.0 : 1609.0;
-      var secondsPerUnit = factor / speed;
-      secondsPerUnit = (secondsPerUnit + 0.5).toNumber();
-      var minutes = (secondsPerUnit / 60);
-      var seconds = (secondsPerUnit % 60);
-      return minutes + ":" + seconds.format("%02u");
+      var factor = useSpeed ? (useMetric ? 3.6 : 2.23694) : (useMetric ? 1000.0 : 1609.0);
+      var secondsPerUnit = useSpeed ? speed * factor : factor / speed;
+      if(!useSpeed){
+        secondsPerUnit = (secondsPerUnit + 0.5).toNumber();
+        var minutes = (secondsPerUnit / 60);
+        var seconds = (secondsPerUnit % 60);
+        return minutes + ":" + seconds.format("%02u");
+      } else {
+        return secondsPerUnit.format("%0.2f");
+      }
     } else {
-      return "0:00";
+      return useSpeed ? "0.00" : "0:00";
     }
   }
 }

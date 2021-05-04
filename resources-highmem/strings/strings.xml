@@ -1,16 +1,16 @@
 <strings>
-    <string id="FD1">Field 1</string>
-    <string id="FD2">Field 2</string>
-    <string id="FD3">Field 3</string>
-    <string id="FD4">Field 4</string>
-    <string id="FD5">Field 5</string>
-    <string id="FD6">Field 6</string>
-    <string id="FD12">Field 1 (alternate)</string>
-    <string id="FD22">Field 2 (alternate)</string>
-    <string id="FD32">Field 3 (alternate)</string>
-    <string id="FD42">Field 4 (alternate)</string>
-    <string id="FD52">Field 5 (alternate)</string>
-    <string id="FD62">Field 6 (alternate)</string>
+    <string id="FD1">Top Left Field</string>
+    <string id="FD2">Bottom Left Field</string>
+    <string id="FD3">Top Right Field</string>
+    <string id="FD4">Bottom Right Field</string>
+    <string id="FD5">Top Center Field</string>
+    <string id="FD6">Bottom Center Field</string>
+    <string id="FD12">Top Left Field (alternate)</string>
+    <string id="FD22">Bottom Left Field (alternate)</string>
+    <string id="FD32">Top Right Field (alternate)</string>
+    <string id="FD42">Bottom Right Field (alternate)</string>
+    <string id="FD52">Top Center Field (alternate)</string>
+    <string id="FD62">Bottom Center Field (alternate)</string>
     <string id="F1">Cadence</string>
     <string id="F2">Heart Rate</string>
     <string id="F3">Elapsed Time</string>
@@ -27,7 +27,12 @@
     <string id="F14">Total Ascent</string>
     <string id="F15">Total Descent</string>
     <string id="F16">Vertical speed</string>
+    <string id="F17">ETA Pace</string>
+    <string id="F18">ETA Power</string>
     <string id="USE_ALTERNATIVE_LAYOUT">Use the alternative layout ?</string>
     <string id="AUTOMATICALLY_ATLERNATE">Frequently switch between layouts ?</string>
     <string id="ALTERNATE_LAYOUT">Alternative layout</string>
+    <string id="TARGET_DISTANCE">Course distance in meters</string>
+    <string id="TARGET_ELEVATION">Course elevation in meters</string>
+    <string id="WEIGHT">Weight in Kg</string>
 </strings>

@@ -29,16 +29,19 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Current time (9)
 * Average Pace (A)
 * Average Power (B)
-* Altitude (C)
-* Total Ascent (D)
-* Total Descent (E)
-* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (F) (Only on high memory devices, level 2 or 4)
+* Altitude (Only on high memory devices, level 2 or 4)
+* Total Ascent (Only on high memory devices, level 2 or 4)
+* Total Descent (Only on high memory devices, level 2 or 4)
+* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (Only on high memory devices, level 2 or 4)
+* ETA based on average pace (Only on high memory devices, level 2 or 4)
+* ETA based on average power. [Uses the model from Stryd](https://blog.stryd.com/2020/01/10/how-to-calculate-your-race-time-from-your-target-power/). Correct weight, duration and elevation of the course needs to be set up. (Only on high memory devices, level 2 or 4)
+
 
 Datafield layout is the following
 
-| 1   | 2   | 5   |
+| 1   | 3   | 5   |
 | --- | --- | --- |
-| 3   | 4   | 6   |
+| 2   | 4   | 6   |
 
 If you have a device with low memory (level 1 or 3), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
 
@@ -65,6 +68,7 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
 * Set up an alternative layout (for capability level 2 or 4)
 * Automatically switch every 5 seconds between two layouts (for capability level 2 or 4)
+* Alert on a static zone for watches without workout support.
 
 ### Download
 
@@ -91,44 +95,53 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 
 ### Capabilities level
 
-| Level | Power support ? | Custom Fonts | Nice settings for data field layout ? | Alternative layout | Extra metrics ? |
-| ----- | --------------- | ------------ | ------------------------------------- | ------------------ | --------------- |
-| 1     | No (ANT+)       | No           | No                                    | No                 | No              |
-| 2     | No (ANT+)       | Yes          | Yes                                   | Yes                | Yes             |
-| 3     | Yes             | No           | No                                    | No                 | No              |
-| 4     | Yes             | Yes          | Yes                                   | Yes                | Yes             |
+| Level | Workout support ? | Power support ? | Custom Fonts | Nice settings for data field layout ? | Alternative layout | Extra metrics ? |
+| ----- | ----------------- | --------------- | ------------ | ------------------------------------- | ------------------ | --------------- |
+| 0     | No                | No (ANT+)       | No           | No                                    | No                 | No              |
+| 1     | Yes               | No (ANT+)       | No           | No                                    | No                 | No              |
+| 2     | Yes               | No (ANT+)       | Yes          | Yes                                   | Yes                | Yes             |
+| 3     | No                | Yes             | No           | No                                    | No                 | No              |
+| 4     | No                | Yes             | Yes          | Yes                                   | Yes                | Yes             |
+| 5     | Yes               | Yes             | No           | No                                    | No                 | No              |
+| 6     | Yes               | Yes             | Yes          | Yes                                   | Yes                | Yes             |
 
 ### Watch capability matrix
 
-| Watch           | Multisport ? | Datafield Memory | Feature Level |
-| --------------- | ------------ | ---------------- | ------------- |
-| Enduro          | Yes          | 32KB             | 3             |
-| Fenix 5 Plus    | Yes          | 128KB            | 4             |
-| Fenix 6         | Yes          | 32KB             | 3             |
-| Fenix 6S        | Yes          | 32KB             | 3             |
-| Fenix 6 Pro     | Yes          | 128KB            | 4             |
-| Fenix 6S Pro    | Yes          | 128KB            | 4             |
-| Fenix 6X Pro    | Yes          | 128KB            | 4             |
-| Forerunner 245  | No           | 32KB             | 1             |
-| Forerunner 245M | No           | 64KB             | 2             |
-| Forerunner 645M | No           | 64KB             | 2             |
-| Forerunner 745  | Yes          | 64KB             | 4             |
-| Forerunner 945  | Yes          | 128KB            | 4             |
-| Forerunner 945  | Yes          | 128KB            | 4             |
-| MARQ Adventurer | Yes          | 128KB            | 4             |
-| MARQ Athlete    | Yes          | 128KB            | 4             |
-| MARQ Aviator    | Yes          | 128KB            | 4             |
-| MARQ Captain    | Yes          | 128KB            | 4             |
-| MARQ Commander  | Yes          | 128KB            | 4             |
-| MARQ Driver     | Yes          | 128KB            | 4             |
-| MARQ Expedition | Yes          | 128KB            | 4             |
-| MARQ Golfer     | Yes          | 128KB            | 4             |
-| Venu            | No           | 32KB             | 1             |
-| Venu 2          | No           | 256KB            | 2             |
-| Venu 2s         | No           | 256KB            | 2             |
-| Vivoactive 3M   | No           | 32KB             | 1             |
-| Vivoactive 4    | No           | 32KB             | 1             |
-| Vivoactive 4s   | No           | 32KB             | 1             |
+| Watch           | Workout support ? | Multisport ? | Datafield Memory | Feature Level |
+| --------------- | ----------------- | ------------ | ---------------- | ------------- |
+| Enduro          | Yes               | Yes          | 32KB             | 3             |
+| Fenix 5         | No                | Yes          | 32KB             | 4             |
+| Fenix 5S        | No                | Yes          | 32KB             | 4             |
+| Fenix 5X        | No                | Yes          | 128KB            | 4             |
+| Fenix 5 Plus    | Yes               | Yes          | 128KB            | 4             |
+| Fenix 5S Plus   | No                | Yes          | 128KB            | 4             |
+| Fenix 5X Plus   | No                | Yes          | 128KB            | 4             |
+| Fenix 6         | Yes               | Yes          | 32KB             | 3             |
+| Fenix 6S        | Yes               | Yes          | 32KB             | 3             |
+| Fenix 6 Pro     | Yes               | Yes          | 128KB            | 4             |
+| Fenix 6S Pro    | Yes               | Yes          | 128KB            | 4             |
+| Fenix 6X Pro    | Yes               | Yes          | 128KB            | 4             |
+| Forerunner 245  | Yes               | No           | 32KB             | 1             |
+| Forerunner 245M | Yes               | No           | 64KB             | 2             |
+| Forerunner 645M | Yes               | No           | 64KB             | 2             |
+| Forerunner 745  | Yes               | Yes          | 64KB             | 4             |
+| Forerunner 935  | No                | Yes          | 32KB             | 4             |
+| Forerunner 945  | Yes               | Yes          | 128KB            | 4             |
+| Forerunner 945  | Yes               | Yes          | 128KB            | 4             |
+| MARQ Adventurer | Yes               | Yes          | 128KB            | 4             |
+| MARQ Athlete    | Yes               | Yes          | 128KB            | 4             |
+| MARQ Aviator    | Yes               | Yes          | 128KB            | 4             |
+| MARQ Captain    | Yes               | Yes          | 128KB            | 4             |
+| MARQ Commander  | Yes               | Yes          | 128KB            | 4             |
+| MARQ Driver     | Yes               | Yes          | 128KB            | 4             |
+| MARQ Expedition | Yes               | Yes          | 128KB            | 4             |
+| MARQ Golfer     | Yes               | Yes          | 128KB            | 4             |
+| Venu            | Yes               | No           | 32KB             | 1             |
+| Venu 2          | Yes               | No           | 256KB            | 2             |
+| Venu 2s         | Yes               | No           | 256KB            | 2             |
+| Vivoactive 3M   | Yes               | No           | 32KB             | 1             |
+| Vivoactive 4    | Yes               | No           | 32KB             | 1             |
+| Vivoactive 4s   | Yes               | No           | 32KB             | 1             |
 
 ### Pragati Font License
 
