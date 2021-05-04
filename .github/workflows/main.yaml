@@ -87,7 +87,13 @@ jobs:
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
             if [[ "$i" =~ ^(venu2|venu2s)$ ]]; then
               export SDK=4.0.0
-            else
+            elif [[ "$i" =~ ^(approachs60)$ ]]; then
+              export SDK=2.4.0
+            elif [[ "$i" =~ ^(d2charlie|descentmk1)$ ]]; then
+              export SDK=3.0.0
+            elif [[ "$i" =~ ^(fr935|d2delta|d2deltapx|d2deltas|descentmk2|fenix5|fenix5s|fenix5x)$ ]]; then
+              export SDK=3.1.0
+            else              
               export SDK=3.2.0
             fi
             java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s $SDK -f monkey.jungle

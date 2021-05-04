@@ -26,7 +26,7 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Workout step power (6)
 * Lap power (7)
 * Elapsed distance (8)
-* Current time (9)
+* Time of day (9)
 * Average Pace (A)
 * Average Power (B)
 * Altitude (Only on high memory devices, level 2 or 4)
