@@ -19,6 +19,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:noworkout) hidden var targetZone;
   (:noworkout) hidden var targetZoneLow = 0;
   (:noworkout) hidden var targetZoneHigh = 0;
+  (:noworkout) hidden var inAlert = false;
   (:workout) hidden var nextTargetHigh;
   (:workout) hidden var nextTargetLow;
   (:workout) hidden var nextTargetType;
@@ -443,15 +444,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 entries -= 1;
               }
             }
-
             currentPower = ((tempAverage * 1.0 / entries * 1.0) + 0.5).toNumber();
           } else {
             currentPower = 0;
           }
 
           // Show an alert if above of below
-          if (WatchUi.DataField has
-              :showAlert && showAlerts && shouldDisplayAlert) {
+          if (shouldDisplayAlert) {
             if ((currentPower != null && (targetZoneHigh > 0) &&
                  (currentPower < targetZoneLow || currentPower > targetZoneHigh))) {
               if (alertDisplayed == false) {
@@ -465,16 +464,18 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                       new Attention.VibeProfile(100, 300)
                     ]);
                   }
-
-                  WatchUi.DataField.showAlert(new RunPowerWorkoutAlertView(
-                      targetZoneHigh, targetZoneLow, currentPower,
-                      [ fonts[2], fonts[5] ]));
                   alertDisplayed = true;
+                  inAlert = true;
                   alertTimer = timer;
                   alertCount++;
                 }
               } else {
-                if ((timer - alertTimer) > alertDelay) {
+                if(inAlert){
+                  if ((timer - alertTimer) > 3){
+                    inAlert = false;
+                    alertTimer = timer;
+                  }
+                } else if ((timer - alertTimer) > alertDelay) {
                   alertDisplayed = false;
                 }
               }
@@ -934,108 +935,125 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (dc has :setAntiAlias){
       dc.setAntiAlias(true);
     }
-    var bgColor = getBackgroundColor();
-    var fgColor = bgColor == 0x000000 ? 0xFFFFFF : 0x000000;
-    var singleFieldColor = fgColor;
 
-    var width = dc.getWidth();
-    var height = dc.getHeight();
-
-    var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
-
-    dc.setColor(fgColor,-1);
-
-    if (currentPower != null) {
-      if (showColors == 1) {
-        dc.setColor(pwrZonesColors[currentPwrZone], -1);
-        dc.fillRectangle(0, 0, singleField ? geometry[0] : width,
-                          singleField ? geometry[2] : height);
-        dc.setColor(0xFFFFFF, -1);
-        singleFieldColor = 0xFFFFFF;
-      } else if (showColors == 2) {
-        dc.setColor(pwrZonesColors[currentPwrZone], -1);
-      }
-    }
-
-    if (singleField) {
-      drawTop(dc);
+    if(inAlert){
+      dc.setColor(0xFFFFFF, 0x000000);
+      dc.clear();
+      dc.setColor(0xFFFFFF, -1);
+      dc.drawText(geometry[1], geometry[6], fonts[2], currentPower < targetZoneLow ? "LOW POWER" : "HIGH POWER", 1);
+      dc.drawText(geometry[1], geometry[10], fonts[2],
+                  "TGT" + " " + targetZoneLow + "-" +
+                      targetZoneHigh,
+                  1);
+      dc.drawText(geometry[1], geometry[1], fonts[5], currentPower,
+                  4 | 1);
+      dc.setColor(currentPower < targetZoneLow ? 0x00AAFF : 0xFF0000, -1);
+      dc.setPenWidth(5);
+      dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
     } else {
-      var ratio = (((height / (geometry[0] * 1.0)) * 10) + 1).toNumber();
-      var single = false;
-      ratio = ratio < 6 ? ratio : 5;
-      var labely = (height / 40) + (fontOffset);
-      var metriclabely = (height / 7) + (fontOffset);
-      var y = (height / 2) + (height / 15) - (fontOffset);
-      var x = width / 2;
-      var align = 1;
-      var obscurityFlags = DataField.getObscurityFlags();
+      var bgColor = getBackgroundColor();
+      var fgColor = bgColor == 0x000000 ? 0xFFFFFF : 0x000000;
+      var singleFieldColor = fgColor;
 
-      if (obscurityFlags & OBSCURE_TOP) {
-        labely = height - 10 - (height / 4) + (fontOffset);
-        y = (height / 2) - height / 12 + fontOffset;
-      }
+      var width = dc.getWidth();
+      var height = dc.getHeight();
 
-      if(height == geometry[0]){
-        single = true;
-        y = geometry[1];
-      }
-
-      if (obscurityFlags == 1 ||
-          obscurityFlags == 3 ||
-          obscurityFlags == 9) {
-        x = width - 5;
-        align = 0;
-      } else if (obscurityFlags == 4 ||
-                 obscurityFlags == 6 ||
-                 obscurityFlags == 12) {
-        x = 5;
-        align = 2;
-      }
-
-      if (obscurityFlags == 3 ||
-          obscurityFlags == 6 ||
-          obscurityFlags == 9 ||
-          obscurityFlags == 12) {
-        ratio -= 1;
-        dc.drawText(x, labely - 5, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
-                    targetLow, align);
-        dc.drawText(x, labely + 15, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
-                    targetHigh, align);
-      } else {
-        dc.drawText(x, labely, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
-                    targetLow + " - " + targetHigh, align);
-      }
-      dc.drawText(x, y, fonts[ratio],
-                  currentPower == null ? 0 : currentPower, 4 | align);
-      if(single){
-        drawMetric(dc,fields[0],0,metriclabely,geometry[0],geometry[11],1,-1,singleFieldColor);
-      }
-    }
-
-    if (singleField) {
-
-      drawLayout(dc,fgColor,bgColor);
-
-      var lMetricLabel = "";
-      var lMetricValue = "";
-      if (stepType == 99) {
-        lMetricLabel = "LAP TIME";
-        lMetricValue = Utils.format_duration(lapTime);
-      }
+      var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
 
       dc.setColor(fgColor,-1);
 
-      dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
-                  1);
-      dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
-                  lMetricValue, 1);
+      if (currentPower != null) {
+        if (showColors == 1) {
+          dc.setColor(pwrZonesColors[currentPwrZone], -1);
+          dc.fillRectangle(0, 0, singleField ? geometry[0] : width,
+                            singleField ? geometry[2] : height);
+          dc.setColor(0xFFFFFF, -1);
+          singleFieldColor = 0xFFFFFF;
+        } else if (showColors == 2) {
+          dc.setColor(pwrZonesColors[currentPwrZone], -1);
+        }
+      }
 
-      //! The following code to draw the gauge is copied and adapted from
-      //! Ravenfeld - Speed Gauge
-      //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
+      if (singleField) {
+        drawTop(dc);
+      } else {
+        var ratio = (((height / (geometry[0] * 1.0)) * 10) + 1).toNumber();
+        var single = false;
+        ratio = ratio < 6 ? ratio : 5;
+        var labely = (height / 40) + (fontOffset);
+        var metriclabely = (height / 7) + (fontOffset);
+        var y = (height / 2) + (height / 15) - (fontOffset);
+        var x = width / 2;
+        var align = 1;
+        var obscurityFlags = DataField.getObscurityFlags();
 
-      if(stepType < 98){
-        drawGauge(dc, bgColor);
+        if (obscurityFlags & OBSCURE_TOP) {
+          labely = height - 10 - (height / 4) + (fontOffset);
+          y = (height / 2) - height / 12 + fontOffset;
+        }
+
+        if(height == geometry[0]){
+          single = true;
+          y = geometry[1];
+        }
+
+        if (obscurityFlags == 1 ||
+            obscurityFlags == 3 ||
+            obscurityFlags == 9) {
+          x = width - 5;
+          align = 0;
+        } else if (obscurityFlags == 4 ||
+                  obscurityFlags == 6 ||
+                  obscurityFlags == 12) {
+          x = 5;
+          align = 2;
+        }
+
+        if (obscurityFlags == 3 ||
+            obscurityFlags == 6 ||
+            obscurityFlags == 9 ||
+            obscurityFlags == 12) {
+          ratio -= 1;
+          dc.drawText(x, labely - 5, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                      targetLow, align);
+          dc.drawText(x, labely + 15, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                      targetHigh, align);
+        } else {
+          dc.drawText(x, labely, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
+                      targetLow + " - " + targetHigh, align);
+        }
+        dc.drawText(x, y, fonts[ratio],
+                    currentPower == null ? 0 : currentPower, 4 | align);
+        if(single){
+          drawMetric(dc,fields[0],0,metriclabely,geometry[0],geometry[11],1,-1,singleFieldColor);
+        }
+      }
+
+      if (singleField) {
+
+        drawLayout(dc,fgColor,bgColor);
+
+        var lMetricLabel = "";
+        var lMetricValue = "";
+        if (stepType == 99) {
+          lMetricLabel = "LAP TIME";
+          lMetricValue = Utils.format_duration(lapTime);
+        }
+
+        dc.setColor(fgColor,-1);
+
+        dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                    1);
+        dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                    lMetricValue, 1);
+
+        //! The following code to draw the gauge is copied and adapted from
+        //! Ravenfeld - Speed Gauge
+        //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
+
+        if(stepType < 98){
+          drawGauge(dc, bgColor);
+        }
       }
     }
   }
