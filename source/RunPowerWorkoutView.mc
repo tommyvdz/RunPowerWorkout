@@ -882,8 +882,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                    remainingDistance > remainingDistanceSpeed) &&
                   (remainingTime == 0 || remainingTime > 15))) {
         if (stepType == 5) {
-          lMetricLabel = "UNTIL";
-          lMetricValue = "LAP PRESS";
+          lMetricLabel = "LAP PRESS";
+          lMetricValue = Utils.format_duration(stepTime);
         } else if (stepType == 1) {
           var distance = Utils.format_distance(remainingDistance,useMetric,false);
           lMetricLabel = "REM. DIST";
