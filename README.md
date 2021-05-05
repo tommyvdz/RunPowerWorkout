@@ -72,7 +72,7 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
 * Set up an alternative layout (for High memory devices)
 * Automatically switch every 5 seconds between two layouts (for High memory devices)
-* Alert on a static zone for watches without workout support (ConnectIQ <3.2).
+* Alert on a static zone for watches without workout support (ConnectIQ <3.2). Set to the zone number in order, 0 to disable
 
 ### Download
 
