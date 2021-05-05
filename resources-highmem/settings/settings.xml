@@ -285,4 +285,16 @@
     <setting propertyKey="@Properties.U" title="@Strings.WEIGHT">
         <settingConfig type="numeric" />
     </setting>
+    <setting propertyKey="@Properties.X" title="@Strings.TOP_FIELD_METRIC" helpUrl="https://github.com/tommyvdz/RunPowerWorkout#features">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.TF1</listEntry>
+            <listEntry value="2">@Strings.TF2</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.Y" title="@Strings.BOTTOM_FIELD_METRIC" helpUrl="https://github.com/tommyvdz/RunPowerWorkout#features">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.BF1</listEntry>
+            <listEntry value="2">@Strings.BF2</listEntry>
+        </settingConfig>
+    </setting>
 </settings>

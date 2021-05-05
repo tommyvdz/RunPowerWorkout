@@ -35,4 +35,10 @@
     <string id="TARGET_DISTANCE">Course distance in meters</string>
     <string id="TARGET_ELEVATION">Course elevation in meters</string>
     <string id="WEIGHT">Weight in Kg</string>
+    <string id="TOP_FIELD_METRIC">Top field metric</string>
+    <string id="BOTTOM_FIELD_METRIC">Bottom field metric outside workouts</string>
+    <string id="TF1">Instant power</string>
+    <string id="TF2">Step/Lap power</string>
+    <string id="BF1">Lap time</string>
+    <string id="BF2">Lap distance</string>
 </strings>

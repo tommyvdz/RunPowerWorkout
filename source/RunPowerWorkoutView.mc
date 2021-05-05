@@ -64,6 +64,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var elapsedDistance;
   hidden var fields;
   hidden var useSpeed;
+  (:highmem) hidden var topMetric;
+  (:highmem) hidden var bottomMetric;
+  (:highmem) hidden var lapStartDistance;
   (:highmem) hidden var fieldsAlt;
   (:highmem) hidden var useAlternativeLayout;
   (:highmem) hidden var autoAlternate;
@@ -239,6 +242,16 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   function onTimerPause() { paused = true; }
 
+  (:highmem)
+  function onTimerLap() {
+    lapTime = 0;
+    lapStartTime = timer;
+    lapStartDistance = Activity.getActivityInfo().elapsedDistance;
+    lapPower = null;
+    lapSpeed = null;
+  }
+
+  (:lowmem)
   function onTimerLap() {
     lapTime = 0;
     lapStartTime = timer;
@@ -329,6 +342,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     etaDistance = Utils.replaceNull(Application.getApp().getProperty("S"), 5000);
     etaElevation = Utils.replaceNull(Application.getApp().getProperty("T"), 0);
     weight = Utils.replaceNull(Application.getApp().getProperty("U"), 100);
+    topMetric = Utils.replaceNull(Application.getApp().getProperty("X"), 1);
+    bottomMetric = Utils.replaceNull(Application.getApp().getProperty("Y"), 1);
+    lapStartDistance = 0;
   }
 
   (:lowmem) function set_layout() {
@@ -355,8 +371,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (info has :currentSpeed) {
       currentSpeed = info.currentSpeed;
     }
-
-    processExtraData(info);
 
     if (usePercentage && info.currentPower != null) {
       currentPower =
@@ -486,6 +500,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
     }
+
+    processExtraData(info);
 
     return true;
   }
@@ -872,51 +888,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
       drawLayout(dc,fgColor,bgColor);
 
-      var lMetricLabel = "";
-      var lMetricValue = "";
-      if (stepType == 99) {
-        lMetricLabel = "LAP TIME";
-        lMetricValue = Utils.format_duration(lapTime);
-      } else if (switchMetric == 2 ||
-                 ((remainingDistance == 0 ||
-                   remainingDistance > remainingDistanceSpeed) &&
-                  (remainingTime == 0 || remainingTime > 15))) {
-        if (stepType == 5) {
-          lMetricLabel = "LAP PRESS";
-          lMetricValue = Utils.format_duration(stepTime);
-        } else if (stepType == 1) {
-          var distance = Utils.format_distance(remainingDistance,useMetric,false);
-          lMetricLabel = "REM. DIST";
-          lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
-        } else {
-          lMetricLabel = "REM. TIME";
-          lMetricValue = Utils.format_duration(remainingTime);
-        }
-      } else {
-        lMetricLabel = "NEXT STEP";
-
-        if (switchMetric == 0) {
-          lMetricValue = nextTargetLow + "-" + nextTargetHigh;
-        } else {
-          if (nextTargetType == 5) {
-            lMetricValue = "LAP PRESS";
-          } else if (nextTargetType == 1) {
-            var distance = Utils.format_distance(nextTargetDuration * 1.0, useMetric, false);
-            lMetricValue = distance[0] +
-                           (distance[2] == null ? "" : distance[2]) +
-                           distance[1];
-          } else {
-            lMetricValue = Utils.format_duration(nextTargetDuration.toNumber());
-          }
-        }
-      }
-
-      dc.setColor(fgColor,-1);
-
-      dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
-                  1);
-      dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
-                  lMetricValue, 1);
+      drawBottom(dc,fgColor,bgColor);
 
       //! The following code to draw the gauge is copied and adapted from
       //! Ravenfeld - Speed Gauge
@@ -1033,19 +1005,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
         drawLayout(dc,fgColor,bgColor);
 
-        var lMetricLabel = "";
-        var lMetricValue = "";
-        if (stepType == 99) {
-          lMetricLabel = "LAP TIME";
-          lMetricValue = Utils.format_duration(lapTime);
-        }
-
-        dc.setColor(fgColor,-1);
-
-        dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
-                    1);
-        dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
-                    lMetricValue, 1);
+        drawBottom(dc,fgColor,bgColor);
 
         //! The following code to draw the gauge is copied and adapted from
         //! Ravenfeld - Speed Gauge
@@ -1074,9 +1034,170 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(
           stepType >= 98 ? geometry[0] - 25 : geometry[0] - geometry[12],
           geometry[2] - geometry[10], fonts[2], targetHigh, 0);
+
+      var metric = currentPower;
+      if(topMetric == 2){
+        if(stepType >= 98){
+           metric = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
+        } else {
+           metric = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+        }
+      }
+
       dc.drawText(geometry[1] + 2,
                   stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
-                  fonts[4], currentPower == null ? 0 : currentPower, 1);
+                  fonts[4], metric == null ? 0 : metric, 1);
+  }
+
+  (:lowmem :workout)
+  function drawBottom(dc,fgColor,bgColor){
+    var lMetricLabel = "";
+    var lMetricValue = "";
+    if (stepType == 99) {
+      lMetricLabel = "LAP TIME";
+      lMetricValue = Utils.format_duration(lapTime);
+    } else if (switchMetric == 2 ||
+                ((remainingDistance == 0 ||
+                  remainingDistance > remainingDistanceSpeed) &&
+                (remainingTime == 0 || remainingTime > 15))) {
+      if (stepType == 5) {
+        lMetricLabel = "LAP PRESS";
+        lMetricValue = Utils.format_duration(stepTime);
+      } else if (stepType == 1) {
+        var distance = Utils.format_distance(remainingDistance,useMetric,false);
+        lMetricLabel = "REM. DIST";
+        lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
+      } else {
+        lMetricLabel = "REM. TIME";
+        lMetricValue = Utils.format_duration(remainingTime);
+      }
+    } else {
+      lMetricLabel = "NEXT STEP";
+
+      if (switchMetric == 0) {
+        lMetricValue = nextTargetLow + "-" + nextTargetHigh;
+      } else {
+        if (nextTargetType == 5) {
+          lMetricValue = "LAP PRESS";
+        } else if (nextTargetType == 1) {
+          var distance = Utils.format_distance(nextTargetDuration * 1.0, useMetric, false);
+          lMetricValue = distance[0] +
+                          (distance[2] == null ? "" : distance[2]) +
+                          distance[1];
+        } else {
+          lMetricValue = Utils.format_duration(nextTargetDuration.toNumber());
+        }
+      }
+    }
+
+    dc.setColor(fgColor,-1);
+
+    dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                1);
+    dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                lMetricValue, 1);
+  }
+
+  (:highmem :workout)
+  function drawBottom(dc,fgColor,bgColor){
+    var lMetricLabel = "";
+    var lMetricValue = "";
+    if (stepType == 99) {
+      lMetricLabel = bottomMetric == 1 ? "LAP TIME" : "LAP DIST";
+      if(bottomMetric == 1){
+        lMetricValue = Utils.format_duration(lapTime);
+      } else {
+        if(elapsedDistance == null || elapsedDistance == 0 || lapStartDistance == null){
+          lMetricValue = 0;
+        } else {
+          var distance = Utils.format_distance(elapsedDistance - lapStartDistance,useMetric,false);
+          lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
+        }
+      }
+    } else if (switchMetric == 2 ||
+                ((remainingDistance == 0 ||
+                  remainingDistance > remainingDistanceSpeed) &&
+                (remainingTime == 0 || remainingTime > 15))) {
+      if (stepType == 5) {
+        lMetricLabel = "LAP PRESS";
+        lMetricValue = Utils.format_duration(stepTime);
+      } else if (stepType == 1) {
+        var distance = Utils.format_distance(remainingDistance,useMetric,false);
+        lMetricLabel = "REM. DIST";
+        lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
+      } else {
+        lMetricLabel = "REM. TIME";
+        lMetricValue = Utils.format_duration(remainingTime);
+      }
+    } else {
+      lMetricLabel = "NEXT STEP";
+
+      if (switchMetric == 0) {
+        lMetricValue = nextTargetLow + "-" + nextTargetHigh;
+      } else {
+        if (nextTargetType == 5) {
+          lMetricValue = "LAP PRESS";
+        } else if (nextTargetType == 1) {
+          var distance = Utils.format_distance(nextTargetDuration * 1.0, useMetric, false);
+          lMetricValue = distance[0] +
+                          (distance[2] == null ? "" : distance[2]) +
+                          distance[1];
+        } else {
+          lMetricValue = Utils.format_duration(nextTargetDuration.toNumber());
+        }
+      }
+    }
+
+    dc.setColor(fgColor,-1);
+
+    dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                1);
+    dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                lMetricValue, 1);
+  }
+
+  (:lowmem :noworkout)
+  function drawBottom(dc,fgColor,bgColor){
+    var lMetricLabel = "";
+    var lMetricValue = "";
+    if (stepType == 99) {
+      lMetricLabel =  "LAP TIME";
+      lMetricValue = Utils.format_duration(lapTime);
+    }
+
+    dc.setColor(fgColor,-1);
+
+    dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                1);
+    dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                lMetricValue, 1);
+  }
+
+  (:highmem :noworkout)
+  function drawBottom(dc,fgColor,bgColor){
+    var lMetricLabel = "";
+    var lMetricValue = "";
+
+    if (stepType == 99) {
+      lMetricLabel = bottomMetric == 1 ? "LAP TIME" : "LAP DIST";
+      if(bottomMetric == 1){
+        lMetricValue = Utils.format_duration(lapTime);
+      } else {
+        if(elapsedDistance == null || elapsedDistance == 0 || lapStartDistance == null){
+          lMetricValue = 0;
+        } else {
+          var distance = Utils.format_distance(elapsedDistance - lapStartDistance,useMetric,false);
+          lMetricValue = distance[0] + (distance[2] == null ? "" : distance[2]) + distance[1];
+        }
+      }
+    }
+
+    dc.setColor(fgColor,-1);
+
+    dc.drawText(geometry[1], geometry[4] + fontOffset, fonts[0], lMetricLabel,
+                1);
+    dc.drawText(geometry[1], geometry[4] + (fontOffset * 5) + 15, fonts[3],
+                lMetricValue, 1);
   }
 
   (:lowmem)

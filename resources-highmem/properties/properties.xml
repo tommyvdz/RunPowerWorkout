@@ -17,4 +17,6 @@
     <property id="S" type="number">5000</property>
     <property id="T" type="number">0</property>
     <property id="U" type="number">100</property>
+    <property id="X" type="number">1</property>
+    <property id="Y" type="number">1</property>
 </properties>
