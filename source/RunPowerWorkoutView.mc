@@ -936,7 +936,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.setAntiAlias(true);
     }
 
-    if(inAlert){
+    var width = dc.getWidth();
+    var height = dc.getHeight();
+    var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
+
+    // Alerts are not supported by lower CIQ so we just change the datafield. Will be limited to the datafield though
+    if(inAlert && singleField){
       dc.setColor(0xFFFFFF, 0x000000);
       dc.clear();
       dc.setColor(0xFFFFFF, -1);
@@ -954,11 +959,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       var bgColor = getBackgroundColor();
       var fgColor = bgColor == 0x000000 ? 0xFFFFFF : 0x000000;
       var singleFieldColor = fgColor;
-
-      var width = dc.getWidth();
-      var height = dc.getHeight();
-
-      var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
 
       dc.setColor(fgColor,-1);
 

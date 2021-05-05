@@ -91,7 +91,7 @@ jobs:
               export SDK=2.4.0
             elif [[ "$i" =~ ^(approachs62|d2charlie|descentmk1)$ ]]; then
               export SDK=3.0.0
-            elif [[ "$i" =~ ^(fr935|d2delta|d2deltapx|d2deltas|descentmk2|fenix5|fenix5s|fenix5x)$ ]]; then
+            elif [[ "$i" =~ ^(fr645|fr935|d2delta|d2deltapx|d2deltas|descentmk2|fenix5|fenix5s|fenix5x)$ ]]; then
               export SDK=3.1.0
             else              
               export SDK=3.2.0
