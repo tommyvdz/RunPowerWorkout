@@ -33,12 +33,12 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Time of day (9)
 * Average Pace (A)
 * Average Power (B)
-* Altitude (Only on high memory devices, level 2 or 4)
-* Total Ascent (Only on high memory devices, level 2 or 4)
-* Total Descent (Only on high memory devices, level 2 or 4)
-* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (Only on high memory devices, level 2 or 4)
-* ETA based on average pace (Only on high memory devices, level 2 or 4)
-* ETA based on average power. [Uses the model from Stryd](https://blog.stryd.com/2020/01/10/how-to-calculate-your-race-time-from-your-target-power/). Correct weight, duration and elevation of the course needs to be set up. (Only on high memory devices, level 2 or 4)
+* Altitude (Only on high memory devices)
+* Total Ascent (Only on high memory devices)
+* Total Descent (Only on high memory devices)
+* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (Only on high memory devices)
+* ETA based on average pace (Only on high memory devices)
+* ETA based on average power. [Uses the model from Stryd](https://blog.stryd.com/2020/01/10/how-to-calculate-your-race-time-from-your-target-power/). Correct weight, duration and elevation of the course needs to be set up. It is quite accurate but be aware that it is still very "beta". (Only on high memory devices)
 
 
 Datafield layout is the following
