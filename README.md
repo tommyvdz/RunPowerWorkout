@@ -72,7 +72,10 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
 * Set up an alternative layout (for High memory devices)
 * Automatically switch every 5 seconds between two layouts (for High memory devices)
-* Alert on a static zone for watches without workout support (ConnectIQ <3.2). Set to the zone number in order, 0 to disable
+* Allow to choose between Lap/Step Power and Instant power for the top field (for High memory devices)
+* Allow to choose between Lap Duration and Lap Distance in the bottom field, outside of workouts (for High memory devices)
+* Alert on a static zone for watches without workout support (ConnectIQ <3.2). 
+  Set to the zone number (for instance, if you have zones `1,2,3,X,4,Y,5`, Zone X would be 4 and Zone 4 would be 5), 0 to disable
 
 ### Download
 
@@ -99,51 +102,55 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 
 ### Watch capability matrix
 
-| Watch            | Workout support ? | Power without ANT+ ? | Datafield Memory |
-| ---------------- | ----------------- | -------------------- | ---------------- |
-| Approach S60     | ❌                 | ✅                    | LOW (32KB)       |
-| Approach S62     | ❌                 | ✅                    | HIGH (128KB)     |
-| D2 Air           | ✅                 | ❌                    | LOW (32KB)       |
-| D2 Charlie       | ❌                 | ✅                    | HIGH (128KB)     |
-| D2 Delta         | ❌                 | ✅                    | HIGH (128KB)     |
-| D2 Delta Px      | ❌                 | ✅                    | HIGH (128KB)     |
-| D2 Delta S       | ❌                 | ✅                    | HIGH (128KB)     |
-| Descent Mk1      | ❌                 | ✅                    | HIGH (128KB)     |
-| Descent Mk2/Mk2i | ✅ (in theory)     | ✅                    | HIGH (128KB)     |
-| Enduro           | ✅                 | ✅                    | LOW (32KB)       |
-| Fenix 5          | ❌                 | ✅                    | LOW (32KB)       |
-| Fenix 5S         | ❌                 | ✅                    | LOW (32KB)       |
-| Fenix 5X         | ❌                 | ✅                    | HIGH (128KB)     |
-| Fenix 5 Plus     | ✅                 | ✅                    | HIGH (128KB)     |
-| Fenix 5S Plus    | ❌                 | ✅                    | HIGH (128KB)     |
-| Fenix 5X Plus    | ❌                 | ✅                    | HIGH (128KB)     |
-| Fenix 6          | ✅                 | ✅                    | LOW (32KB)       |
-| Fenix 6S         | ✅                 | ✅                    | LOW (32KB)       |
-| Fenix 6 Pro      | ✅                 | ✅                    | HIGH (128KB)     |
-| Fenix 6S Pro     | ✅                 | ✅                    | HIGH (128KB)     |
-| Fenix 6X Pro     | ✅                 | ✅                    | HIGH (128KB)     |
-| Forerunner 245   | ✅                 | ❌                    | LOW (32KB)       |
-| Forerunner 245M  | ✅                 | ❌                    | HIGH (64KB)      |
-| Forerunner 645   | ❌                 | ❌                    | LOW (32KB)       |
-| Forerunner 645M  | ✅                 | ❌                    | HIGH (64KB)      |
-| Forerunner 745   | ✅                 | ✅                    | HIGH (64KB)      |
-| Forerunner 935   | ❌                 | ✅                    | LOW (32KB)       |
-| Forerunner 945   | ✅                 | ✅                    | HIGH (128KB)     |
-| Forerunner 945   | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Adventurer  | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Athlete     | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Aviator     | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Captain     | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Commander   | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Driver      | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Expedition  | ✅                 | ✅                    | HIGH (128KB)     |
-| MARQ Golfer      | ✅                 | ✅                    | HIGH (128KB)     |
-| Venu             | ✅                 | ❌                    | LOW (32KB)       |
-| Venu 2           | ✅                 | ❌                    | HIGH (256KB)     |
-| Venu 2s          | ✅                 | ❌                    | HIGH (256KB)     |
-| Vivoactive 3M    | ✅                 | ❌                    | LOW (32KB)       |
-| Vivoactive 4     | ✅                 | ❌                    | LOW (32KB)       |
-| Vivoactive 4s    | ✅                 | ❌                    | LOW (32KB)       |
+| Watch                        | Workout support ? | Power without ANT+ ? | Datafield Memory |
+| ---------------------------- | ----------------- | -------------------- | ---------------- |
+| Approach S60                 | ❌                 | ✅                    | LOW (32KB)       |
+| Approach S62                 | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Air                       | ✅                 | ❌                    | LOW (32KB)       |
+| D2 Charlie                   | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta                     | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta Px                  | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta S                   | ❌                 | ✅                    | HIGH (128KB)     |
+| Descent Mk1                  | ❌                 | ✅                    | HIGH (128KB)     |
+| Descent Mk2/Mk2i             | ✅ (in theory)     | ✅                    | HIGH (128KB)     |
+| Enduro                       | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 5                      | ❌                 | ✅                    | LOW (32KB)       |
+| Fenix 5S                     | ❌                 | ✅                    | LOW (32KB)       |
+| Fenix 5X                     | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 5 Plus                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 5S Plus                | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 5X Plus                | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 6                      | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 6S                     | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 6 Pro                  | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 6S Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 6X Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Forerunner 245               | ✅                 | ❌                    | LOW (32KB)       |
+| Forerunner 245M              | ✅                 | ❌                    | HIGH (64KB)      |
+| Forerunner 645               | ❌                 | ❌                    | LOW (32KB)       |
+| Forerunner 645M              | ✅                 | ❌                    | HIGH (64KB)      |
+| Forerunner 745               | ✅                 | ✅                    | HIGH (64KB)      |
+| Forerunner 935               | ❌                 | ✅                    | LOW (32KB)       |
+| Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
+| Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Adventurer              | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Athlete                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Aviator                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Captain                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Commander               | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Driver                  | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Expedition              | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Golfer                  | ✅                 | ✅                    | HIGH (128KB)     |
+| Venu                         | ✅                 | ❌                    | LOW (32KB)       |
+| Venu (Mercedes-Benz)         | ❌                 | ❌                    | LOW (32KB)       |
+| Venu 2                       | ✅                 | ❌                    | HIGH (256KB)     |
+| Venu 2s                      | ✅                 | ❌                    | HIGH (256KB)     |
+| Vivoactive 3                 | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3 (Mercedes-Benz) | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3M                | ✅                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3M LTE            | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 4                 | ✅                 | ❌                    | LOW (32KB)       |
+| Vivoactive 4s                | ✅                 | ❌                    | LOW (32KB)       |
 
 ### Pragati Font License
 
