@@ -793,6 +793,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     dc.setColor(fgColor,-1);
 
+    var topField = getTopField();
+
     if (currentPower != null) {
       if (stepType >= 98) {
         if (showColors == 1) {
@@ -806,9 +808,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       } else if (targetHigh != 0 && targetLow != 0) {
         if (showColors == 1) {
-          if (currentPower < targetLow) {
+          if (topField < targetLow) {
             dc.setColor(0x0000FF, -1);
-          } else if (currentPower > targetHigh) {
+          } else if (topField > targetHigh) {
             dc.setColor(0xAA0000, -1);
           } else {
             dc.setColor(0x00AA00, -1);
@@ -818,9 +820,9 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           dc.setColor(0xFFFFFF, -1);
           singleFieldColor = 0xFFFFFF;
         } else if (showColors == 2) {
-          if (currentPower < targetLow) {
+          if (topField < targetLow) {
             dc.setColor(0x0000FF, -1);
-          } else if (currentPower > targetHigh) {
+          } else if (topField > targetHigh) {
             dc.setColor(0xAA0000, -1);
           } else {
             dc.setColor(0x00AA00, -1);
@@ -830,7 +832,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (singleField) {
-      drawTop(dc);
+      drawTop(dc,topField);
     } else {
       var ratio = (((height / (geometry[0] * 1.0)) * 10) + 1).toNumber();
       var single = false;
@@ -877,8 +879,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         dc.drawText(x, labely, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
                     targetLow + " - " + targetHigh, align);
       }
-      dc.drawText(x, y, fonts[ratio],
-                  currentPower == null ? 0 : currentPower, 4 | align);
+      dc.drawText(x, y, fonts[ratio], topField, 4 | align);
       if(single){
         drawMetric(dc,fields[0],0,metriclabely,geometry[0],geometry[11],1,-1,singleFieldColor);
       }
@@ -912,19 +913,21 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     var height = dc.getHeight();
     var singleField = width == geometry[0] && height == geometry[0] && layout != 1;
 
+    var topField = getTopField();
+
     // Alerts are not supported by lower CIQ so we just change the datafield. Will be limited to the datafield though
     if(inAlert && singleField){
       dc.setColor(0xFFFFFF, 0x000000);
       dc.clear();
       dc.setColor(0xFFFFFF, -1);
-      dc.drawText(geometry[1], geometry[6], fonts[2], currentPower < targetZoneLow ? "LOW POWER" : "HIGH POWER", 1);
+      dc.drawText(geometry[1], geometry[6], fonts[2], topField < targetZoneLow ? "LOW POWER" : "HIGH POWER", 1);
       dc.drawText(geometry[1], geometry[10], fonts[2],
                   "TGT" + " " + targetZoneLow + "-" +
                       targetZoneHigh,
                   1);
-      dc.drawText(geometry[1], geometry[1], fonts[5], currentPower,
+      dc.drawText(geometry[1], geometry[1], fonts[5], topField,
                   4 | 1);
-      dc.setColor(currentPower < targetZoneLow ? 0x00AAFF : 0xFF0000, -1);
+      dc.setColor(topField < targetZoneLow ? 0x00AAFF : 0xFF0000, -1);
       dc.setPenWidth(5);
       dc.drawCircle(geometry[1], geometry[1], geometry[1] - 2);
     } else {
@@ -947,7 +950,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       }
 
       if (singleField) {
-        drawTop(dc);
+        drawTop(dc,topField);
       } else {
         var ratio = (((height / (geometry[0] * 1.0)) * 10) + 1).toNumber();
         var single = false;
@@ -994,8 +997,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           dc.drawText(x, labely, fonts[ratio - 3 > 0 ? ratio - 3 : 0],
                       targetLow + " - " + targetHigh, align);
         }
-        dc.drawText(x, y, fonts[ratio],
-                    currentPower == null ? 0 : currentPower, 4 | align);
+        dc.drawText(x, y, fonts[ratio],topField, 4 | align);
         if(single){
           drawMetric(dc,fields[0],0,metriclabely,geometry[0],geometry[11],1,-1,singleFieldColor);
         }
@@ -1019,34 +1021,43 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   }
 
   (:lowmem)
-  function drawTop(dc){
-      dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
-      dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
-      dc.drawText(geometry[1] + 2,
-                  stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
-                  fonts[4], currentPower == null ? 0 : currentPower, 1);
+  function getTopField(){
+    return currentPower == null ? 0 : currentPower;
   }
 
   (:highmem)
-  function drawTop(dc){
+  function getTopField(){
+      if(topMetric == 2){
+        if(stepType >= 98){
+           return (lapPower == null ? 0 : (lapPower + 0.5).toNumber());
+        } else {
+           return (stepPower == null ? 0 : (stepPower + 0.5).toNumber());
+        }
+      }else{
+        return currentPower == null ? 0 : currentPower;
+      }
+  }
+
+  (:lowmem)
+  function drawTop(dc,metric){
+      dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
+      dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
+      dc.drawText(geometry[1] + 2,
+                  stepType >= 98 ? 5 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  fonts[4], metric, 1);
+  }
+
+  (:highmem)
+  function drawTop(dc,metric){
       dc.drawText(stepType >= 98 ? 25 : geometry[12],
                   geometry[2] - geometry[10], fonts[2], targetLow, 2);
       dc.drawText(
           stepType >= 98 ? geometry[0] - 25 : geometry[0] - geometry[12],
           geometry[2] - geometry[10], fonts[2], targetHigh, 0);
-
-      var metric = currentPower;
-      if(topMetric == 2){
-        if(stepType >= 98){
-           metric = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
-        } else {
-           metric = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
-        }
-      }
-
+          
       dc.drawText(geometry[1] + 2,
-                  stepType >= 98 ? 0 + (fontOffset * 4) : 0 + 15 + fontOffset,
-                  fonts[4], metric == null ? 0 : metric, 1);
+                  stepType >= 98 ? 5 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  fonts[4], metric, 1);
   }
 
   (:lowmem :workout)
