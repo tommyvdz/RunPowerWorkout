@@ -10,4 +10,5 @@
     <property id="I" type="boolean">true</property>
     <property id="M" type="number">3</property>
     <property id="V" type="boolean">false</property>
+    <property id="Z" type="boolean">false</property>
 </properties>

@@ -22,4 +22,5 @@
 	<string id="L2">4 fields</string>
 	<string id="L3">6 fields</string>
 	<string id="USE_SPEED">Use speed instead of pace ?</string>
+	<string id="KEEP_LAST_STEP">Keep last step targets after a workout.</string>
 </strings>

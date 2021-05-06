@@ -7,9 +7,11 @@ using Toybox.System as Sys;
 class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var timer;
   (:workout) hidden var stepTime;
+  (:workout) hidden var stepDuration;
   (:workout) hidden var stepStartTime;
   (:workout) hidden var stepStartDistance;
   (:workout) hidden var stepPower;
+  hidden var keepLast;
   hidden var lapTime;
   hidden var lapStartTime;
   hidden var lapPower;
@@ -127,7 +129,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                     : false;
 
     useSpeed = Utils.replaceNull(Application.getApp().getProperty("V"), false);
-
+    keepLast =
+        Utils.replaceNull(Application.getApp().getProperty("Z"), false);
     showSmallDecimals = Utils.replaceNull(
         Application.getApp().getProperty("H"), true);
 
@@ -260,7 +263,11 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   }
 
   (:workout)
-  function onWorkoutStepComplete() {
+  function processWorkoutStep(){
+
+    var workout = Activity.getCurrentWorkoutStep();
+    var nextWorkout = Activity.getNextWorkoutStep();
+
     stepStartTime = timer;
     stepTime = 0;
     stepSpeed = null;
@@ -270,6 +277,102 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     alertCount = 0;
     alertDisplayed = false;
     remainingDistanceSpeed = -1;
+
+    if (workout != null) {
+      if (nextWorkout != null) {
+        nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
+        nextTargetLow = nextWorkout.step.targetValueLow - 1000;
+        if (nextTargetHigh < 0) {
+          nextTargetHigh = 0;
+        }
+        if (nextTargetLow < 0) {
+          nextTargetLow = 0;
+        }
+
+        if (usePercentage && nextTargetHigh != null &&
+            nextTargetLow != null) {
+          nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
+          nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
+        }
+
+        if (nextWorkout.step.targetType != null &&
+            nextWorkout.step.durationType == 5) {
+          nextTargetType = 5;
+        } else if (nextWorkout.step.targetType != null &&
+                  nextWorkout.step.durationType == 1) {
+          nextTargetType = 1;
+          if (nextWorkout.step.durationValue != null) {
+            nextTargetDuration = nextWorkout.step.durationValue;
+          }
+        } else {
+          nextTargetType = 0;
+          if (nextWorkout.step.durationValue != null) {
+            nextTargetDuration = nextWorkout.step.durationValue;
+          }
+        }
+      } else {
+        if(keepLast){
+          nextTargetHigh = targetHigh;
+          nextTargetLow = targetLow;
+          nextTargetType = 5;
+          nextTargetDuration = 0;
+        } else {
+          nextTargetHigh = 0;
+          nextTargetLow = 0;
+          nextTargetType = 5;
+          nextTargetDuration = 0;
+        }
+      }
+
+      targetHigh = workout.step.targetValueHigh - 1000;
+      targetLow = workout.step.targetValueLow - 1000;
+      if (targetHigh < 0) {
+        targetHigh = 0;
+      }
+      if (targetLow < 0) {
+        targetLow = 0;
+      }
+
+      if (usePercentage && targetHigh != null && targetLow != null) {
+        targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
+        targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
+      }
+
+      if (workout.step.targetType != null &&
+          workout.step.durationType == 5) {
+        stepType = (targetHigh > 0 && targetLow > 0) ? 5 : 98;
+      } else if (workout.step.targetType != null &&
+                  workout.step.durationType == 1) {
+
+        stepType = (targetHigh > 0 && targetLow > 0) ? 1 : 98;
+        stepDuration = workout.step.durationValue;
+      } else {
+        stepType = (targetHigh > 0 && targetLow > 0) ? 0 : 98;
+        stepDuration = workout.step.durationValue;
+      }
+    } else {
+      if(keepLast){
+        targetHigh = nextTargetHigh;
+        targetLow = nextTargetLow;
+        stepType = 5;
+        nextTargetDuration = 0;
+      } else {
+        targetHigh = 0;
+        targetLow = 0;
+        stepType = 99;
+        shouldDisplayAlert = false;
+      }
+    }
+  }
+
+  (:workout)
+  function onWorkoutStarted() {
+    processWorkoutStep();
+  }
+
+  (:workout)
+  function onWorkoutStepComplete() {
+    processWorkoutStep();
   }
 
   (:workout)
@@ -525,8 +628,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       currentSpeed = info.currentSpeed;
     }
 
-    processExtraData(info);
-
     if (usePercentage && info.currentPower != null) {
       currentPower =
           ((currentPower / (FTP * 1.0)) * 100).toNumber();
@@ -535,106 +636,33 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     if (paused != true) {
       if (info != null) {
 
-        var workout = Activity.getCurrentWorkoutStep();
-
         timer = info.timerTime / 1000;
         stepTime = timer - stepStartTime;
         lapTime = timer - lapStartTime;
         elapsedDistance = info.elapsedDistance;
 
-        shouldDisplayAlert = (stepTime > 15);
-
-        if (workout != null) {
-
-          var nextWorkout = Activity.getNextWorkoutStep();
-
-          if (nextWorkout != null) {
-            nextTargetHigh = nextWorkout.step.targetValueHigh - 1000;
-            nextTargetLow = nextWorkout.step.targetValueLow - 1000;
-            if (nextTargetHigh < 0) {
-              nextTargetHigh = 0;
-            }
-            if (nextTargetLow < 0) {
-              nextTargetLow = 0;
-            }
-
-            if (usePercentage && nextTargetHigh != null &&
-                nextTargetLow != null) {
-              nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
-              nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
-            }
-
-            if (nextWorkout.step.targetType != null &&
-                nextWorkout.step.durationType == 5) {
-              nextTargetType = 5;
-            } else if (nextWorkout.step.targetType != null &&
-                      nextWorkout.step.durationType == 1) {
-              nextTargetType = 1;
-              if (nextWorkout.step.durationValue != null) {
-                nextTargetDuration = nextWorkout.step.durationValue;
-              }
-            } else {
-              nextTargetType = 0;
-              if (nextWorkout.step.durationValue != null) {
-                nextTargetDuration = nextWorkout.step.durationValue;
-              }
-            }
-          } else {
-            nextTargetHigh = 0;
-            nextTargetLow = 0;
-            nextTargetType = 5;
-            nextTargetDuration = 0;
-          }
-
-          targetHigh = workout.step.targetValueHigh - 1000;
-          targetLow = workout.step.targetValueLow - 1000;
-          if (targetHigh < 0) {
-            targetHigh = 0;
-          }
-          if (targetLow < 0) {
-            targetLow = 0;
-          }
-
-          if (targetLow == 0 && targetHigh == 0) {
-            shouldDisplayAlert = false;
-          }
-
-          if (usePercentage && targetHigh != null && targetLow != null) {
-            targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
-            targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
-          }
-
-          if (workout.step.targetType != null &&
-              workout.step.durationType == 5) {
-            stepType = (targetHigh > 0 && targetLow > 0) ? 5 : 98;
-          } else if (workout.step.targetType != null &&
-                     workout.step.durationType == 1) {
-
-            stepType = (targetHigh > 0 && targetLow > 0) ? 1 : 98;
-            if (workout.step.durationValue != null && remainingDistance >= 0) {
-              remainingDistance = workout.step.durationValue -
-                                  (elapsedDistance.toNumber() -
-                                   stepStartDistance);
-              if (shouldDisplayAlert &&
-                  remainingDistance < remainingDistanceSpeed) {
-                shouldDisplayAlert = false;
-              }
-            }
-          } else {
-            stepType = (targetHigh > 0 && targetLow > 0) ? 0 : 98;
-            if (workout.step.durationValue != null &&
-                remainingTime >= 0) {
-              remainingTime =
-                  (workout.step.durationValue - stepTime).toNumber();
-              if (shouldDisplayAlert && remainingTime < 20) {
-                shouldDisplayAlert = false;
-              }
-            }
-          }
-        } else {
-          stepType = 99;
+        if (targetLow == 0 && targetHigh == 0) {
           shouldDisplayAlert = false;
+        } else {
+          shouldDisplayAlert = (stepTime > 15);
         }
+
+        if (stepType == 1 && stepDuration != null && remainingDistance >= 0) {
+            remainingDistance = stepDuration -
+                                (elapsedDistance.toNumber() -
+                                  stepStartDistance);
+            if (shouldDisplayAlert &&
+                remainingDistance < remainingDistanceSpeed) {
+              shouldDisplayAlert = false;
+            }
+        } else if(stepType == 0 && stepDuration != null &&
+              remainingTime >= 0) {
+            remainingTime =
+                (stepDuration - stepTime).toNumber();
+            if (shouldDisplayAlert && remainingTime < 20) {
+              shouldDisplayAlert = false;
+            }
+      }
 
         switchCounter++;
         if (switchCounter > 1) {
@@ -773,6 +801,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
       }
     }
+
+    processExtraData(info);
 
     return true;
   }
