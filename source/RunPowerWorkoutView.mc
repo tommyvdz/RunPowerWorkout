@@ -1055,7 +1055,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       dc.drawText(25, geometry[2] - geometry[10], fonts[2], targetLow, 2);
       dc.drawText(geometry[0] - 25, geometry[2] - geometry[10], fonts[2], targetHigh, 0);
       dc.drawText(geometry[1] + 2,
-                  stepType >= 98 ? 5 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  stepType >= 98 ? 3 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], metric, 1);
   }
 
@@ -1068,7 +1068,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           geometry[2] - geometry[10], fonts[2], targetHigh, 0);
           
       dc.drawText(geometry[1] + 2,
-                  stepType >= 98 ? 5 + (fontOffset * 4) : 0 + 15 + fontOffset,
+                  stepType >= 98 ? 3 + (fontOffset * 4) : 0 + 15 + fontOffset,
                   fonts[4], metric, 1);
   }
 
