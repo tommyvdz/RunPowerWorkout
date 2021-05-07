@@ -636,6 +636,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
           }
         } else {
+          lapStartTime = timer;
+          lapStartDistance = Activity.getActivityInfo().elapsedDistance;
           if(keepLast){
             stepType = 5;
             targetHigh = nextTargetHigh;
