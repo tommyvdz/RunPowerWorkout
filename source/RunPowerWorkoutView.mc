@@ -5,87 +5,88 @@ using Toybox.AntPlus;
 using Toybox.System as Sys;
 
 class RunPowerWorkoutView extends WatchUi.DataField {
-  hidden var timer;
-  (:workout) hidden var stepTime;
-  (:workout) hidden var stepStartTime;
-  (:workout) hidden var stepStartDistance;
-  (:workout) hidden var stepPower;
-  hidden var lapTime;
-  hidden var lapStartTime;
-  hidden var lapPower;
-  hidden var avgPower = 0;
-  hidden var targetHigh;
-  hidden var targetLow;
-  (:noworkout) hidden var targetZone;
-  (:noworkout) hidden var targetZoneLow = 0;
-  (:noworkout) hidden var targetZoneHigh = 0;
+  (:highmem) hidden var alternativeLayout;
+  (:highmem) hidden var alternativeLayoutCounter = 0;
+  (:highmem) hidden var altitude = 0;
+  (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
+  (:highmem) hidden var arrayAltPointer = 0;
+  (:highmem) hidden var arrayAltPrecision = 5;
+  (:highmem) hidden var autoAlternate;
+  (:highmem) hidden var bottomMetric;
+  (:highmem) hidden var etaDistance = 0;
+  (:highmem) hidden var etaElevation = 0;
+  (:highmem) hidden var etaPower = 0;
+  (:highmem) hidden var etaSpeed = 0;
+  (:highmem) hidden var fieldsAlt;
+  (:highmem) hidden var lapStartDistance;
+  (:highmem) hidden var switchAlternativeLayout = 0;
+  (:highmem) hidden var topMetric;
+  (:highmem) hidden var totalAscent = 0;
+  (:highmem) hidden var totalDescent = 0;
+  (:highmem) hidden var useAlternativeLayout;
+  (:highmem) hidden var verticalSpeed = 0;
+  (:highmem) hidden var weight = 100;
   (:noworkout) hidden var inAlert = false;
+  (:noworkout) hidden var targetZone = 0;
+  (:noworkout) hidden var targetZoneHigh = 0;
+  (:noworkout) hidden var targetZoneLow = 0;
+  (:workout) hidden var nextTargetDuration;
   (:workout) hidden var nextTargetHigh;
   (:workout) hidden var nextTargetLow;
   (:workout) hidden var nextTargetType;
-  (:workout) hidden var nextTargetDuration;
-  (:workout) hidden var remainingTime;
-  (:workout) hidden var remainingDistance;
-  (:workout) hidden var remainingDistanceSpeed;
-  (:workout) hidden var stepSpeed;
-  hidden var stepType;
-  hidden var currentPower;
-  hidden var paused;
-  hidden var cadence;
-  hidden var alertDisplayed;
+  (:workout) hidden var remainingDistance = 0;
+  (:workout) hidden var remainingDistanceSpeed = -1;
+  (:workout) hidden var remainingTime = 0;
+  (:workout) hidden var stepPower = null;
+  (:workout) hidden var stepSpeed = null;
+  (:workout) hidden var stepStartDistance = 0;
+  (:workout) hidden var stepStartTime = 0;
+  (:workout) hidden var stepTime = 0;
+  hidden var alertCount = 0;
+  hidden var alertDelay = 10;
+  hidden var alertDisplayed = false;
   hidden var alertTimer;
-  hidden var alertCount;
-  hidden var alertDelay;
-  hidden var hr;
-  hidden var usePercentage;
-  hidden var useMetric;
-  hidden var FTP;
-  hidden var vibrate;
-  hidden var showAlerts;
-  hidden var switchCounter;
-  hidden var switchMetric;
-  hidden var hrZones;
-  hidden var shouldDisplayAlert;
-  hidden var powerAverage;
-  hidden var currentPowerAverage;
-  hidden var showColors;
-  hidden var fonts;
-  hidden var fontOffset = 0;
-  hidden var showSmallDecimals;
-  hidden var pwrZones;
-  hidden var pwrZonesLabels;
-  hidden var pwrZonesColors;
-  hidden var currentPwrZone;
-  hidden var sensor;
-  hidden var layout;
-  hidden var currentSpeed;
-  hidden var lapSpeed;
+  hidden var avgPower = 0;
   hidden var avgSpeed = 0;
-  hidden var elapsedDistance;
+  hidden var cadence = 0;
+  hidden var currentPower = 0;
+  hidden var currentPowerAverage;
+  hidden var currentPwrZone = 1;
+  hidden var currentSpeed = 0;
+  hidden var elapsedDistance = 0;
   hidden var fields;
-  hidden var useSpeed;
+  hidden var fontOffset = 0;
+  hidden var fonts;
+  hidden var FTP;
+  hidden var hr = 0;
+  hidden var hrZones;
   hidden var keepLast;
-  (:highmem) hidden var topMetric;
-  (:highmem) hidden var bottomMetric;
-  (:highmem) hidden var lapStartDistance;
-  (:highmem) hidden var fieldsAlt;
-  (:highmem) hidden var useAlternativeLayout;
-  (:highmem) hidden var autoAlternate;
-  (:highmem) hidden var alternativeLayout;
-  (:highmem) hidden var alternativeLayoutCounter = 0;
-  (:highmem) hidden var switchAlternativeLayout = 0;
-  (:highmem) hidden var arrayAltPointer = 0;
-  (:highmem) hidden var arrayAltPrecision = 5;
-  (:highmem) hidden var altitudeArray = new [arrayAltPrecision];
-  (:highmem) hidden var verticalSpeed = 0;
-  (:highmem) hidden var etaDistance = 0;
-  (:highmem) hidden var etaElevation = 0;
-  (:highmem) hidden var etaSpeed = 0;
-  (:highmem) hidden var etaPower = 0;
-  (:highmem) hidden var weight = 100;
-  (:highmem) hidden var altitude = 0;
-  (:highmem) hidden var totalAscent = 0;
-  (:highmem) hidden var totalDescent = 0;
+  hidden var lapPower = null;
+  hidden var lapSpeed = null;
+  hidden var lapStartTime = 0;
+  hidden var lapTime = 0;
+  hidden var layout;
+  hidden var maxAlerts = 3;
+  hidden var paused = true;
+  hidden var powerAverage;
+  hidden var pwrZones;
+  hidden var pwrZonesColors;
+  hidden var pwrZonesLabels;
+  hidden var sensor;
+  hidden var shouldDisplayAlert;
+  hidden var showAlerts;
+  hidden var showColors;
+  hidden var showSmallDecimals;
+  hidden var stepType = 99;
+  hidden var switchCounter = 0;
+  hidden var switchMetric = 0;
+  hidden var targetHigh = 0;
+  hidden var targetLow = 0;
+  hidden var timer = 0;
+  hidden var useMetric;
+  hidden var usePercentage;
+  hidden var useSpeed;
+  hidden var vibrate;
 
   // [ Width, Center, 1st horizontal line, 2nd horizontal line
   // 3rd Horizontal line, 1st vertical, Second vertical, Radius,
@@ -165,65 +166,17 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   (:workout)
   function setupValues(strydsensor){
-    timer = 0;
-    stepTime = 0;
-    lapTime = 0;
-    lapStartTime = 0;
-    lapPower = null;
-    stepStartTime = 0;
-    stepSpeed = null;
-    stepStartDistance = 0;
-    targetHigh = 0;
-    targetLow = 0;
-    remainingTime = 0;
-    remainingDistance = 0;
-    stepType = 99;
-    currentPower = 0;
-    cadence = 0;
-    hr = 0;
-    paused = true;
-    alertDisplayed = false;
-    shouldDisplayAlert = true;
-    alertTimer = 0;
-    alertCount = 0;
-    alertDelay = 10;
-    switchCounter = 0;
-    switchMetric = 0;
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
-    remainingDistanceSpeed = -1;
-    currentPwrZone = 1;
     sensor = strydsensor;
-    elapsedDistance = 0;
-    currentSpeed = 0;
   }
 
   (:noworkout)
   function setupValues(strydsensor){
-    timer = 0;
-    lapTime = 0;
-    lapStartTime = 0;
-    lapPower = null;
-    targetHigh = 0;
-    targetLow = 0;
-    stepType = 99;
-    currentPower = 0;
-    cadence = 0;
-    hr = 0;
-    paused = true;
-    alertDisplayed = false;
-    shouldDisplayAlert = true;
-    alertTimer = 0;
-    alertCount = 0;
-    alertDelay = 10;
-    switchCounter = 0;
-    switchMetric = 0;
+
     hrZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
     currentPowerAverage = new[powerAverage];
-    currentPwrZone = 1;
     sensor = strydsensor;
-    elapsedDistance = 0;
-    currentSpeed = 0;
     targetZone = Utils.replaceNull(Application.getApp().getProperty("W"), 0);
 
     if(targetZone > 0 && targetZone < pwrZones.size()){
@@ -392,7 +345,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         lapTime = timer - lapStartTime;
         elapsedDistance = info.elapsedDistance;
 
-        shouldDisplayAlert = (lapTime > 15);
+        shouldDisplayAlert = (lapTime > alertDelay);
 
         stepType = 99;
 
@@ -477,7 +430,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             if ((currentPower != null && (targetZoneHigh > 0) &&
                  (currentPower < targetZoneLow || currentPower > targetZoneHigh))) {
               if (alertDisplayed == false) {
-                if (alertCount < 3) {
+                if (alertCount < maxAlerts) {
                   if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([
                       new Attention.VibeProfile(100, 300),
@@ -534,7 +487,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       currentSpeed = info.currentSpeed;
     }
 
-    if (usePercentage && info.currentPower != null) {
+    if (usePercentage && currentPower != null) {
       currentPower =
           ((currentPower / (FTP * 1.0)) * 100).toNumber();
     }
@@ -549,7 +502,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         lapTime = timer - lapStartTime;
         elapsedDistance = info.elapsedDistance;
 
-        shouldDisplayAlert = (stepTime > 15);
+        shouldDisplayAlert = (stepTime > alertDelay);
 
         if (workout != null) {
 
@@ -759,7 +712,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                 (currentPower != null && (targetLow != 0 && targetHigh != 0) &&
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
-                if (alertCount < 3) {
+                if (alertCount < maxAlerts) {
                   if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([
                       new Attention.VibeProfile(100, 300),
