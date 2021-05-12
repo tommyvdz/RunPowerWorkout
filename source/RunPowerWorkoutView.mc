@@ -381,7 +381,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       currentSpeed = info.currentSpeed;
     }
 
-    if (usePercentage && info.currentPower != null) {
+    if (usePercentage && currentPower != null) {
       currentPower =
           ((currentPower / (FTP * 1.0)) * 100).toNumber();
     }
