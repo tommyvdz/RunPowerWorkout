@@ -65,6 +65,7 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Choose datafield layout (1, 4 or 6 fields) and which metrics to display.
 * Enable/disable workout alerts
 * Enable/disable vibrations on workout alerts
+* Set the delay between alerts, and their amount.
 * Choose the coloring behaviour: either no colors, text only, text and background.
 * Enable/disable usage of custom fonts (for High memory devices)
 * Enable/disable smaller decimal for the distance metric field

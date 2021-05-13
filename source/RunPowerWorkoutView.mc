@@ -124,6 +124,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     layout =
         Utils.replaceNull(Application.getApp().getProperty("M"), 3);
 
+    alertDelay =
+        Utils.replaceNull(Application.getApp().getProperty("AA"), 15);
+
+    maxAlerts =
+        Utils.replaceNull(Application.getApp().getProperty("AB"), 3);
+
     useMetric = System.getDeviceSettings().paceUnits == System.UNIT_METRIC
                     ? true
                     : false;

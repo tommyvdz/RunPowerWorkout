@@ -49,4 +49,10 @@
 	<setting propertyKey="@Properties.Z" title="@Strings.KEEP_LAST_STEP">
 		<settingConfig type="boolean" />
 	</setting>
+	<setting propertyKey="@Properties.AA" title="@Strings.ALERT_DELAY">
+		<settingConfig type="numeric" />
+	</setting>
+	<setting propertyKey="@Properties.AB" title="@Strings.MAX_ALERTS">
+		<settingConfig type="numeric" />
+	</setting>
 </settings>
