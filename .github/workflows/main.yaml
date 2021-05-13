@@ -136,7 +136,7 @@ jobs:
           APP_ID: ${{ env.app_id }}
           TAG_NAME: ${{ env.TAG_NAME }}
           STORE_ID: ${{ env.store_id }}
-          DEV_ID: ${{ env.DEV_ID }}
+          DEV_ID: ${{ env.dev_id }}
           BETA_APP: ${{ env.beta_app }}
           PYTHONUNBUFFERED: 1
         if: github.event_name == 'release'
