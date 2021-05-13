@@ -1,11 +1,16 @@
 <properties>
-    <property id="FTP" type="number">330</property>
-    <property id="PERCENTAGE" type="boolean">false</property>
-    <property id="VIBRATE" type="boolean">true</property>
-    <property id="ALERT" type="boolean">true</property>
-    <property id="POWER_AVERAGE" type="number">3</property>
-    <property id="SHOW_COLORS" type="number">1</property>
-    <property id="USE_CUSTOM_FONTS" type="boolean">true</property>
-    <property id="SHOW_SMALL_DECIMALS" type="boolean">true</property>
-    <property id="ZONES" type="number">4</property>
+    <property id="A" type="boolean">false</property>
+    <property id="B" type="number">330</property>
+    <property id="C" type="boolean">true</property>
+    <property id="D" type="boolean">true</property>
+    <property id="E" type="number">3</property>
+    <property id="F" type="number">1</property>
+    <property id="G" type="number">1</property>
+    <property id="H" type="boolean">true</property>
+    <property id="I" type="boolean">true</property>
+    <property id="M" type="number">3</property>
+    <property id="V" type="boolean">false</property>
+    <property id="Z" type="boolean">false</property>
+    <property id="AA" type="number">15</property>
+    <property id="AB" type="number">3</property>
 </properties>

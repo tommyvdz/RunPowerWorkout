@@ -1,0 +1,22 @@
+<properties>
+    <property id="N1" type="number">51</property>
+    <property id="N2" type="number">56</property>
+    <property id="N3" type="number">55</property>
+    <property id="N4" type="number">50</property>
+    <property id="N5" type="number">48</property>
+    <property id="N6" type="number">49</property>
+    <property id="O1" type="number">51</property>
+    <property id="O2" type="number">56</property>
+    <property id="O3" type="number">55</property>
+    <property id="O4" type="number">50</property>
+    <property id="O5" type="number">48</property>
+    <property id="O6" type="number">49</property>
+    <property id="P" type="boolean">false</property>
+    <property id="Q" type="boolean">false</property>
+    <property id="R" type="number">3</property>
+    <property id="S" type="number">5000</property>
+    <property id="T" type="number">0</property>
+    <property id="U" type="number">100</property>
+    <property id="X" type="number">1</property>
+    <property id="Y" type="number">1</property>
+</properties>
