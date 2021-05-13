@@ -6,18 +6,19 @@ from bs4 import BeautifulSoup
 
 GARMIN_USERNAME = os.getenv("GARMIN_USERNAME")
 GARMIN_PASSWORD = os.getenv("GARMIN_PASSWORD")
-
+APP_ID = os.getenv("APP_ID")
+STORE_ID = os.getenv("STORE_ID")
 
 url = "https://sso.garmin.com/sso/signin"
 
 s = requests.Session()
 
 querystring = {
-    "service": "https://apps.garmin.com/en-US/apps/f894d586-6e05-40ca-915e-23248d635c7f",
+    "service": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
     "webhost": "apps.garmin.com",
     "source": "https://apps.garmin.com/login",
-    "redirectAfterAccountLoginUrl": "https://apps.garmin.com/en-US/apps/f894d586-6e05-40ca-915e-23248d635c7f",
-    "redirectAfterAccountCreationUrl": "https://apps.garmin.com/en-US/apps/f894d586-6e05-40ca-915e-23248d635c7f",
+    "redirectAfterAccountLoginUrl": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
+    "redirectAfterAccountCreationUrl": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
     "gauthHost": "https://sso.garmin.com/sso",
     "locale": "en_US",
     "id": "gauth-widget",
