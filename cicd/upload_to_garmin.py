@@ -98,7 +98,7 @@ response = s.post(
     files={
         "file": (
             f"RunPowerWorkout-{TAG_NAME}.iq",
-            open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq"),
+            open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq", "rb"),
         ),
         "appVersion": (None, TAG_NAME),
         "betaApp": (None, BETA_APP),
