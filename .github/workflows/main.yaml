@@ -82,9 +82,13 @@ jobs:
             sed -i "s/4fa3fd29424b46819c4f4d4229cf8051/66a49cdf-46f8-4a50-8e94-6455da238d5f/g" manifest.xml
             echo "app_id=66a49cdf-46f8-4a50-8e94-6455da238d5f" >> $GITHUB_ENV
             echo "store_id=f894d586-6e05-40ca-915e-23248d635c7f" >> $GITHUB_ENV
+            echo "dev_id=a1a36384-b09e-4615-88e5-34dae6bc74b1" >> $GITHUB_ENV
+            echo "beta_app=true" >> $GITHUB_ENV
           else
             echo "app_id=4fa3fd2-424b-4681-9c4f-4d4229cf8051" >> $GITHUB_ENV
             echo "store_id=8c2fce29-0c7c-41f3-9a8f-5d3093c9cf2f" >> $GITHUB_ENV
+            echo "dev_id=2ea98679-5efa-457d-bead-a9eedbf7ceab" >> $GITHUB_ENV
+            echo "beta_app=false" >> $GITHUB_ENV
           fi
           echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
         if: github.event_name == 'release'
@@ -132,6 +136,8 @@ jobs:
           APP_ID: ${{ env.app_id }}
           TAG_NAME: ${{ env.TAG_NAME }}
           STORE_ID: ${{ env.store_id }}
+          DEV_ID: ${{ env.DEV_ID }}
+          BETA_APP: ${{ env.beta_app }}
           PYTHONUNBUFFERED: 1
         if: github.event_name == 'release'
         run: |

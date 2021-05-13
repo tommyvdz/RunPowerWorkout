@@ -8,6 +8,9 @@ GARMIN_USERNAME = os.getenv("GARMIN_USERNAME")
 GARMIN_PASSWORD = os.getenv("GARMIN_PASSWORD")
 APP_ID = os.getenv("APP_ID")
 STORE_ID = os.getenv("STORE_ID")
+DEV_ID = os.getenv("DEV_ID")
+TAG_NAME = os.getenv("TAG_NAME")
+BETA_APP = os.getenv("BETA_APP")
 
 url = "https://sso.garmin.com/sso/signin"
 
@@ -84,4 +87,21 @@ headers = {
 }
 
 response = s.post(url, data=payload, headers=headers, params=querystring)
+print(response.status_code)
+
+url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
+
+
+response = s.post(
+    url,
+    headers=headers,
+    files={
+        "file": (
+            f"RunPowerWorkout-{TAG_NAME}.iq",
+            open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq"),
+        ),
+        "appVersion": (None, TAG_NAME),
+        "betaApp": (None, BETA_APP),
+    },
+)
 print(response.status_code)
