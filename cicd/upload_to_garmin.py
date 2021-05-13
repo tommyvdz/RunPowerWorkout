@@ -99,6 +99,8 @@ headers = {
     "Cache-Control": "max-age=0",
     "Origin": "https://sso.garmin.com",
     "Host": "sso.garmin.com",
+    "Referer": url,
+    "Accept-Encoding": "gzip, deflate, br",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
     "Sec-Fetch-Site": "same-origin",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
@@ -118,4 +120,8 @@ response = s.post(
     },
 )
 print(response.status_code)
+print(response.headers)
 print(response.content)
+print(response.request.url)
+print(response.request.headers)
+print(response.request.body)
