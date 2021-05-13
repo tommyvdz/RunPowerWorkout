@@ -102,7 +102,7 @@ jobs:
             else              
               export SDK=3.2.0
             fi
-            java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s $SDK -f monkey.jungle
+            java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle
           done
           java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file
