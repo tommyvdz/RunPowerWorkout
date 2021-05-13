@@ -91,6 +91,8 @@ print(response.status_code)
 
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
 
+s.get(url, headers=headers, params=querystring)
+
 headers = {
     "Accept-Language": "en",
     "Sec-Fetch-Dest": "document",
@@ -109,6 +111,7 @@ response = s.post(
         "file": (
             f"RunPowerWorkout-{TAG_NAME}.iq",
             open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq", "rb"),
+            "application/octet-stream",
         ),
         "appVersion": (None, TAG_NAME),
         "betaApp": (None, BETA_APP),
