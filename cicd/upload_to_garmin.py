@@ -105,3 +105,4 @@ response = s.post(
     },
 )
 print(response.status_code)
+print(response.content)
