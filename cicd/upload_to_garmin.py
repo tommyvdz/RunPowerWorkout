@@ -153,6 +153,8 @@ headers = {
 }
 
 response = s.post(url, headers=headers, data=m)
+print(response.status_code)
+print(response.headers)
 
 # UPDATE DETAILS, STILL TODO
 
