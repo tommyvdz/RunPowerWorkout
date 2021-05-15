@@ -14,6 +14,9 @@ DEV_ID = os.getenv("DEV_ID")
 TAG_NAME = os.getenv("TAG_NAME")
 BETA_APP = os.getenv("BETA_APP")
 
+
+print(f"Uploading {STORE_ID} with tag {TAG_NAME}. Beta : {BETA_APP}.")
+
 s = requests.Session()
 
 ### GET INITIAL COOKIES
