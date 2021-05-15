@@ -342,7 +342,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     if (usePercentage && currentPower != null) {
       currentPower =
-          (((currentPower / (FTP * 1.0)) * 100) + 0.5).toNumber();
+          ((currentPower / (FTP * 1.0)) * 100).toNumber();
     }
 
     if (paused != true) {
@@ -620,34 +620,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         }
 
         if (currentPower != null || sensor != null) {
-          if (stepType >= 98) {
-            var i = 1;
-            var condition = true;
-            while (currentPower != null && currentPower != 0 && i < pwrZones.size() && condition) {
-              if (usePercentage) {
-                condition = currentPower >= pwrZones[i];
-              } else {
-                condition =
-                    currentPower >=
-                    (((pwrZones[i] * 1.0 * FTP) / 100) + 0.5).toNumber();
-              }
-              currentPwrZone = i;
-              i++;
-            }
-            if (usePercentage) {
-              targetHigh = pwrZones[currentPwrZone - 1].toNumber() + "%-" +
-                           pwrZones[currentPwrZone].toNumber() + "%";
-            } else {
-              targetHigh =
-                  (((pwrZones[currentPwrZone - 1] * 1.0 * FTP) / 100) + 0.5)
-                      .toNumber() +
-                  "-" +
-                  (((pwrZones[currentPwrZone] * 1.0 * FTP) / 100) + 0.5)
-                      .toNumber();
-            }
-            targetLow = "ZONE " + pwrZonesLabels[currentPwrZone];
-          }
-
           if (currentSpeed != null) {
             if (stepSpeed == null) {
               stepSpeed = currentSpeed;
@@ -712,6 +684,35 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           } else {
             currentPower = 0;
           }
+
+          if (stepType >= 98) {
+            var i = 1;
+            var condition = true;
+            while (currentPower != null && currentPower != 0 && i < pwrZones.size() && condition) {
+              if (usePercentage) {
+                condition = currentPower >= pwrZones[i];
+              } else {
+                condition =
+                    currentPower >=
+                    (((pwrZones[i] * 1.0 * FTP) / 100) + 0.5).toNumber();
+              }
+              currentPwrZone = i;
+              i++;
+            }
+            if (usePercentage) {
+              targetHigh = pwrZones[currentPwrZone - 1].toNumber() + "%-" +
+                           pwrZones[currentPwrZone].toNumber() + "%";
+            } else {
+              targetHigh =
+                  (((pwrZones[currentPwrZone - 1] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber() +
+                  "-" +
+                  (((pwrZones[currentPwrZone] * 1.0 * FTP) / 100) + 0.5)
+                      .toNumber();
+            }
+            targetLow = "ZONE " + pwrZonesLabels[currentPwrZone];
+          }
+
 
           // Show an alert if above of below
           if (WatchUi.DataField has
