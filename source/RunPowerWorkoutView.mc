@@ -342,7 +342,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     if (usePercentage && currentPower != null) {
       currentPower =
-          ((currentPower / (FTP * 1.0)) * 100).toNumber();
+          (((currentPower / (FTP * 1.0)) * 100) + 0.5).toNumber();
     }
 
     if (paused != true) {
@@ -495,7 +495,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     if (usePercentage && currentPower != null) {
       currentPower =
-          ((currentPower / (FTP * 1.0)) * 100).toNumber();
+          (((currentPower / (FTP * 1.0)) * 100) + 0.5).toNumber();
     }
 
     if (paused != true) {
@@ -507,6 +507,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         stepTime = timer - stepStartTime;
         lapTime = timer - lapStartTime;
         elapsedDistance = info.elapsedDistance;
+
+
 
         shouldDisplayAlert = (stepTime > alertDelay);
 
@@ -526,8 +528,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
             if (usePercentage && nextTargetHigh != null &&
                 nextTargetLow != null) {
-              nextTargetHigh = ((nextTargetHigh / (FTP * 1.0)) * 100).toNumber();
-              nextTargetLow = ((nextTargetLow / (FTP * 1.0)) * 100).toNumber();
+              nextTargetHigh = (((nextTargetHigh / (FTP * 1.0)) * 100) + 0.5).toNumber();
+              nextTargetLow = (((nextTargetLow / (FTP * 1.0)) * 100) + 0.5).toNumber();
             }
 
             if (nextWorkout.step.targetType != null &&
@@ -569,8 +571,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
 
           if (usePercentage && targetHigh != null && targetLow != null) {
-            targetHigh = ((targetHigh / (FTP * 1.0)) * 100).toNumber();
-            targetLow = ((targetLow / (FTP * 1.0)) * 100).toNumber();
+            targetHigh = (((targetHigh / (FTP * 1.0)) * 100) + 0.5).toNumber();
+            targetLow = (((targetLow / (FTP * 1.0)) * 100) + 0.5).toNumber();
           }
 
           if (workout.step.targetType != null &&
