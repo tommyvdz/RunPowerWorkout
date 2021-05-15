@@ -68,7 +68,7 @@ jobs:
         id: ciq
         with:
           path: /opt/ciq
-          key: ciq-install
+          key: ciq-install-${{ hashFiles('manifest.xml') }}
 
       - uses: actions/cache@v2
         id: devices
