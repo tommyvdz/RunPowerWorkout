@@ -5,6 +5,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from requests_toolbelt import MultipartEncoder
 import random, string
+import time
 
 GARMIN_USERNAME = os.getenv("GARMIN_USERNAME")
 GARMIN_PASSWORD = os.getenv("GARMIN_PASSWORD")
@@ -125,7 +126,7 @@ print(f"Login result: {response.status_code}")
 
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
 
-s.get(url, headers=headers, params=querystring)
+s.get(url)
 
 m = MultipartEncoder(
     fields={
@@ -155,11 +156,11 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-response = s.post(url, headers=headers, data=m)
+# response = s.post(url, headers=headers, data=m, allow_redirects=True)
 print(f"Upload result : {response.status_code}")
 
 # UPDATE DETAILS, STILL TODO
+url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/edit"
+response = s.get(url)
 
-# url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/edit"
-
-# response = s.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
