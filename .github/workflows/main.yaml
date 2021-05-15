@@ -138,6 +138,7 @@ jobs:
           STORE_ID: ${{ env.store_id }}
           DEV_ID: ${{ env.dev_id }}
           BETA_APP: ${{ env.beta_app }}
+          DEV_EMAIL: ${{ secrets.DEV_EMAIL }}
           PYTHONUNBUFFERED: 1
         if: github.event_name == 'release'
         run: |
