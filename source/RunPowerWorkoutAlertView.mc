@@ -27,7 +27,9 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   function onUpdate(dc) {
     View.onUpdate(dc);
 
-    dc.setAntiAlias(true);
+    if(dc has :setAntiAlias){
+      dc.setAntiAlias(true);
+    }
     dc.setColor(0xFFFFFF, -1);
     dc.drawText(geometry[1], geometry[1], fonts[1], currentPower,
                 4 | 1);

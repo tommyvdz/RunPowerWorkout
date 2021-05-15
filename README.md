@@ -4,13 +4,17 @@ RunPowerWorkout is a datafield that allows you to follow structured workouts bas
 
 Garmin doesn't yet support power as target in structured workouts natively, but as of ConnectIQ 3.2 it does enable datafields to read structured workout information, including power targets. This datafield reads those powertargets and dispays a gauge to visualize your current power output in relation to the target. 
 
-It currently supports all watch models that are updated to ConnectIQ 3.2. For devices with capability level 3 or 4, you need to have your Stryd paired as a power meter in order for the datafield to access the power values. For devices with capability level 1 or 2, you need to enter your stryd ANT ID.
+It currently supports structured workouts for all watch models that are updated to ConnectIQ 3.2. For devices with power support (see table below), you need to have your Stryd paired as a power meter in order for the datafield to access the power values. For other devices you need to enter your stryd ANT ID.
 
+
+### I have a watch with no support for ConnectIQ 3.2, can I still use your datafield ?
+
+Yes ! However, you will not be able to receive structured workout alerts. You can set a zone for the whole activity and receive alerts if you are outside of its bounds.
 
 ### Features
 
 The datafield displays:
-* A gauge showing your current power in relation to the workout step targets. For low memory devices (capabilities 1 and 3), the gauge is not displayed.
+* A gauge showing your current power in relation to the workout step targets. For low memory devices, the gauge is not displayed.
 * The target power boundary values
 
 If in 4 or 6 fields layout, it will also display the remaining time or distance for the current workout step, or lap time if outside of a workout.
@@ -26,19 +30,24 @@ For the 4 and 6 field layouts, you can choose the following metrics (in parenthe
 * Workout step power (6)
 * Lap power (7)
 * Elapsed distance (8)
-* Current time (9)
-* Altitude (A)
-* Total Ascent (B)
-* Total Descent (C)
-* Vertical Speed (D) (Only on high memory devices, level 2 or 4)
+* Time of day (9)
+* Average Pace (A)
+* Average Power (B)
+* Altitude (Only on high memory devices)
+* Total Ascent (Only on high memory devices)
+* Total Descent (Only on high memory devices)
+* 5s [VAM](https://en.wikipedia.org/wiki/VAM_(bicycling)) (Only on high memory devices)
+* ETA based on average pace (Only on high memory devices)
+* ETA based on average power. [Uses the model from Stryd](https://blog.stryd.com/2020/01/10/how-to-calculate-your-race-time-from-your-target-power/). Correct weight, duration and elevation of the course needs to be set up. It is quite accurate but be aware that it is still very "beta". (Only on high memory devices)
+
 
 Datafield layout is the following
 
-| 1   | 2   | 5   |
+| 1   | 3   | 5   |
 | --- | --- | --- |
-| 3   | 4   | 6   |
+| 2   | 4   | 6   |
 
-If you have a device with low memory (level 1 or 3), you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
+If you have a device with low memory, you won't be able to choose fields individually. You will have to enter a string representing the fields in order. For instance `368201` will display 
 
 | Pace     | Step Power   | Cadence    |
 | -------- | ------------ | ---------- |
@@ -56,13 +65,18 @@ Through Garmin Connect Mobile or through Garmin Express you can edit the datafie
 * Choose datafield layout (1, 4 or 6 fields) and which metrics to display.
 * Enable/disable workout alerts
 * Enable/disable vibrations on workout alerts
+* Set the delay between alerts, and their amount.
 * Choose the coloring behaviour: either no colors, text only, text and background.
-* Enable/disable usage of custom fonts (for capability level 2 or 4)
+* Enable/disable usage of custom fonts (for High memory devices)
 * Enable/disable smaller decimal for the distance metric field
 * Choose power average duration (from 1 to 30s)
 * Power zone model to use when outside of a workout : Stryd, Jim Vance, Steve Palladino, 80/20, Van Dijk and Van Megen
-* Set up an alternative layout (for capability level 2 or 4)
-* Automatically switch every 5 seconds between two layouts (for capability level 2 or 4)
+* Set up an alternative layout (for High memory devices)
+* Automatically switch every 5 seconds between two layouts (for High memory devices)
+* Allow to choose between Lap/Step Power and Instant power for the top field (for High memory devices)
+* Allow to choose between Lap Duration and Lap Distance in the bottom field, outside of workouts (for High memory devices)
+* Alert on a static zone for watches without workout support (ConnectIQ <3.2). 
+  Set to the zone number (for instance, if you have zones `1,2,3,X,4,Y,5`, Zone X would be 4 and Zone 4 would be 5), 0 to disable
 
 ### Download
 
@@ -76,57 +90,68 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 
 ### Screenshots
 
-##### 6 fields layout with custom fonts (capability level 2 or 4)
+##### 6 fields layout with custom fonts (High memory devices)
 ![](doc/img/HM6fieldsFGColorWorkout.png)
 ##### 6 fields layout with statute units (outside of a workout step)
 ![](doc/img/HM6FieldsStatute.png)
 ##### Single field layout, inside a workout
 ![](doc/img/HM1FieldBGColor.png)
-##### 4 fields display on low memory devices (capability 1 or 3), inside a workout
+##### 4 fields display on low memory devices, inside a workout
 ![](doc/img/LM4fieldsBGColorWorkout.png)
 ##### Alert
 ![](doc/img/FullAlert.png)
 
-### Capabilities level
-
-| Level | Power support ? | Custom Fonts | Nice settings for data field layout ? | Alternative layout | Extra metrics ? |
-| ----- | --------------- | ------------ | ------------------------------------- | ------------------ | --------------- |
-| 1     | No (ANT+)       | No           | No                                    | No                 | No              |
-| 2     | No (ANT+)       | Yes          | Yes                                   | Yes                | Yes             |
-| 3     | Yes             | No           | No                                    | No                 | No              |
-| 4     | Yes             | Yes          | Yes                                   | Yes                | Yes             |
-
 ### Watch capability matrix
 
-| Watch           | Multisport ? | Datafield Memory | Feature Level |
-| --------------- | ------------ | ---------------- | ------------- |
-| Enduro          | Yes          | 32KB             | 3             |
-| Fenix 5 Plus    | Yes          | 128KB            | 4             |
-| Fenix 6         | Yes          | 32KB             | 3             |
-| Fenix 6S        | Yes          | 32KB             | 3             |
-| Fenix 6 Pro     | Yes          | 128KB            | 4             |
-| Fenix 6S Pro    | Yes          | 128KB            | 4             |
-| Fenix 6X Pro    | Yes          | 128KB            | 4             |
-| Forerunner 245  | No           | 32KB             | 1             |
-| Forerunner 245M | No           | 64KB             | 2             |
-| Forerunner 645M | No           | 64KB             | 2             |
-| Forerunner 745  | Yes          | 64KB             | 4             |
-| Forerunner 945  | Yes          | 128KB            | 4             |
-| Forerunner 945  | Yes          | 128KB            | 4             |
-| MARQ Adventurer | Yes          | 128KB            | 4             |
-| MARQ Athlete    | Yes          | 128KB            | 4             |
-| MARQ Aviator    | Yes          | 128KB            | 4             |
-| MARQ Captain    | Yes          | 128KB            | 4             |
-| MARQ Commander  | Yes          | 128KB            | 4             |
-| MARQ Driver     | Yes          | 128KB            | 4             |
-| MARQ Expedition | Yes          | 128KB            | 4             |
-| MARQ Golfer     | Yes          | 128KB            | 4             |
-| Venu            | No           | 32KB             | 1             |
-| Venu 2          | No           | 256KB            | 2             |
-| Venu 2s         | No           | 256KB            | 2             |
-| Vivoactive 3M   | No           | 32KB             | 1             |
-| Vivoactive 4    | No           | 32KB             | 1             |
-| Vivoactive 4s   | No           | 32KB             | 1             |
+| Watch                        | Workout support ? | Power without ANT+ ? | Datafield Memory |
+| ---------------------------- | ----------------- | -------------------- | ---------------- |
+| Approach S60                 | ❌                 | ✅                    | LOW (32KB)       |
+| Approach S62                 | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Air                       | ✅                 | ❌                    | LOW (32KB)       |
+| D2 Charlie                   | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta                     | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta Px                  | ❌                 | ✅                    | HIGH (128KB)     |
+| D2 Delta S                   | ❌                 | ✅                    | HIGH (128KB)     |
+| Descent Mk1                  | ❌                 | ✅                    | HIGH (128KB)     |
+| Descent Mk2/Mk2i             | ✅ (in theory)     | ✅                    | HIGH (128KB)     |
+| Enduro                       | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 5                      | ❌                 | ✅                    | LOW (32KB)       |
+| Fenix 5S                     | ❌                 | ✅                    | LOW (32KB)       |
+| Fenix 5X                     | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 5 Plus                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 5S Plus                | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 5X Plus                | ❌                 | ✅                    | HIGH (128KB)     |
+| Fenix 6                      | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 6S                     | ✅                 | ✅                    | LOW (32KB)       |
+| Fenix 6 Pro                  | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 6S Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 6X Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Forerunner 245               | ✅                 | ❌                    | LOW (32KB)       |
+| Forerunner 245M              | ✅                 | ❌                    | HIGH (64KB)      |
+| Forerunner 645               | ❌                 | ❌                    | LOW (32KB)       |
+| Forerunner 645M              | ✅                 | ❌                    | HIGH (64KB)      |
+| Forerunner 745               | ✅                 | ✅                    | HIGH (64KB)      |
+| Forerunner 935               | ❌                 | ✅                    | LOW (32KB)       |
+| Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
+| Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Adventurer              | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Athlete                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Aviator                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Captain                 | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Commander               | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Driver                  | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Expedition              | ✅                 | ✅                    | HIGH (128KB)     |
+| MARQ Golfer                  | ✅                 | ✅                    | HIGH (128KB)     |
+| Venu                         | ✅                 | ❌                    | LOW (32KB)       |
+| Venu (Mercedes-Benz)         | ❌                 | ❌                    | LOW (32KB)       |
+| Venu 2                       | ✅                 | ❌                    | HIGH (256KB)     |
+| Venu 2s                      | ✅                 | ❌                    | HIGH (256KB)     |
+| Vivoactive 3                 | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3 (Mercedes-Benz) | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3M                | ✅                 | ❌                    | LOW (32KB)       |
+| Vivoactive 3M LTE            | ❌                 | ❌                    | LOW (32KB)       |
+| Vivoactive 4                 | ✅                 | ❌                    | LOW (32KB)       |
+| Vivoactive 4s                | ✅                 | ❌                    | LOW (32KB)       |
 
 ### Pragati Font License
 
