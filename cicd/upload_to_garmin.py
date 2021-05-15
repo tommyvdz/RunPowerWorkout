@@ -156,7 +156,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-# response = s.post(url, headers=headers, data=m, allow_redirects=True)
+response = s.post(url, headers=headers, data=m, allow_redirects=True)
 print(f"Upload result : {response.status_code}")
 
 # UPDATE DETAILS, STILL TODO
@@ -164,3 +164,4 @@ url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/edit"
 response = s.get(url)
 
 soup = BeautifulSoup(response.text, "html.parser")
+# print(soup)
