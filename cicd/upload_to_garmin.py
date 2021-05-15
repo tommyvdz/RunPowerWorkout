@@ -119,7 +119,7 @@ headers = {
 }
 
 response = s.post(url, data=payload, headers=headers, params=querystring)
-print(response.status_code)
+print(f"Login result: {response.status_code}")
 
 ### UPLOAD FILE
 
@@ -156,8 +156,7 @@ headers = {
 }
 
 response = s.post(url, headers=headers, data=m)
-print(response.status_code)
-print(response.headers)
+print(f"Upload result : {response.status_code}")
 
 # UPDATE DETAILS, STILL TODO
 
