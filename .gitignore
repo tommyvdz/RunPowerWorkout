@@ -1,3 +1,4 @@
 bin/RunPowerWorkout.prg
 bin/RunPowerWorkout.prg.debug.xml
 .DS_Store
+setup_env.sh

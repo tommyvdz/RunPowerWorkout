@@ -3,6 +3,8 @@ import requests
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from bs4 import BeautifulSoup
+from requests_toolbelt import MultipartEncoder
+import random, string
 
 GARMIN_USERNAME = os.getenv("GARMIN_USERNAME")
 GARMIN_PASSWORD = os.getenv("GARMIN_PASSWORD")
@@ -12,9 +14,26 @@ DEV_ID = os.getenv("DEV_ID")
 TAG_NAME = os.getenv("TAG_NAME")
 BETA_APP = os.getenv("BETA_APP")
 
-url = "https://sso.garmin.com/sso/signin"
-
 s = requests.Session()
+
+### GET INITIAL COOKIES
+
+headers = {
+    "Host": "apps.garmin.com",
+    "Connection": "keep-alive",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache",
+    "sec-ch-ua-mobile": "?0",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-User": "?1",
+    "Sec-Fetch-Dest": "document",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en",
+}
 
 querystring = {
     "service": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
@@ -55,6 +74,16 @@ querystring = {
     "rememberMyBrowserChecked": "false",
 }
 
+url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}"
+
+s.get(url, headers=headers)
+
+
+#### LOGIN
+
+url = "https://sso.garmin.com/sso/signin"
+
+
 payload = ""
 response = s.get(url, data=payload, params=querystring)
 
@@ -89,17 +118,33 @@ headers = {
 response = s.post(url, data=payload, headers=headers, params=querystring)
 print(response.status_code)
 
+### UPLOAD FILE
+
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
 
 s.get(url, headers=headers, params=querystring)
+
+m = MultipartEncoder(
+    fields={
+        "appVersion": TAG_NAME,
+        "betaApp": BETA_APP,
+        "submit": "",
+        "file": (
+            f"RunPowerWorkout-{TAG_NAME}.iq",
+            open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq", "rb"),
+            "application/octet-stream",
+        ),
+    },
+    boundary="----WebKitFormBoundary"
+    + "".join(random.sample(string.ascii_letters + string.digits, 16)),
+)
 
 headers = {
     "Accept-Encoding": "gzip, deflate, br",
     "Accept-Language": "en",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    "Cache-Control": "max-age=0",
-    "Connection": "keep-alive",
-    "Host": "apps.garmin.com",
+    "Cache-Control": "no-cache",
+    "Content-Type": m.content_type,
     "Origin": "https://apps.garmin.com",
     "Referer": url,
     "Sec-Fetch-Dest": "document",
@@ -107,19 +152,10 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-response = s.post(
-    url,
-    headers=headers,
-    files={
-        "file": (
-            f"RunPowerWorkout-{TAG_NAME}.iq",
-            open(f"/tmp/RunPowerWorkout-{TAG_NAME}.iq", "rb"),
-            "application/octet-stream",
-        ),
-        "appVersion": (None, TAG_NAME),
-        "betaApp": (None, BETA_APP),
-        "submit": (None, ""),
-    },
-)
-print(response.status_code)
-print(response.content)
+response = s.post(url, headers=headers, data=m)
+
+# UPDATE DETAILS, STILL TODO
+
+# url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/edit"
+
+# response = s.get(url)
