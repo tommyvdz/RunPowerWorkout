@@ -548,13 +548,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               }
             }
           } else {
-            if(!keepLast){
+            if(!keepLast || nextTargetHigh == null || nextTargetLow == null){
               nextTargetHigh = 0;
               nextTargetLow = 0;
             }
             nextTargetType = 5;
             nextTargetDuration = 0;
-
           }
 
           targetHigh = workout.step.targetValueHigh - 1000;
@@ -603,7 +602,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
             }
           }
         } else {
-          if(keepLast){
+          if(keepLast && nextTargetLow != null && nextTargetHigh != null){
             stepType = 5;
             targetHigh = nextTargetHigh;
             targetLow = nextTargetLow;
