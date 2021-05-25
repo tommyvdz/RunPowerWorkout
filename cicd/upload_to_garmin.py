@@ -26,12 +26,11 @@ except:
 
 print(f"Uploading {STORE_ID} with tag {TAG_NAME}. Beta : {BETA_APP}.")
 
-s = cloudscraper.create_scraper()  # returns a CloudScraper instance
+scraper = cloudscraper.create_scraper()  # returns a CloudScraper instance
 
 ### GET INITIAL COOKIES
 
 headers = {
-    "Host": "apps.garmin.com",
     "Connection": "keep-alive",
     "Pragma": "no-cache",
     "Cache-Control": "no-cache",
@@ -48,11 +47,11 @@ headers = {
 }
 
 querystring = {
-    "service": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
+    "service": "https://apps.garmin.com/en-US",
     "webhost": "apps.garmin.com",
     "source": "https://apps.garmin.com/login",
-    "redirectAfterAccountLoginUrl": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
-    "redirectAfterAccountCreationUrl": f"https://apps.garmin.com/en-US/apps/{STORE_ID}",
+    "redirectAfterAccountLoginUrl": "https://apps.garmin.com/en-US",
+    "redirectAfterAccountCreationUrl": "https://apps.garmin.com/en-US",
     "gauthHost": "https://sso.garmin.com/sso",
     "locale": "en_US",
     "id": "gauth-widget",
@@ -86,10 +85,10 @@ querystring = {
     "rememberMyBrowserChecked": "false",
 }
 
-url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}"
 
-s.get(url, headers=headers)
+url = f"https://apps.garmin.com/en-US/"
 
+scraper.get(url, headers=headers)
 
 #### LOGIN
 
@@ -97,15 +96,20 @@ url = "https://sso.garmin.com/sso/signin"
 
 
 payload = ""
-response = s.get(url, data=payload, params=querystring)
 
+headers = {
+    "Accept-Language": "en",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Referer": "https://apps.garmin.com/",
+    "Sec-Fetch-Dest": "iframe",
+    "Sec-Fetch-Site": "same-origin",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+}
+response = scraper.get(url, headers=headers, params=querystring)
 soup = BeautifulSoup(response.content, "html.parser")
 
 token = soup.find_all("input", {"name": "_csrf"})[0].get("value")
-
-# print(token)
-
-# print(s.cookies.get_dict())
+query = soup.find_all("input", {"id": "queryString"})[0].get("value")
 
 payload = {
     "username": GARMIN_USERNAME,
@@ -117,24 +121,29 @@ payload = {
 
 headers = {
     "Accept-Language": "en",
-    "Sec-Fetch-Dest": "iframe",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Cache-Control": "max-age=0",
-    "Origin": "https://sso.garmin.com",
-    "Host": "sso.garmin.com",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Cache-Control": "no-cache",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Origin": "https://sso.garmin.com",
+    "DNT": "1",
+    "Referer": f"{url}?{query}",
+    "Sec-Fetch-Dest": "iframe",
     "Sec-Fetch-Site": "same-origin",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-response = s.post(url, data=payload, headers=headers, params=querystring)
+response = scraper.post(url, data=payload, headers=headers, params=querystring)
 print(f"Login result: {response.status_code}")
 
 ### UPLOAD FILE
 
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
 
-s.get(url)
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+}
+
+scraper.get(url, headers=headers)
 
 m = MultipartEncoder(
     fields={
@@ -164,12 +173,12 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-response = s.post(url, headers=headers, data=m, allow_redirects=True)
+response = scraper.post(url, headers=headers, data=m, allow_redirects=True)
 print(f"Upload result : {response.status_code}")
 
 # UPDATE DETAILS, STILL TODO
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/edit"
-response = s.get(url)
+response = scraper.get(url)
 
 soup = BeautifulSoup(response.text, "html.parser")
 
@@ -570,5 +579,5 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
 }
 
-response = s.post(url, headers=headers, data=m, allow_redirects=True)
+response = scraper.post(url, headers=headers, data=m, allow_redirects=True)
 print(f"What's new update result : {response.status_code}")
