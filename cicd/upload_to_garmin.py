@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from bs4 import BeautifulSoup
 from requests_toolbelt import MultipartEncoder
+import cloudscraper
 import random, string
 import time
 
@@ -25,7 +26,7 @@ except:
 
 print(f"Uploading {STORE_ID} with tag {TAG_NAME}. Beta : {BETA_APP}.")
 
-s = requests.Session()
+s = cloudscraper.create_scraper()  # returns a CloudScraper instance
 
 ### GET INITIAL COOKIES
 

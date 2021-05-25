@@ -3,6 +3,9 @@
 # cicd/upload_to_garmin.py: 5
 beautifulsoup4 == 4.9.3
 
+# cicd/upload_to_garmin.py: 7
+cloudscraper == 1.2.58
+
 # cicd/get_garmin_devices.py: 3
 # cicd/upload_to_garmin.py: 2
 requests == 2.22.0

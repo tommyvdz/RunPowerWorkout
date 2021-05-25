@@ -12,6 +12,7 @@
             <iq:product id="d2deltas" />
             <iq:product id="descentmk1" />
             <iq:product id="descentmk2" />
+            <iq:product id="descentmk2s" />
             <iq:product id="enduro" />
             <iq:product id="fenix5" />
             <iq:product id="fenix5plus" />
@@ -65,4 +66,3 @@
         <iq:barrels />
     </iq:application>
 </iq:manifest>
-

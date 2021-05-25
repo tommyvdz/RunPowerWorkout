@@ -35,7 +35,7 @@ jobs:
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
-          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.0.1-2021-04-21-1bb58d97e.zip -O ciq.zip;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.0.2-2021-05-13-9b3b7f19f.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
         if: steps.ciq.outputs.cache-hit != 'true'
