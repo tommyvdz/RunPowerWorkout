@@ -35,7 +35,7 @@ jobs:
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
-          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.0.2-2021-05-13-9b3b7f19f.zip -O ciq.zip;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.0.3-2021-06-01-b7cc78017.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
         if: steps.ciq.outputs.cache-hit != 'true'
@@ -104,7 +104,7 @@ jobs:
               export SDK=2.4.0
             elif [[ "$i" =~ ^(approachs62|d2charlie|descentmk1|vivoactive3d)$ ]]; then
               export SDK=3.0.0
-            elif [[ "$i" =~ ^(venud|vivoactive3|vivoactive3mlte|fr645|fr935|d2delta|d2deltapx|d2deltas|descentmk2|fenix5|fenix5s|fenix5x)$ ]]; then
+            elif [[ "$i" =~ ^(vivoactive3|vivoactive3mlte|fr645|fr935|d2delta|d2deltapx|d2deltas|fenix5|fenix5s|fenix5x)$ ]]; then
               export SDK=3.1.0
             else              
               export SDK=3.2.0

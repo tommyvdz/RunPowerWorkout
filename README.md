@@ -113,7 +113,8 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 | D2 Delta Px                  | ❌                 | ✅                    | HIGH (128KB)     |
 | D2 Delta S                   | ❌                 | ✅                    | HIGH (128KB)     |
 | Descent Mk1                  | ❌                 | ✅                    | HIGH (128KB)     |
-| Descent Mk2/Mk2i             | ✅ (in theory)     | ✅                    | HIGH (128KB)     |
+| Descent Mk2/Mk2i             | ✅                 | ✅                    | HIGH (128KB)     |
+| Descent Mk2s                 | ✅                 | ✅                    | HIGH (128KB)     |
 | Enduro                       | ✅                 | ✅                    | LOW (32KB)       |
 | Fenix 5                      | ❌                 | ✅                    | LOW (32KB)       |
 | Fenix 5S                     | ❌                 | ✅                    | LOW (32KB)       |
@@ -128,12 +129,13 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 | Fenix 6X Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
 | Forerunner 245               | ✅                 | ❌                    | LOW (32KB)       |
 | Forerunner 245M              | ✅                 | ❌                    | HIGH (64KB)      |
+| Forerunner 55                | ✅                 | ❌                    | LOW (32KB)       |
 | Forerunner 645               | ❌                 | ❌                    | LOW (32KB)       |
 | Forerunner 645M              | ✅                 | ❌                    | HIGH (64KB)      |
 | Forerunner 745               | ✅                 | ✅                    | HIGH (64KB)      |
 | Forerunner 935               | ❌                 | ✅                    | LOW (32KB)       |
 | Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
-| Forerunner 945               | ✅                 | ✅                    | HIGH (128KB)     |
+| Forerunner 945 LTE           | ✅                 | ✅                    | HIGH (128KB)     |
 | MARQ Adventurer              | ✅                 | ✅                    | HIGH (128KB)     |
 | MARQ Athlete                 | ✅                 | ✅                    | HIGH (128KB)     |
 | MARQ Aviator                 | ✅                 | ✅                    | HIGH (128KB)     |
@@ -143,7 +145,7 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 | MARQ Expedition              | ✅                 | ✅                    | HIGH (128KB)     |
 | MARQ Golfer                  | ✅                 | ✅                    | HIGH (128KB)     |
 | Venu                         | ✅                 | ❌                    | LOW (32KB)       |
-| Venu (Mercedes-Benz)         | ❌                 | ❌                    | LOW (32KB)       |
+| Venu (Mercedes-Benz)         | ✅                 | ❌                    | LOW (32KB)       |
 | Venu 2                       | ✅                 | ❌                    | HIGH (256KB)     |
 | Venu 2s                      | ✅                 | ❌                    | HIGH (256KB)     |
 | Vivoactive 3                 | ❌                 | ❌                    | LOW (32KB)       |
