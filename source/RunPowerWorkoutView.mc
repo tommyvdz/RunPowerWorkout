@@ -596,7 +596,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                      workout.step.durationType == 1) {
 
             stepType = (targetHigh > 0 && targetLow > 0) ? 1 : 98;
-            if (workout.step.durationValue != null && remainingDistance >= 0) {
+            if (workout.step.durationValue != null && elapsedDistance != null && remainingDistance >= 0) {
               remainingDistance = workout.step.durationValue -
                                   (elapsedDistance.toNumber() -
                                    stepStartDistance);
@@ -673,7 +673,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
            if (avgPower == 0) {
               avgPower = currentPower;
-            } else if (lapTime != 0) {
+            } else if (timer != 0) {
               avgPower = (((avgPower * (timer - 1)) + currentPower) / (timer * 1.0));
             }
 
