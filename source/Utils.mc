@@ -21,7 +21,7 @@ class Utils {
             smallunit = "YD";
         }
 
-        if ((distance / factor) >= 1) {
+        if ((distance / factor) >= 1 || !useMetric) {
             var formatted = ((distance * 1.0) / (factor * 1.0)).format("%.2f");
             var index = formatted.find(".");
             if (index != null && showSmallDecimals) {

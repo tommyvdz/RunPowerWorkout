@@ -98,7 +98,7 @@ jobs:
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
-            if [[ "$i" =~ ^(venu2|venu2s)$ ]]; then
+            if [[ "$i" =~ ^(venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|epix2)$ ]]; then
               export SDK=4.0.0
             elif [[ "$i" =~ ^(approachs60)$ ]]; then
               export SDK=2.4.0
