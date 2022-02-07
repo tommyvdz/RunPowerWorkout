@@ -9,6 +9,9 @@ on:
   release:
     types: [published]
 
+env:
+  CIQ_VERSION: 4.0.9
+
 jobs:
   install-connect-iq:
     name: "Install ConnectIQ"
@@ -24,18 +27,18 @@ jobs:
         id: ciq
         with:
           path: /opt/ciq
-          key: ciq-${{ hashFiles('manifest.xml') }}
+          key: ciq-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - uses: actions/cache@v2
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices-${{ hashFiles('manifest.xml') }}
+          key: devices-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
-          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.0.3-2021-06-01-b7cc78017.zip -O ciq.zip;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-${{ env.CIQ_VERSION }}-2022-01-24-2154651d3.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
         if: steps.ciq.outputs.cache-hit != 'true'
@@ -59,7 +62,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: "adopt" # See 'Supported distributions' for available options
-          java-version: "8"
+          java-version: "16"
       - uses: actions/setup-python@v2
         with:
           python-version: "3.x"
@@ -68,13 +71,13 @@ jobs:
         id: ciq
         with:
           path: /opt/ciq
-          key: ciq-${{ hashFiles('manifest.xml') }}
+          key: ciq-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - uses: actions/cache@v2
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices-${{ hashFiles('manifest.xml') }}
+          key: devices-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
@@ -97,8 +100,9 @@ jobs:
       - run: |
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
+          java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -v
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
-            if [[ "$i" =~ ^(venu2|venu2s)$ ]]; then
+            if [[ "$i" =~ ^(venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|epix2)$ ]]; then
               export SDK=4.0.0
             elif [[ "$i" =~ ^(approachs60)$ ]]; then
               export SDK=2.4.0
@@ -109,9 +113,10 @@ jobs:
             else              
               export SDK=3.2.0
             fi
-            java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle
+            echo "BUILDING $i with sdk $SDK"
+            java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle || true
           done
-          java -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
+          java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle
         name: Build IQ file
         env:
           CIQ_DEV_KEY: ${{ secrets.CIQ_DEVELOPER_KEY }}
