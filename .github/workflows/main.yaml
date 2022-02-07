@@ -61,8 +61,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
-          distribution: "adopt" # See 'Supported distributions' for available options
-          java-version: "8"
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
       - uses: actions/setup-python@v2
         with:
           python-version: "3.x"
@@ -113,7 +113,7 @@ jobs:
               export SDK=3.2.0
             fi
             echo "BUILDING $i with sdk $SDK"
-            java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -f monkey.jungle
+            java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s $SDK -f monkey.jungle
           done
           java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
         name: Build IQ file
