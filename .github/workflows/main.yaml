@@ -61,8 +61,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
-          distribution: "temurin" # See 'Supported distributions' for available options
-          java-version: "17"
+          distribution: "adopt" # See 'Supported distributions' for available options
+          java-version: "16"
       - uses: actions/setup-python@v2
         with:
           python-version: "3.x"
@@ -100,6 +100,7 @@ jobs:
       - run: |
           echo /opt/ciq/bin >> $GITHUB_PATH
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
+          java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -v
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
             if [[ "$i" =~ ^(venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|epix2)$ ]]; then
               export SDK=4.0.0
@@ -113,9 +114,9 @@ jobs:
               export SDK=3.2.0
             fi
             echo "BUILDING $i with sdk $SDK"
-            java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -s $SDK -f monkey.jungle
+            java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle || true
           done
-          java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle;
+          java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle
         name: Build IQ file
         env:
           CIQ_DEV_KEY: ${{ secrets.CIQ_DEVELOPER_KEY }}
