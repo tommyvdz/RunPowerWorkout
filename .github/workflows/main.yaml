@@ -71,13 +71,13 @@ jobs:
         id: ciq
         with:
           path: /opt/ciq
-          key: ciq-${{ hashFiles('manifest.xml') }}
+          key: ciq-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - uses: actions/cache@v2
         id: devices
         with:
           path: ~/.Garmin/ConnectIQ
-          key: devices-${{ hashFiles('manifest.xml') }}
+          key: devices-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - run: |
           sed -i "s/0.0.0/${{ github.event.release.tag_name }}/g" manifest.xml
