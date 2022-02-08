@@ -116,6 +116,7 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 | Descent Mk2/Mk2i             | ✅                 | ✅                    | HIGH (128KB)     |
 | Descent Mk2s                 | ✅                 | ✅                    | HIGH (128KB)     |
 | Enduro                       | ✅                 | ✅                    | LOW (32KB)       |
+| Epix Gen2                    | ✅                 | ✅                    | HIGH (256KB)     |
 | Fenix 5                      | ❌                 | ✅                    | LOW (32KB)       |
 | Fenix 5S                     | ❌                 | ✅                    | LOW (32KB)       |
 | Fenix 5X                     | ❌                 | ✅                    | HIGH (128KB)     |
@@ -127,6 +128,9 @@ If you find an issue or want to improve this datafield, feel free to open Issues
 | Fenix 6 Pro                  | ✅                 | ✅                    | HIGH (128KB)     |
 | Fenix 6S Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
 | Fenix 6X Pro                 | ✅                 | ✅                    | HIGH (128KB)     |
+| Fenix 7                      | ✅                 | ✅                    | HIGH (256KB)     |
+| Fenix 7s                     | ✅                 | ✅                    | HIGH (256KB)     |
+| Fenix 7X                     | ✅                 | ✅                    | HIGH (256KB)     |
 | Forerunner 245               | ✅                 | ❌                    | LOW (32KB)       |
 | Forerunner 245M              | ✅                 | ❌                    | HIGH (64KB)      |
 | Forerunner 55                | ✅                 | ❌                    | LOW (32KB)       |
