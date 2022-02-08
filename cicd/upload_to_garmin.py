@@ -17,6 +17,10 @@ TAG_NAME = os.getenv("TAG_NAME")
 BETA_APP = os.getenv("BETA_APP")
 DEV_EMAIL = os.getenv("DEV_EMAIL")
 
+if GARMIN_USERNAME is None or GARMIN_PASSWORD is None:
+    print("Issue getting Garmin credentials")
+    exit(1)
+
 try:
     release_notes = requests.get(
         f"https://api.github.com/repos/{'samueldumont' if BETA_APP == 'true' else 'tommyvdz'}/RunPowerWorkout/releases/tags/{TAG_NAME}"
