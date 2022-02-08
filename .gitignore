@@ -3,3 +3,4 @@ bin/RunPowerWorkout.prg.debug.xml
 .DS_Store
 setup_env.sh
 upload_to_garmin_prev.py
+*.ipynb

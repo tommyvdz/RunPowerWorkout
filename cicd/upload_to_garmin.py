@@ -135,6 +135,11 @@ headers = {
 response = scraper.post(url, data=payload, headers=headers, params=querystring)
 print(f"Login result: {response.status_code}")
 
+if response.status_code != 200:
+    print(f"{len(GARMIN_USERNAME)} {len(GARMIN_PASSWORD)}")
+    print(f"{response.text}")
+    exit(1)
+
 ### UPLOAD FILE
 
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
@@ -156,8 +161,7 @@ m = MultipartEncoder(
             "application/octet-stream",
         ),
     },
-    boundary="----WebKitFormBoundary"
-    + "".join(random.sample(string.ascii_letters + string.digits, 16)),
+    boundary="----WebKitFormBoundary" + "".join(random.sample(string.ascii_letters + string.digits, 16)),
 )
 
 headers = {
@@ -562,8 +566,7 @@ m = MultipartEncoder(
         ("betaApp", BETA_APP),
         ("submit", ""),
     ],
-    boundary="----WebKitFormBoundary"
-    + "".join(random.sample(string.ascii_letters + string.digits, 16)),
+    boundary="----WebKitFormBoundary" + "".join(random.sample(string.ascii_letters + string.digits, 16)),
 )
 
 headers = {
