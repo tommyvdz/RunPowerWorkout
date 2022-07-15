@@ -17,10 +17,6 @@ TAG_NAME = os.getenv("TAG_NAME")
 BETA_APP = os.getenv("BETA_APP")
 DEV_EMAIL = os.getenv("DEV_EMAIL")
 
-if GARMIN_USERNAME is None or GARMIN_PASSWORD is None:
-    print("Issue getting Garmin credentials")
-    exit(1)
-
 try:
     release_notes = requests.get(
         f"https://api.github.com/repos/{'samueldumont' if BETA_APP == 'true' else 'tommyvdz'}/RunPowerWorkout/releases/tags/{TAG_NAME}"
@@ -138,11 +134,6 @@ headers = {
 
 response = scraper.post(url, data=payload, headers=headers, params=querystring)
 print(f"Login result: {response.status_code}")
-
-if response.status_code != 200:
-    print(f"{len(GARMIN_USERNAME)} {len(GARMIN_PASSWORD)}")
-    print(f"{response.text}")
-    exit(1)
 
 ### UPLOAD FILE
 
