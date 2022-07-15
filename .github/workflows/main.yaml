@@ -10,7 +10,7 @@ on:
     types: [published]
 
 env:
-  CIQ_VERSION: 4.0.9
+  CIQ_VERSION: 4.1.4
 
 jobs:
   install-connect-iq:
@@ -38,7 +38,7 @@ jobs:
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
-          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-${{ env.CIQ_VERSION }}-2022-01-24-2154651d3.zip -O ciq.zip;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.1.4-2022-06-07-f86da2dee.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
         if: steps.ciq.outputs.cache-hit != 'true'
@@ -46,11 +46,12 @@ jobs:
 
       - run: |
           pip install -r cicd/requirements.txt
-          python cicd/get_garmin_devices.py
+          python cicd/get_garmin_devices_v2.py
         if: steps.devices.outputs.cache-hit != 'true'
         name: Install ConnectIQ Devices
         env:
-          GARMIN_ACCESS_TOKEN: ${{ secrets.GARMIN_ACCESS_TOKEN }}
+          GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
           PYTHONUNBUFFERED: 1
 
   build-ciq:
@@ -102,10 +103,14 @@ jobs:
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -v
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
-            if [[ "$i" =~ ^(venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|epix2)$ ]]; then
+            if [[ "$i" =~ ^(venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|fr955|epix2|fr255|fr255m|fr255sm|fr255s)$ ]]; then
+              export SDK=4.1.0
+            elif [[ "$i" =~ ^(d2mach1|d2airx10)$ ]]; then
               export SDK=4.0.0
             elif [[ "$i" =~ ^(approachs60)$ ]]; then
               export SDK=2.4.0
+            elif [[ "$i" =~ ^(venu|vivoactive4|vivoactive4s|fenix6|fr245|fr745|fr945|fr945lte|marq)$ ]]; then
+              export SDK=3.3.0
             elif [[ "$i" =~ ^(approachs62|d2charlie|descentmk1|vivoactive3d)$ ]]; then
               export SDK=3.0.0
             elif [[ "$i" =~ ^(vivoactive3|vivoactive3mlte|fr645|fr935|d2delta|d2deltapx|d2deltas|fenix5|fenix5s|fenix5x)$ ]]; then
@@ -114,7 +119,7 @@ jobs:
               export SDK=3.2.0
             fi
             echo "BUILDING $i with sdk $SDK"
-            java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle || true
+            java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle -l 0 || true
           done
           java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle
         name: Build IQ file
