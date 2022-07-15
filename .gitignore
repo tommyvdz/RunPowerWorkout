@@ -4,3 +4,5 @@ bin/RunPowerWorkout.prg.debug.xml
 setup_env.sh
 upload_to_garmin_prev.py
 *.ipynb
+bin/*
+.vscode/

@@ -334,7 +334,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     fields = Utils.replaceNull(Application.getApp().getProperty("N"), "368201").toCharArray();
   }
 
-  function onLayout(dc) { return true; }
+  function onLayout(dc) { }
 
   (:noworkout)
   function compute(info) {
