@@ -18,6 +18,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem) hidden var etaPower = 0;
   (:highmem) hidden var etaSpeed = 0;
   (:highmem) hidden var fieldsAlt;
+  (:highmem) hidden var lapStartDistance = 0;
   (:highmem) hidden var switchAlternativeLayout = 0;
   (:highmem) hidden var topMetric;
   (:highmem) hidden var totalAscent = 0;
@@ -62,7 +63,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var keepLast;
   hidden var lapPower = null;
   hidden var lapSpeed = null;
-  hidden var lapStartDistance = 0;
   hidden var lapStartTime = 0;
   hidden var lapTime = 0;
   hidden var layout;
