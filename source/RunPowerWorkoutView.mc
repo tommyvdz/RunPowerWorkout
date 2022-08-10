@@ -747,10 +747,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
               if (alertDisplayed == false) {
                 if (alertCount < maxAlerts) {
                   if (Attention has :ToneProfile && playSounds) {
-                    if (currentPower > targetZoneHigh){
-                    Attention.playTone(Attention.TONE_ALERT_HI);
+                    if (currentPower > targetHigh){
+                      Attention.playTone(Attention.TONE_ALERT_HI);
                     } else {
-                    Attention.playTone(Attention.TONE_ALERT_LO);
+                      Attention.playTone(Attention.TONE_ALERT_LO);
                     }
                   }
                   if (Attention has :vibrate && vibrate) {
