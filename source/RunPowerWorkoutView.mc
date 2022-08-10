@@ -18,7 +18,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:highmem) hidden var etaPower = 0;
   (:highmem) hidden var etaSpeed = 0;
   (:highmem) hidden var fieldsAlt;
-  (:highmem) hidden var lapStartDistance;
   (:highmem) hidden var switchAlternativeLayout = 0;
   (:highmem) hidden var topMetric;
   (:highmem) hidden var totalAscent = 0;
@@ -63,11 +62,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var keepLast;
   hidden var lapPower = null;
   hidden var lapSpeed = null;
+  hidden var lapStartDistance = 0;
   hidden var lapStartTime = 0;
   hidden var lapTime = 0;
   hidden var layout;
   hidden var maxAlerts = 3;
   hidden var paused = true;
+  hidden var playSounds;
   hidden var powerAverage;
   hidden var pwrZones;
   hidden var pwrZonesColors;
@@ -119,6 +120,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
         Utils.replaceNull(Application.getApp().getProperty("C"), true);
     vibrate =
         Utils.replaceNull(Application.getApp().getProperty("D"), true);
+    playSounds =
+        Utils.replaceNull(Application.getApp().getProperty("DD"), true);
     powerAverage =
         Utils.replaceNull(Application.getApp().getProperty("E"), 3);
     showColors =
@@ -452,6 +455,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                  (currentPower < targetZoneLow || currentPower > targetZoneHigh))) {
               if (alertDisplayed == false) {
                 if (alertCount < maxAlerts) {
+                  if (Attention has :ToneProfile && playSounds) {
+                    if (currentPower > targetZoneHigh){
+                      Attention.playTone(Attention.TONE_ALERT_HI);
+                    } else {
+                      Attention.playTone(Attention.TONE_ALERT_LO);
+                    }
+                  }
                   if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([
                       new Attention.VibeProfile(100, 300),
@@ -736,6 +746,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
                  (currentPower < targetLow || currentPower > targetHigh))) {
               if (alertDisplayed == false) {
                 if (alertCount < maxAlerts) {
+                  if (Attention has :ToneProfile && playSounds) {
+                    if (currentPower > targetZoneHigh){
+                    Attention.playTone(Attention.TONE_ALERT_HI);
+                    } else {
+                    Attention.playTone(Attention.TONE_ALERT_LO);
+                    }
+                  }
                   if (Attention has :vibrate && vibrate) {
                     Attention.vibrate([
                       new Attention.VibeProfile(100, 300),
