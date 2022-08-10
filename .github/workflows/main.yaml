@@ -10,7 +10,7 @@ on:
     types: [published]
 
 env:
-  CIQ_VERSION: 4.1.4
+  CIQ_VERSION: 4.1.5
 
 jobs:
   install-connect-iq:
@@ -38,7 +38,7 @@ jobs:
       - run: |
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
-          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.1.4-2022-06-07-f86da2dee.zip -O ciq.zip;
+          wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.1.5-2022-08-03-6e17bf167.zip -O ciq.zip;
           unzip ciq.zip -d ciq;
           rm -f ciq.zip;
         if: steps.ciq.outputs.cache-hit != 'true'

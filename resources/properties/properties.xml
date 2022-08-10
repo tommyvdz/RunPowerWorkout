@@ -3,6 +3,7 @@
     <property id="B" type="number">330</property>
     <property id="C" type="boolean">true</property>
     <property id="D" type="boolean">true</property>
+    <property id="DD" type="boolean">true</property>
     <property id="E" type="number">3</property>
     <property id="F" type="number">1</property>
     <property id="G" type="number">1</property>

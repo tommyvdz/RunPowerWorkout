@@ -11,6 +11,9 @@
 	<setting propertyKey="@Properties.D" title="@Strings.VIBRATE">
 		<settingConfig type="boolean" />
 	</setting>
+	<setting propertyKey="@Properties.DD" title="@Strings.SOUNDS">
+		<settingConfig type="boolean" />
+	</setting>
 	<setting propertyKey="@Properties.E" title="@Strings.POWER_AVERAGE">
 		<settingConfig type="numeric" min="1" max="30" />
 	</setting>
