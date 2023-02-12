@@ -1604,7 +1604,10 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = "LP "+paceLabel;
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
     } else if (type == '6') {
-      if (stepPower != null) {
+      if(stepType >= 98){
+           return (lapPower == null ? 0 : (lapPower + 0.5).toNumber());
+        } 
+      else if (stepPower != null) {
         if (stepType < 98 && targetHigh != 0 && targetLow != 0) {
           if (showColors == 1 && !single) {
             if (stepPower < targetLow) {
