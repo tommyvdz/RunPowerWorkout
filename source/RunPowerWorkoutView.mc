@@ -110,6 +110,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       [ 416, 208, 147, 234, 320, 133, 308, 193, 202, 187, 55, 87, 60, 221 ];
   (:roundseven) const geometry =
       [ 208, 104, 73, 114, 158, 66, 152, 98, 109, 81, 25, 43, 27, 111 ];
+  (:roundeight) const geometry =
+      [ 454, 227, 160, 255, 349, 145, 336, 211, 220, 204, 60, 95, 65, 241 ];
 
   function initialize(strydsensor) {
     // read settings
@@ -898,7 +900,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
     if (singleField) {
 
-      drawLayout(dc,fgColor,bgColor);
+      renderLayout(dc,fgColor,bgColor);
 
       drawBottom(dc,fgColor,bgColor);
 
@@ -1016,7 +1018,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
       if (singleField) {
 
-        drawLayout(dc,fgColor,bgColor);
+        renderLayout(dc,fgColor,bgColor);
 
         drawBottom(dc,fgColor,bgColor);
 
@@ -1335,7 +1337,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   }
 
   (:lowmem)
-  function drawLayout(dc,fgColor,bgColor){
+  function renderLayout(dc,fgColor,bgColor){
     drawMetric(dc,fields[0],0,geometry[2],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
     drawMetric(dc,fields[1],0,geometry[3],layout == 3 ? geometry[5] : geometry[1],geometry[11],layout == 3 ? 0 : 1,bgColor,fgColor);
     drawMetric(dc,fields[2],layout == 3 ? geometry[5] : geometry[1],geometry[2],layout == 3 ? geometry[6] - geometry[5] : geometry[1],geometry[11], 1, bgColor,fgColor);
@@ -1362,7 +1364,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   }
 
   (:highmem)
-  function drawLayout(dc,fgColor,bgColor){
+  function renderLayout(dc,fgColor,bgColor){
 
     var useFields;
     var useLayout;
@@ -1605,7 +1607,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
     } else if (type == '6') {
       if(stepType >= 98){
-           return (lapPower == null ? 0 : (lapPower + 0.5).toNumber());
+          label = "LAP PWR";
+          value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
         } 
       else if (stepPower != null) {
         if (stepType < 98 && targetHigh != 0 && targetLow != 0) {
@@ -1642,12 +1645,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if(lLocalDistance[2] != null){
         var decimalx = textx;
         if(align == 2) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 10) : decimalx + (geometry[0] / 15);
         } else if (align == 1) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 18 : decimalx + 8;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 15) : decimalx + (geometry[0] / 30);
           textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 18 - fontOffset;
         } else if (align == 0){
-          textx = textx - 32 - fontOffset;
+          textx = textx - (geometry[0] / 10);
         }
         dc.drawText(decimalx,y + (fontOffset * 2) + 20, fonts[2],
                 lLocalDistance[2], align);
