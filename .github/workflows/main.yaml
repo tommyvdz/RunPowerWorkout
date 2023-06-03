@@ -36,6 +36,7 @@ jobs:
           key: devices-${{ env.CIQ_VERSION }}-${{ hashFiles('manifest.xml') }}
 
       - run: |
+          sudo apt update && sudo apt upgrade
           sudo apt-get install --reinstall unzip wget git ssh tar gzip ca-certificates
           cd /opt;
           wget -q https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-4.2.4-2023-04-05-5830cc591.zip -O ciq.zip;
