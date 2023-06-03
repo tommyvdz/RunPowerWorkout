@@ -15,7 +15,7 @@ env:
 jobs:
   install-connect-iq:
     name: "Install ConnectIQ"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -56,7 +56,7 @@ jobs:
 
   build-ciq:
     name: "Build CIQ"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: "install-connect-iq"
     steps:
       - uses: actions/checkout@v2
