@@ -37,7 +37,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   (:workout) hidden var remainingDistance = 0;
   (:workout) hidden var remainingDistanceSpeed = -1;
   (:workout) hidden var remainingTime = 0;
-  (:workout) hidden var stepPower = null;
   (:workout) hidden var stepSpeed = null;
   (:workout) hidden var stepStartDistance = 0;
   (:workout) hidden var stepStartTime = 0;
@@ -79,6 +78,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
   hidden var showColors;
   hidden var showSmallDecimals;
   hidden var stepType = 99;
+  hidden var stepPower = null;
   hidden var switchCounter = 0;
   hidden var switchMetric = 0;
   hidden var targetHigh = 0;
