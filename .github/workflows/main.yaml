@@ -124,10 +124,10 @@ jobs:
               export SDK=3.3.0
             fi
             echo "BUILDING $i with sdk $SDK"
-            echo "java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle -l 0"
             java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle -l 0 || true
             echo "----------"
           done
+          echo "Building the IQ file"
           java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout.iq -e -w -y /tmp/dev.key -r -f monkey.jungle
         name: Build IQ file
         env:

@@ -1498,8 +1498,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
         }
       }
-      label = "STP PWR";
-      value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      if(stepType >= 98){
+        label = "LAP PWR";
+        value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
+      } else {
+        label = "STP PWR";
+        value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      }
     } else if(type == '7') {
       label = "LAP PWR";
       value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
@@ -1605,11 +1610,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = "LP "+paceLabel;
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
     } else if (type == '6') {
-      if(stepType >= 98){
-          label = "LAP PWR";
-          value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
-        } 
-      else if (stepPower != null) {
+      if (stepPower != null) {
         if (stepType < 98 && targetHigh != 0 && targetLow != 0) {
           if (showColors == 1 && !single) {
             if (stepPower < targetLow) {
@@ -1632,8 +1633,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
         }
       }
-      label = "STP PWR";
-      value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      if(stepType >= 98){
+        label = "LAP PWR";
+        value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
+      } else {
+        label = "STP PWR";
+        value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      }
     } else if(type == '7') {
       label = "LAP PWR";
       value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
