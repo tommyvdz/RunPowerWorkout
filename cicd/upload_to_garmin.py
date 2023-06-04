@@ -568,7 +568,7 @@ m = MultipartEncoder(
         ("androidAppUrl", ""),
         ("hardwareProductUrl", ""),
         ("betaApp", BETA_APP),
-        ("submit", ""),
+        ("submitApp", ""),
     ],
     boundary="----WebKitFormBoundary" + "".join(random.sample(string.ascii_letters + string.digits, 16)),
 )
