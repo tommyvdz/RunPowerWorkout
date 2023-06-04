@@ -116,8 +116,10 @@ jobs:
               export SDK=3.0.0
             elif [[ "$i" =~ ^(vivoactive3|vivoactive3mlte|fr645|fr935|d2delta|d2deltapx|d2deltas|fenix5|fenix5s|fenix5x)$ ]]; then
               export SDK=3.1.0
-            else              
+            elif [[ "$i" =~ ^(d2air|fr645m|vivoactive3m)$ ]]; then
               export SDK=3.2.0
+            else              
+              export SDK=3.3.0
             fi
             echo "BUILDING $i with sdk $SDK"
             echo "java -jar /opt/ciq/bin/monkeybrains.jar -o /tmp/RunPowerWorkout-$i.prg -w -y /tmp/dev.key -d $i -c $SDK -f monkey.jungle -l 0"
