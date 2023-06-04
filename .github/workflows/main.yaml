@@ -61,7 +61,7 @@ jobs:
     needs: "install-connect-iq"
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: "adopt" # See 'Supported distributions' for available options
           java-version: "16"
@@ -110,7 +110,7 @@ jobs:
               export SDK=4.0.0
             elif [[ "$i" =~ ^(approachs60)$ ]]; then
               export SDK=2.4.0
-            elif [[ "$i" =~ ^(venu|vivoactive4|vivoactive4s|fenix6|fr245|fr745|fr945|fr945lte|marq)$ ]]; then
+            elif [[ "$i" =~ ^(venu|vivoactive4|vivoactive4s|fr245|fr745|fr945|fr945lte|marq)$ ]]; then
               export SDK=3.3.0
             elif [[ "$i" =~ ^(approachs62|d2charlie|descentmk1|vivoactive3d)$ ]]; then
               export SDK=3.0.0
@@ -133,13 +133,13 @@ jobs:
         env:
           CIQ_DEV_KEY: ${{ secrets.CIQ_DEVELOPER_KEY }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: prg
           path: /tmp/*.prg
         if: github.event_name != 'release'
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: iq
           path: /tmp/*.iq
