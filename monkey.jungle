@@ -1,4 +1,6 @@
 project.manifest = manifest.xml
+project.typecheck = 0
+project.optimization = 2
 
 base.sourcePath = source
 approachs60.sourcePath = source;source-ant

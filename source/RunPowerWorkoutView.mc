@@ -1266,7 +1266,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     var orientation = -Math.PI * percent - 3 * Math.PI / 2;
-    var radius = geometry[9];
     var xy23 = orientation - 5 * Math.PI / 180;
     var xy1 = pol2Cart(geometry[1], geometry[1], orientation, geometry[8]);
     var xy2 = pol2Cart(geometry[1], geometry[1], xy23, geometry[8]);
