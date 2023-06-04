@@ -14,6 +14,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
   (:roundfive) hidden var geometry = [ 360, 180, 36, 266 ];
   (:roundsix) hidden var geometry = [ 416, 208, 41, 308 ];
   (:roundseven) hidden var geometry = [ 208, 104, 20, 153 ];
+  (:roundeight) hidden var geometry = [ 454, 227, 45, 336 ];
   
   function initialize(high, low, current, parFonts) {
     DataFieldAlert.initialize();
@@ -23,7 +24,7 @@ class RunPowerWorkoutAlertView extends WatchUi.DataFieldAlert {
     fonts = parFonts;
   }
 
-  function onLayout(dc) { return true; }
+  function onLayout(dc) { }
 
   function onUpdate(dc) {
     View.onUpdate(dc);

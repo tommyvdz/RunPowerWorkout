@@ -20,9 +20,8 @@ class PowerSensor extends Ant.GenericChannel {
     	deviceNumber = devNumber;
 
         var chanAssign = new Ant.ChannelAssignment(
-            0 /*Ant.CHANNEL_TYPE_RX_NOT_TX*/,
-            1 /*Ant.NETWORK_PLUS*/);
-
+            Toybox.Ant.CHANNEL_TYPE_RX_NOT_TX /*Ant.CHANNEL_TYPE_RX_NOT_TX*/,
+            Toybox.Ant.NETWORK_PLUS /*Ant.NETWORK_PLUS*/);
         try {
             GenericChannel.initialize(method(:onMessage), chanAssign);
         } catch(e instanceof Ant.UnableToAcquireChannelException) {
