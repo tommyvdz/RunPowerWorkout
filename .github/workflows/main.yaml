@@ -116,8 +116,10 @@ jobs:
               export SDK=3.0.0
             elif [[ "$i" =~ ^(vivoactive3|vivoactive3mlte|fr645|fr935|d2delta|d2deltapx|d2deltas|fenix5|fenix5s|fenix5x)$ ]]; then
               export SDK=3.1.0
-            elif [[ "$i" =~ ^(d2air|fr645m|vivoactive3m)$ ]]; then
+            elif [[ "$i" =~ ^(d2air|fr645m|vivoactive3m|venud)$ ]]; then
               export SDK=3.2.0
+            elif [[ "$i" =~ ^(enduro|fenix6|fenix6pro|fenix6s|fenix6spro|fenix6x|fenix6xpro|fr55|fr945lte|marqadventurer|marqathlete|marqaviator|marqcaptain|marqcommander|marqdriver|marqexpedition|marqgolfer)$ ]]; then
+              export SDK=3.4.0
             else              
               export SDK=3.3.0
             fi
