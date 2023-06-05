@@ -104,7 +104,7 @@ jobs:
           echo "$CIQ_DEV_KEY" | base64 -d > /tmp/dev.key
           java -Xms1g -Dfile.encoding=UTF-8 -Dapple.awt.UIElement=true -jar /opt/ciq/bin/monkeybrains.jar -v
           for i in $(grep "product id=" manifest.xml | cut -d \" -f2); do
-            if [[ "$i" =~ ^(d2mach1|venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|fenix7pro|fenix7spro|fenix7xpro|fr955|fr965|epix2|epix2pro42mm|epix2pro47mm|epix2pro51mm|fr265|fr265s|fr255|fr255m|fr255sm|fr255s)$ ]]; then
+            if [[ "$i" =~ ^(d2mach1|venu2|venu2s|venu2plus|fenix7|fenix7s|fenix7x|fenix7pro|fenix7spro|fenix7xpro|fr955|fr965|epix2|epix2pro42mm|epix2pro47mm|epix2pro51mm|fr265|fr265s|fr255|fr255m|fr255sm|fr255s|marq2|marq2aviator)$ ]]; then
               export SDK=4.2.0
             elif [[ "$i" =~ ^(d2airx10)$ ]]; then
               export SDK=4.0.0
