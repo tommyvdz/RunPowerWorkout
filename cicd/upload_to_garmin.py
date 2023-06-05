@@ -40,8 +40,8 @@ headers = {
     "Cache-Control": "no-cache",
     "sec-ch-ua-mobile": "?0",
     "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "Sec-Fetch-Site": "none",
     "Sec-Fetch-Mode": "navigate",
     "Sec-Fetch-User": "?1",
@@ -107,7 +107,7 @@ headers = {
     "Referer": "https://apps.garmin.com/",
     "Sec-Fetch-Dest": "iframe",
     "Sec-Fetch-Site": "same-origin",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
 }
 response = scraper.get(url, headers=headers, params=querystring)
 soup = BeautifulSoup(response.content, "html.parser")
@@ -133,7 +133,7 @@ headers = {
     "Referer": f"{url}?{query}",
     "Sec-Fetch-Dest": "iframe",
     "Sec-Fetch-Site": "same-origin",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
 }
 
 response = scraper.post(url, data=payload, headers=headers, params=querystring)
@@ -149,7 +149,7 @@ if response.status_code != 200:
 url = f"https://apps.garmin.com/en-US/developer/{DEV_ID}/apps/{STORE_ID}/update"
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
 }
 
 scraper.get(url, headers=headers)
@@ -178,7 +178,7 @@ headers = {
     "Referer": url,
     "Sec-Fetch-Dest": "document",
     "Sec-Fetch-Site": "same-origin",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
 }
 
 response = scraper.post(url, headers=headers, data=m, allow_redirects=True)
@@ -516,7 +516,7 @@ m = MultipartEncoder(
                 "application/octet-stream",
             ),
         ),
-        ("screenshotIds[0]", ""),
+        ("screenshotIds[0]", "f6bebd31-91bc-482d-bac4-09baf6d6b2ec"),
         ("deleted[0]", "false"),
         (
             "screenshotFiles[1]",
@@ -526,7 +526,7 @@ m = MultipartEncoder(
                 "application/octet-stream",
             ),
         ),
-        ("screenshotIds[1]", ""),
+        ("screenshotIds[1]", "45bc8b2c-3188-4ce4-959a-711a9cd02db2"),
         ("deleted[1]", "false"),
         (
             "screenshotFiles[2]",
@@ -536,7 +536,7 @@ m = MultipartEncoder(
                 "application/octet-stream",
             ),
         ),
-        ("screenshotIds[2]", ""),
+        ("screenshotIds[2]", "cb714ded-5665-43bd-afbd-1a6dc547127b"),
         ("deleted[2]", "false"),
         (
             "screenshotFiles[3]",
@@ -583,7 +583,7 @@ headers = {
     "Referer": url,
     "Sec-Fetch-Dest": "document",
     "Sec-Fetch-Site": "same-origin",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
 }
 
 response = scraper.post(url, headers=headers, data=m, allow_redirects=True)
