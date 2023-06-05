@@ -899,11 +899,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
     }
 
     if (singleField) {
-
       renderLayout(dc,fgColor,bgColor);
-
       drawBottom(dc,fgColor,bgColor);
-
       //! The following code to draw the gauge is copied and adapted from
       //! Ravenfeld - Speed Gauge
       //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
@@ -1017,11 +1014,8 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       }
 
       if (singleField) {
-
         renderLayout(dc,fgColor,bgColor);
-
         drawBottom(dc,fgColor,bgColor);
-
         //! The following code to draw the gauge is copied and adapted from
         //! Ravenfeld - Speed Gauge
         //! https://github.com/ravenfeld/Connect-IQ-DataField-Speed
@@ -1364,7 +1358,6 @@ class RunPowerWorkoutView extends WatchUi.DataField {
 
   (:highmem)
   function renderLayout(dc,fgColor,bgColor){
-
     var useFields;
     var useLayout;
 
@@ -1498,8 +1491,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
         }
       }
-      label = "STP PWR";
-      value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      if(stepType >= 98){
+        label = "LAP PWR";
+        value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
+      } else {
+        label = "STP PWR";
+        value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      }
     } else if(type == '7') {
       label = "LAP PWR";
       value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
@@ -1510,12 +1508,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if(lLocalDistance[2] != null){
         var decimalx = textx;
         if(align == 2) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 10) : decimalx + (geometry[0] / 15);
         } else if (align == 1) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 18 : decimalx + 8;
-          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 18 - fontOffset;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 15) : decimalx + (geometry[0] / 30);
+          textx = lLocalDistance[0].length() > 2 ? textx - (geometry[0] / 15) - fontOffset : textx - (geometry[0] / 15) - fontOffset;
         } else if (align == 0){
-          textx = textx - 32 - fontOffset;
+          textx = textx - (geometry[0] / 10);
         }
         dc.drawText(decimalx,y + (fontOffset * 2) + 20, fonts[2],
                 lLocalDistance[2], align);
@@ -1605,11 +1603,7 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = "LP "+paceLabel;
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
     } else if (type == '6') {
-      if(stepType >= 98){
-          label = "LAP PWR";
-          value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
-        } 
-      else if (stepPower != null) {
+      if (stepPower != null) {
         if (stepType < 98 && targetHigh != 0 && targetLow != 0) {
           if (showColors == 1 && !single) {
             if (stepPower < targetLow) {
@@ -1632,8 +1626,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
           }
         }
       }
-      label = "STP PWR";
-      value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      if(stepType >= 98){
+        label = "LAP PWR";
+        value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
+      } else {
+        label = "STP PWR";
+        value = stepPower == null ? 0 : (stepPower + 0.5).toNumber();
+      }
     } else if(type == '7') {
       label = "LAP PWR";
       value = lapPower == null ? 0 : (lapPower + 0.5).toNumber();
@@ -1763,12 +1762,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if(lLocalDistance[2] != null){
         var decimalx = textx;
         if(align == 2) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 10) : decimalx + (geometry[0] / 15);
         } else if (align == 1) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 18 : decimalx + 8;
-          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 18 - fontOffset;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 15) : decimalx + (geometry[0] / 30);
+          textx = lLocalDistance[0].length() > 2 ? textx - (geometry[0] / 15) - fontOffset : textx - (geometry[0] / 15) - fontOffset;
         } else if (align == 0){
-          textx = textx - 32 - fontOffset;
+          textx = textx - (geometry[0] / 10);
         }
         dc.drawText(decimalx,y + (fontOffset * 2) + 20, fonts[2],
                 lLocalDistance[2], align);
@@ -1882,12 +1881,12 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       if(lLocalDistance[2] != null){
         var decimalx = textx;
         if(align == 2) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 32 : decimalx + 16;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 10) : decimalx + (geometry[0] / 15);
         } else if (align == 1) {
-          decimalx = lLocalDistance[0].length() > 2 ? decimalx + 18 : decimalx + 8;
-          textx = lLocalDistance[0].length() > 2 ? textx - 8 - fontOffset : textx - 18 - fontOffset;
+          decimalx = lLocalDistance[0].length() > 2 ? decimalx + (geometry[0] / 15) : decimalx + (geometry[0] / 30);
+          textx = lLocalDistance[0].length() > 2 ? textx - (geometry[0] / 15) - fontOffset : textx - (geometry[0] / 15) - fontOffset;
         } else if (align == 0){
-          textx = textx - 32 - fontOffset;
+          textx = textx - (geometry[0] / 10);
         }
         dc.drawText(decimalx,y + (fontOffset * 2) + 20, fonts[2],
                 lLocalDistance[2], align);
