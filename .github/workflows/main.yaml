@@ -161,6 +161,6 @@ jobs:
         run: |
           for file in /tmp/*.prg; do mv "$file" "${file%.prg}-${TAG_NAME}.prg"; done
           mv /tmp/RunPowerWorkout.iq /tmp/RunPowerWorkout-${TAG_NAME}.iq
-          hub release edit $(find /tmp/ -type f \( -name '*.prg' -o -name '*.iq' \) -printf "-a %p ") -m "" "$TAG_NAME"
+          hub release edit $(find /tmp/ -type f \( -name 'RunPowerWorkout*.prg' -o -name '*.iq' \) -printf "-a %p ") -m "" "$TAG_NAME"
           pip install -r cicd/requirements.txt
           python cicd/upload_to_garmin.py
