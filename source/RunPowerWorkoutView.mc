@@ -1462,8 +1462,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = paceLabel;
       value = currentSpeed == null ? 0 : Utils.convert_speed_pace(currentSpeed, useMetric, useSpeed);
     } else if (type == '4'){
-      label = "ST "+paceLabel;
-      value = stepSpeed == null ? 0 : Utils.convert_speed_pace(stepSpeed, useMetric, useSpeed);
+      if(stepType >= 98){
+        label = "LP "+paceLabel;
+        value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
+      } else {
+        label = "ST "+paceLabel;
+        value = stepSpeed == null ? 0 : Utils.convert_speed_pace(stepSpeed, useMetric, useSpeed);
+      }
     } else if (type == '5'){
       label = "LP "+paceLabel;
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
@@ -1597,8 +1602,13 @@ class RunPowerWorkoutView extends WatchUi.DataField {
       label = paceLabel;
       value = currentSpeed == null ? 0 : Utils.convert_speed_pace(currentSpeed, useMetric, useSpeed);
     } else if (type == '4'){
-      label = "ST "+paceLabel;
-      value = stepSpeed == null ? 0 : Utils.convert_speed_pace(stepSpeed, useMetric, useSpeed);
+      if(stepType >= 98){
+        label = "LP "+paceLabel;
+        value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
+      } else {
+        label = "ST "+paceLabel;
+        value = stepSpeed == null ? 0 : Utils.convert_speed_pace(stepSpeed, useMetric, useSpeed);
+      }
     } else if (type == '5'){
       label = "LP "+paceLabel;
       value = lapSpeed == null ? 0 : Utils.convert_speed_pace(lapSpeed, useMetric, useSpeed);
